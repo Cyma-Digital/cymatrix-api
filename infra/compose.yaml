@@ -1,0 +1,9 @@
+name: catolog
+services:
+  database:
+    container_name: catolog-dev-postgres
+    image: postgres:17-alpine
+    env_file:
+      - ../.env.development
+    ports:
+      - "5432:5432"

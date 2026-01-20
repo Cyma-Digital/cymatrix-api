@@ -8,7 +8,10 @@
     "commitlint": "commitlint",
     "commit": "cz",
     "lint": "eslint src/",
-    "check": "prettier --check src/"
+    "check": "prettier --check src/",
+    "services:database:up": "docker compose -f infra/compose.yaml up -d",
+    "services:database:stop": "docker compose -f infra/compose.yaml stop",
+    "services:database:down": "docker compose -f infra/compose.yaml down"
   },
   "keywords": [],
   "author": "",
