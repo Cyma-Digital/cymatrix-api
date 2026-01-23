@@ -1,17 +1,21 @@
 {
   "name": "catalog-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/server.ts",
     "commitlint": "commitlint",
     "commit": "cz",
     "lint": "eslint src/",
     "check": "prettier --check src/",
     "services:database:up": "docker compose -f infra/compose.yaml up -d",
     "services:database:stop": "docker compose -f infra/compose.yaml stop",
-    "services:database:down": "docker compose -f infra/compose.yaml down"
+    "services:database:down": "docker compose -f infra/compose.yaml down",
+    "migrations:create": "prisma migrate dev create-only --name",
+    "migrations:up": "prisma migrate dev",
+    "migrations:status": "prisma migrate status",
+    "prisma:generate": "prisma generate"
   },
   "keywords": [],
   "author": "",
