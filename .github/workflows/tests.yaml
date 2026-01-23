@@ -7,6 +7,9 @@ jobs:
     name: Jest
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: DATABASE_URL=postgres://catalog_user:catalog_password@localhost:5432/catalog?schema=local
+
     strategy:
       matrix:
         node-version: [20, 24]
@@ -25,8 +28,6 @@ jobs:
 
       - name: Generate Prisma Client
         run: npm run prisma:generate
-        env:
-          DATABASE_URL: DATABASE_URL=postgres://catalog_user:catalog_password@localhost:5432/catalog?schema=local
 
       - name: Start API server
         run: |
