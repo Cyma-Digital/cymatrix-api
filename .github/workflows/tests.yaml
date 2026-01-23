@@ -30,9 +30,7 @@ jobs:
         run: npm run prisma:generate
 
       - name: Start API server
-        run: |
-          npm run start &
-          npx wait-on http://localhost:3000/api/status
+        run: npm run start &
 
       - name: Run Jest tests
         run: npm run test
