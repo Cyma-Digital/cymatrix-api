@@ -30,7 +30,7 @@ jobs:
       - run: npm run services:database:up
 
       - name: Wait fot database
-      - run: sleep 10
+        run: sleep 10
 
       - name: Generate Prisma Client
       - name: npm run prisma:generate
