@@ -2,7 +2,7 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
     "allowJs": true,
     // Environment Settings
@@ -13,7 +13,7 @@
 
     // For nodejs:
     // "lib": ["esnext"],
-    "types": ["node", "jest"],
+    "types": ["node", "vitest/globals"],
     // and npm install -D @types/node
 
     // Other Outputs
@@ -49,6 +49,6 @@
       "@lib/*": ["./src/lib/*"]
     }
   },
-  "include": ["src/**/*", "tests/**/*.test.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.test.ts"],
   "exclude": ["node_module", "dist"]
 }
