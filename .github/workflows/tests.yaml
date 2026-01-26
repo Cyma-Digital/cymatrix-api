@@ -33,7 +33,7 @@ jobs:
         run: sleep 10
 
       - name: Generate Prisma Client
-      - name: npm run prisma:generate
+        run: npm run prisma:generate
 
       - name: Run Jest tests
         run: npm run test
