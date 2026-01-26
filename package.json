@@ -8,6 +8,7 @@
     "start": "tsx src/server.ts",
     "commitlint": "commitlint",
     "commit": "cz",
+    "commit:all": "git add -A && cz",
     "lint": "eslint .",
     "lint:prettier:check": "prettier --check . ",
     "lint:prettier:fix": "prettier --write .",

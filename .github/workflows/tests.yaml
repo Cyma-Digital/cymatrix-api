@@ -7,15 +7,6 @@ jobs:
     name: Vitest
     runs-on: ubuntu-latest
 
-    env:
-      POSTGRES_HOST: localhost
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: catalog_user
-      POSTGRES_PASSWORD: catalog_password
-      POSTGRES_DB: catalog
-      POSTGRES_SCHEMA: local
-      DATABASE_URL: DATABASE_URL=postgres://catalog_user:catalog_password@localhost:5432/catalog?schema=local
-
     strategy:
       matrix:
         node-version: [20, 24]
@@ -31,6 +22,18 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Create .env
+        run: |
+          cat <<EOF > .env
+          POSTGRES_HOST=localhost
+          POSTGRES_PORT=5432
+          POSTGRES_USER=catalog_user
+          POSTGRES_PASSWORD=catalog_password
+          POSTGRES_DB=catalog
+          POSTGRES_SCHEMA=local
+          DATABASE_URL=postgres://catalog_user:catalog_password@localhost:5432/catalog?schema=local
+          EOF
 
       - name: Start Database
         run: npm run services:database:up
