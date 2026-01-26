@@ -27,13 +27,13 @@ jobs:
         run: npm ci
 
       - name: Start Database
-      - run: npm run services:database:up
+        run: npm run services:database:up
 
       - name: Wait fot database
         run: sleep 10
 
       - name: Generate Prisma Client
-      - name: npm run prisma:generate
+        run: npm run prisma:generate
 
       - name: Run Jest tests
         run: npm run test
