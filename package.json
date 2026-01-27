@@ -16,7 +16,7 @@
     "services:database:up": "docker compose -f infra/compose.yaml up -d",
     "services:database:stop": "docker compose -f infra/compose.yaml stop",
     "services:database:down": "docker compose -f infra/compose.yaml down",
-    "prisma:migrations:create": "prisma migrate dev create-only --name",
+    "prisma:migrations:create": "prisma migrate dev --create-only",
     "prisma:migrations:apply": "prisma migrate dev",
     "prisma:migrations:status": "prisma migrate status",
     "prisma:generate": "prisma generate",
