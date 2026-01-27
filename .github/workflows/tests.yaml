@@ -44,5 +44,8 @@ jobs:
       - name: Generate Prisma Client
         run: npm run prisma:generate
 
+      - name: Run Migrations
+        run: npm run prisma:migrations:apply
+
       - name: Run Jest tests
         run: npm run test
