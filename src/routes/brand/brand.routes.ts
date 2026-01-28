@@ -1,11 +1,8 @@
 import { Router } from "express"
-import brandController from "@/controllers/brand/brand.controller"
+import * as brandController from "@/controllers/brand/brand.controller"
 
 const router = Router()
 
-router.get("/", brandController)
-router.post("/", brandController)
-router.put("/", brandController)
-router.delete("/", brandController)
+router.post("/", brandController.create)
 
 export default router

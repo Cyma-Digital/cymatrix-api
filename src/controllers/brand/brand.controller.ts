@@ -1,37 +1,29 @@
-import { Request, Response } from "express"
+import brandService from "@/services/brand/brand.service"
+import { Request, Response, NextFunction } from "express"
 
-const handlers: Record<
-  string,
-  (req: Request, res: Response) => Promise<Response>
-> = {
-  GET: handleGet,
-  POST: handlePost,
-  PUT: handlePut,
-  DELETE: handleDelete,
-}
+export async function create(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const { name, slug, logoUrl } = req.body
 
-export default async function brandController(req: Request, res: Response) {
-  const handler = handlers[req.method]
+    const userId = 1
 
-  if (!handler) {
-    return res.status(405).json({ error: "Method not allowed" })
+    const brand = await brandService.create({
+      name,
+      slug,
+      logoUrl,
+      createdBy: userId,
+      updatedBy: userId,
+    })
+
+    res.status(201).json({
+      status: "success",
+      data: brand,
+    })
+  } catch (error) {
+    next(error)
   }
-
-  return handler(req, res)
-}
-
-async function handleGet(req: Request, res: Response) {
-  return res.status(200).json({ message: "GET" })
-}
-
-async function handlePost(req: Request, res: Response) {
-  return res.status(200).json({ message: "POST" })
-}
-
-async function handlePut(req: Request, res: Response) {
-  return res.status(200).json({ message: "PUT" })
-}
-
-async function handleDelete(req: Request, res: Response) {
-  return res.status(200).json({ message: "DELETE" })
 }

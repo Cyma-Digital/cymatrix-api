@@ -4,7 +4,12 @@ import { env } from "@/config/environment"
 
 const connectionString = env.DATABASE_URL
 
-const adapter = new PrismaPg({ connectionString })
+const adapter = new PrismaPg(
+  { connectionString },
+  {
+    schema: env.POSTGRES_SCHEMA,
+  },
+)
 const prisma = new PrismaClient({ adapter })
 
 export default prisma
