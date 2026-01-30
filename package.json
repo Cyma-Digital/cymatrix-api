@@ -19,7 +19,10 @@
     "prisma:migrations:create": "prisma migrate dev --create-only",
     "prisma:migrations:apply": "prisma migrate dev",
     "prisma:migrations:status": "prisma migrate status",
+    "prisma:migrations:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
+    "prisma:seed": "tsx src/seed/index.ts",
+    "runner:orchestrator:setup": "npx tsx tests/helpers/orchestrator.runner.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -30,6 +33,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "pg": "^8.17.1"
@@ -39,6 +43,7 @@
     "@commitlint/config-conventional": "^20.3.1",
     "@eslint/js": "^9.39.2",
     "@tsconfig/node24": "^24.0.4",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.9",
     "@types/pg": "^8.16.0",

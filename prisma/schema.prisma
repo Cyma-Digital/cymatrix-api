@@ -35,17 +35,19 @@ model User {
   email     String  @unique @db.VarChar(255)
   phone     String? @db.VarChar(20)
 
-  document      String       @unique @db.VarChar(30)
-  document_type DocumentType @map("document_type")
+  document     String       @unique @db.VarChar(18)
+  documentType DocumentType @map("document_type")
 
   passwordHash String   @map("password_hash") @db.VarChar(255)
   role         UserRole @default(STAFF)
 
+  lastLogin DateTime? @map("last_login") @db.Timestamptz(6)
+
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  createdBy Int       @map("created_by")
+  createdBy Int?      @map("created_by")
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
-  updatedBy Int       @map("updated_by")
-  deletedAt DateTime? @default(now()) @map("deleted_at") @db.Timestamptz(6)
+  updatedBy Int?      @map("updated_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
   brandsCreated Brand[] @relation("BrandCreatedBy")
@@ -61,11 +63,11 @@ model Brand {
   slug    String @unique @db.VarChar(50)
   logoUrl String @map("logo_url") @db.VarChar(255)
 
-  createdAt DateTime  @map("created_at") @db.Timestamptz(6)
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   createdBy Int       @map("created_by")
-  updatedAt DateTime  @updatedAt @map("update_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
   updatedBy Int       @map("updated_by")
-  deletedAt DateTime? @default(now()) @map("deleted_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
   creator User? @relation("BrandCreatedBy", fields: [createdBy], references: [id])

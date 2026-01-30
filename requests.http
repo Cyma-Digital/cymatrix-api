@@ -1,0 +1,326 @@
+# ============================================
+# Brand API - Test File
+# ============================================
+# 
+# Extensões recomendadas:
+# - VSCode: REST Client
+# - IntelliJ: HTTP Client
+#
+# Como usar:
+# 1. Clique em "Send Request" acima de cada requisição
+# 2. Ou use Ctrl+Alt+R (VSCode)
+# ============================================
+
+### Variáveis
+@baseUrl = http://localhost:3000/api
+@contentType = application/json
+
+# ============================================
+# 1. CRIAR BRAND
+# ============================================
+
+### Criar - Apple
+POST {{baseUrl}}/brands
+Content-Type: {{contentType}}
+
+{
+  "name": "Heineken",
+  "slug": "heineken",
+  "logoUrl": "medias/hnk.png"
+}
+
+### Criar - Samsung
+POST {{baseUrl}}/brands
+Content-Type: {{contentType}}
+
+{
+  "name": "Samsung",
+  "slug": "samsung",
+  "logoUrl": "https://logo.clearbit.com/samsung.com"
+}
+
+### Criar - Microsoft
+POST {{baseUrl}}/brands
+Content-Type: {{contentType}}
+
+{
+  "name": "Microsoft",
+  "slug": "microsoft",
+  "logoUrl": "https://logo.clearbit.com/microsoft.com"
+}
+
+### Criar - Sony
+POST {{baseUrl}}/brands
+Content-Type: {{contentType}}
+
+{
+  "name": "Sony",
+  "slug": "sony",
+  "logoUrl": "https://logo.clearbit.com/sony.com"
+}
+
+### Criar - LG
+POST {{baseUrl}}/brands
+Content-Type: {{contentType}}
+
+{
+  "name": "LG",
+  "slug": "lg",
+  "logoUrl": "https://logo.clearbit.com/lg.com"
+}
+
+# ============================================
+# 2. LISTAR BRANDS
+# ============================================
+
+### Listar todas (sem paginação)
+GET {{baseUrl}}/brands
+
+### Listar com paginação - Página 1
+GET {{baseUrl}}/brands?page=1&limit=10
+
+### Listar com paginação - Página 2
+GET {{baseUrl}}/brands?page=2&limit=3
+
+### Buscar por nome (search)
+GET {{baseUrl}}/brands?search=apple
+
+### Buscar por nome (case insensitive)
+GET {{baseUrl}}/brands?search=SAMSUNG
+
+### Ordenar por nome (A-Z)
+GET {{baseUrl}}/brands?sortBy=name&sortOrder=asc
+
+### Ordenar por nome (Z-A)
+GET {{baseUrl}}/brands?sortBy=name&sortOrder=desc
+
+### Ordenar por data de criação (mais antigo primeiro)
+GET {{baseUrl}}/brands?sortBy=createdAt&sortOrder=asc
+
+### Ordenar por data de criação (mais recente primeiro)
+GET {{baseUrl}}/brands?sortBy=createdAt&sortOrder=desc
+
+### Busca + Paginação + Ordenação
+GET {{baseUrl}}/brands?search=s&page=1&limit=5&sortBy=name&sortOrder=asc
+
+# ============================================
+# 3. BUSCAR BRAND POR ID
+# ============================================
+
+### Buscar ID 1
+GET {{baseUrl}}/brands/1
+
+### Buscar ID 2
+GET {{baseUrl}}/brands/2
+
+### Buscar ID 3
+GET {{baseUrl}}/brands/3
+
+### Buscar ID inexistente (deve retornar erro)
+GET {{baseUrl}}/brands/999
+
+# ============================================
+# 4. BUSCAR BRAND POR SLUG
+# ============================================
+
+### Buscar por slug - apple
+GET {{baseUrl}}/brands/slug/apple
+
+### Buscar por slug - samsung
+GET {{baseUrl}}/brands/slug/samsung
+
+### Buscar por slug - microsoft
+GET {{baseUrl}}/brands/slug/microsoft
+
+### Buscar slug inexistente (deve retornar erro)
+GET {{baseUrl}}/brands/slug/nao-existe
+
+# ============================================
+# 5. ATUALIZAR BRAND
+# ============================================
+
+### Atualizar apenas nome (ID 1)
+PUT {{baseUrl}}/brands/1
+Content-Type: {{contentType}}
+
+{
+  "name": "Apple Inc."
+}
+
+### Atualizar apenas slug (ID 2)
+PUT {{baseUrl}}/brands/2
+Content-Type: {{contentType}}
+
+{
+  "slug": "samsung-electronics"
+}
+
+### Atualizar apenas logo (ID 3)
+PUT {{baseUrl}}/brands/3
+Content-Type: {{contentType}}
+
+{
+  "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Microsoft_logo.svg/512px-Microsoft_logo.svg.png"
+}
+
+### Atualizar tudo (ID 1)
+PUT {{baseUrl}}/brands/1
+Content-Type: {{contentType}}
+
+{
+  "name": "Apple Corporation",
+  "slug": "apple-corp",
+  "logoUrl": "https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png"
+}
+
+### Atualizar ID inexistente (deve retornar erro)
+PUT {{baseUrl}}/brands/999
+Content-Type: {{contentType}}
+
+{
+  "name": "Test"
+}
+
+# ============================================
+# 6. DELETAR BRAND (Soft Delete)
+# ============================================
+
+### Deletar brand ID 4
+DELETE {{baseUrl}}/brands/4
+
+### Deletar brand ID 5
+DELETE {{baseUrl}}/brands/5
+
+### Deletar ID inexistente (deve retornar erro)
+DELETE {{baseUrl}}/brands/999
+
+### Tentar deletar novamente (já deletado)
+DELETE {{baseUrl}}/brands/4
+
+# ============================================
+# 7. RESTAURAR BRAND
+# ============================================
+
+### Restaurar brand ID 4 (deletado anteriormente)
+POST {{baseUrl}}/brands/4/restore
+
+### Restaurar brand ID 5 (deletado anteriormente)
+POST {{baseUrl}}/brands/5/restore
+
+### Tentar restaurar brand não deletado (deve retornar erro)
+POST {{baseUrl}}/brands/1/restore
+
+### Tentar restaurar ID inexistente (deve retornar erro)
+POST {{baseUrl}}/brands/999/restore
+
+# ============================================
+# 8. VALIDAÇÕES (Devem retornar erros)
+# ============================================
+
+### Criar com nome duplicado
+POST {{baseUrl}}/brands
+Content-Type: {{contentType}}
+
+{
+  "name": "Apple",
+  "slug": "apple-novo",
+  "logoUrl": "https://example.com/logo.png"
+}
+
+### Criar com slug duplicado
+POST {{baseUrl}}/brands
+Content-Type: {{contentType}}
+
+{
+  "name": "Apple Novo",
+  "slug": "apple",
+  "logoUrl": "https://example.com/logo.png"
+}
+
+### Criar sem nome (deve retornar erro de validação)
+POST {{baseUrl}}/brands
+Content-Type: {{contentType}}
+
+{
+  "slug": "test",
+  "logoUrl": "https://example.com/logo.png"
+}
+
+### Criar sem slug (deve retornar erro de validação)
+POST {{baseUrl}}/brands
+Content-Type: {{contentType}}
+
+{
+  "name": "Test Brand",
+  "logoUrl": "https://example.com/logo.png"
+}
+
+### Criar sem logoUrl (deve retornar erro de validação)
+POST {{baseUrl}}/brands
+Content-Type: {{contentType}}
+
+{
+  "name": "Test Brand",
+  "slug": "test-brand"
+}
+
+### Atualizar para slug já existente
+PUT {{baseUrl}}/brands/2
+Content-Type: {{contentType}}
+
+{
+  "slug": "apple"
+}
+
+### Atualizar para nome já existente
+PUT {{baseUrl}}/brands/2
+Content-Type: {{contentType}}
+
+{
+  "name": "Apple"
+}
+
+# ============================================
+# 9. EDGE CASES
+# ============================================
+
+### Listar com página zero
+GET {{baseUrl}}/brands?page=0&limit=10
+
+### Listar com página negativa
+GET {{baseUrl}}/brands?page=-1&limit=10
+
+### Listar com limit muito grande
+GET {{baseUrl}}/brands?page=1&limit=1000
+
+### Listar com limit zero
+GET {{baseUrl}}/brands?page=1&limit=0
+
+### Buscar com ID não numérico
+GET {{baseUrl}}/brands/abc
+
+### Buscar com ID negativo
+GET {{baseUrl}}/brands/-1
+
+# ============================================
+# 10. STATUS ENDPOINT
+# ============================================
+
+### Health Check
+GET {{baseUrl}}/status
+
+# ============================================
+# SEQUÊNCIA COMPLETA DE TESTE
+# ============================================
+# Execute nesta ordem para testar fluxo completo:
+#
+# 1. Criar 5 brands (Apple, Samsung, Microsoft, Sony, LG)
+# 2. Listar todas
+# 3. Buscar Apple por ID (1)
+# 4. Buscar Samsung por slug
+# 5. Atualizar Microsoft
+# 6. Deletar Sony
+# 7. Listar novamente (Sony não deve aparecer)
+# 8. Restaurar Sony
+# 9. Listar novamente (Sony deve aparecer)
+# ============================================

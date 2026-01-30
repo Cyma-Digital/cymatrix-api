@@ -46,7 +46,10 @@
     "paths": {
       "@config/*": ["./src/config/*"],
       "@/*": ["./src/*"],
-      "@lib/*": ["./src/lib/*"]
+      "@lib/*": ["./src/lib/*"],
+      "@middlewares/*": ["./src/middlewares/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@errors/*": ["./src/errors/*"]
     }
   },
   "include": ["src/**/*.ts", "tests/**/*.test.ts"],
