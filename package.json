@@ -19,7 +19,10 @@
     "prisma:migrations:create": "prisma migrate dev --create-only",
     "prisma:migrations:apply": "prisma migrate dev",
     "prisma:migrations:status": "prisma migrate status",
+    "prisma:migrations:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
+    "prisma:seed": "tsx src/seed/index.ts",
+    "runner:orchestrator:setup": "npx tsx tests/helpers/orchestrator.runner.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

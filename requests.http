@@ -24,9 +24,9 @@ POST {{baseUrl}}/brands
 Content-Type: {{contentType}}
 
 {
-  "name": "Apple",
-  "slug": "apple",
-  "logoUrl": "https://logo.clearbit.com/apple.com"
+  "name": "Heineken",
+  "slug": "heineken",
+  "logoUrl": "medias/hnk.png"
 }
 
 ### Criar - Samsung
