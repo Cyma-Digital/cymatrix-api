@@ -137,4 +137,40 @@ describe("@services/BrandService", () => {
       })
     })
   })
+
+  describe("getById()", () => {
+    describe("Success cases", () => {
+      test("should return brand when existis", async () => {
+        const brand = {
+          id: 1,
+          name: "Heineken",
+          slug: "heineken",
+          logoUrl: "medias/hnk.png",
+          createdBy: 1,
+          updatedBy: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
+        mockRepository.getById.mockResolvedValue(brand)
+
+        const result = await brandService.getById(brand.id)
+
+        expect(result).toBeDefined()
+        expect(result).toEqual(brand)
+        expect(result).toMatchObject(brand)
+        expect(Array.isArray(result)).toBe(false)
+
+        expect(mockRepository.getById).toHaveBeenCalled()
+        expect(mockRepository.getById).toHaveBeenCalledWith(brand.id)
+        expect(mockRepository.getById).toHaveBeenCalledTimes(1)
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+    })
+  })
 })
