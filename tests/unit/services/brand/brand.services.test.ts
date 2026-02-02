@@ -58,4 +58,83 @@ describe("@services/BrandService", () => {
       })
     })
   })
+
+  describe("listAll()", () => {
+    describe("Success cases", () => {
+      test("should return all brands", async () => {
+        const brands = [
+          {
+            name: "Heineken",
+            slug: "heineken",
+            logoUrl: "medias/hnk.png",
+            createdBy: 1,
+            updatedBy: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            deletedBy: null,
+          },
+          {
+            name: "Eisenbahn",
+            slug: "eisenbahn",
+            logoUrl: "medias/eisenbahn.png",
+            createdBy: 1,
+            updatedBy: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            deletedBy: null,
+          },
+          {
+            name: "Lagunitas",
+            slug: "lagunitas",
+            logoUrl: "medias/lagunitas.png",
+            createdBy: 1,
+            updatedBy: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            deletedBy: null,
+          },
+        ]
+
+        mockRepository.listAll.mockResolvedValue(brands)
+
+        const result = await brandService.listAll()
+
+        expect(result).toBeDefined()
+        expect(result).toHaveLength(3)
+        expect(result).toMatchObject(brands)
+        expect(Array.isArray(result)).toBe(true)
+
+        expect(mockRepository.listAll).toHaveBeenCalled()
+        expect(mockRepository.listAll).toHaveBeenCalledWith()
+        expect(mockRepository.listAll).toHaveBeenCalledTimes(1)
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+
+      test("should return empty array when no brands", async () => {
+        mockRepository.listAll.mockResolvedValue([])
+
+        const result = await brandService.listAll()
+
+        expect(result).toBeDefined()
+        expect(result).toEqual([])
+        expect(result).toHaveLength(0)
+        expect(result).toMatchObject([])
+        expect(Array.isArray(result)).toBe(true)
+
+        expect(mockRepository.listAll).toHaveBeenCalled()
+        expect(mockRepository.listAll).toHaveBeenCalledWith()
+        expect(mockRepository.listAll).toHaveBeenCalledTimes(1)
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+    })
+  })
 })

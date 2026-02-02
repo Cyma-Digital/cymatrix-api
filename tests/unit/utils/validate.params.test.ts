@@ -12,7 +12,7 @@ const createMockRequest = (
 describe("@utils/validateParams", () => {
   describe("validatedParams()", () => {
     describe("When ID is valid", () => {
-      test("Should return parsed integer", () => {
+      test("should return parsed integer", () => {
         const request = createMockRequest({ id: "123" }) as Request
 
         const result = validateIdParam(request)
