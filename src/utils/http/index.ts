@@ -4,10 +4,10 @@ export function validateIdParam(req: Request): number {
   const id = req.params.id as string
 
   if (!id) {
-    throw new Error("Invalid param")
+    throw new Error("Param is missing")
   }
 
-  if (isNaN(parseInt(id)) || parseInt(id) < 0) {
+  if (isNaN(parseInt(id)) || parseInt(id) <= 0) {
     throw new Error("Invalid param")
   }
 
