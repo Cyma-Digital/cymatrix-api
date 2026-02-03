@@ -1,6 +1,9 @@
 import { BrandService } from "@/services/brand/brand.service"
 // import { HttpError } from "@/errors/httpError"
-import type { CreateBrandData } from "@/repositories/brand/brand.repository"
+import type {
+  CreateBrandData,
+  BradUpdatedData,
+} from "@/repositories/brand/brand.repository"
 
 const mockRepository = {
   create: vi.fn(),
@@ -168,6 +171,48 @@ describe("@services/BrandService", () => {
         expect(mockRepository.getById).toHaveBeenCalledTimes(1)
 
         expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe("updatePartial()", () => {
+    describe("Success case", () => {
+      test("should update and return brand", async () => {
+        const existingBrand = {
+          id: 1,
+          name: "Heineken",
+          slug: "heineken",
+          logoUrl: "medias/hnk.png",
+          createdBy: 1,
+          updatedBy: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
+        const updateData: BradUpdatedData = {
+          name: "Heineken 0.0",
+          slug: "heineken00",
+          updatedBy: 1,
+        }
+
+        const updatedBrand = {
+          ...existingBrand,
+          ...updateData,
+        }
+
+        mockRepository.getById.mockResolvedValue(existingBrand)
+        mockRepository.update.mockResolvedValue(updatedBrand)
+
+        const result = await brandService.updatePartial(1, updateData)
+
+        expect(result).toEqual(updatedBrand)
+        expect(mockRepository.getById).toHaveBeenCalledWith(1)
+        expect(mockRepository.update).toHaveBeenCalledWith(1, updateData)
+
         expect(mockRepository.create).not.toHaveBeenCalled()
         expect(mockRepository.softDelete).not.toHaveBeenCalled()
       })
