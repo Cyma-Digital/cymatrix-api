@@ -1,5 +1,5 @@
 import { BrandService } from "@/services/brand/brand.service"
-// import { HttpError } from "@/errors/httpError"
+import { HttpError } from "@/errors/httpError"
 import type {
   CreateBrandData,
   BradUpdatedData,
@@ -214,6 +214,49 @@ describe("@services/BrandService", () => {
         expect(mockRepository.update).toHaveBeenCalledWith(1, updateData)
 
         expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe("delete()", () => {
+    describe("Success cases", () => {
+      test("should soft delete brand", async () => {
+        const brand = {
+          id: 1,
+          name: "Heineken",
+          slug: "heineken",
+          logoUrl: "medias/hnk.png",
+          createdBy: 1,
+          updatedBy: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
+        mockRepository.getById.mockResolvedValue(brand)
+        mockRepository.softDelete.mockResolvedValue(undefined)
+
+        const result = await brandService.delete(1, 1)
+
+        expect(result).toBeUndefined()
+        expect(mockRepository.getById).toHaveBeenCalledWith(1)
+        expect(mockRepository.softDelete).toBeCalledWith(1, 1)
+        expect(mockRepository.softDelete).toBeCalledTimes(1)
+
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.update).not.toHaveBeenCalled()
+      })
+    })
+
+    describe("Error cases", () => {
+      test("should throw 404 when brand not found", async () => {
+        mockRepository.getById.mockResolvedValue(null)
+
+        await expect(brandService.delete(999, 1)).rejects.toThrow(HttpError)
+        await expect(brandService.delete(999, 1)).rejects.toThrow("Not found")
+
         expect(mockRepository.softDelete).not.toHaveBeenCalled()
       })
     })
