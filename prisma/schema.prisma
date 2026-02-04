@@ -54,6 +54,10 @@ model User {
   brandsUpdated Brand[] @relation("BrandUpdatedBy")
   brandsDeleted Brand[] @relation("BrandDeletedBy")
 
+  categoriesCreated Category[] @relation("CategoryCreatedBy")
+  categoriesUpdated Category[] @relation("CategoryUpdatedBy")
+  categoriesDeleted Category[] @relation("CategoryDeletedBy")
+
   @@map("user")
 }
 
@@ -76,3 +80,24 @@ model Brand {
 
   @@map("brand")
 }
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  slug String @unique @db.VarChar(50)
+  iconUrl String @map("icon_url") @db.VarChar(255)
+
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy Int @map("created_by")
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedBy Int       @map("updated_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  deletedBy Int?      @map("deleted_by")
+
+  creator User? @relation("CategoryCreatedBy", fields: [createdBy], references: [id])
+  updater User? @relation("CategoryUpdatedBy", fields: [updatedBy], references: [id])
+  deleter User? @relation("CategoryDeletedBy", fields: [deletedBy], references: [id])
+
+  @@map("category")
+}
+
