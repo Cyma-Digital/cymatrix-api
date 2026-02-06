@@ -118,6 +118,7 @@ model Product {
   description    String  @db.Text
   additionalInfo Json?
   avaliable      Boolean @db.Boolean
+  imageUrl       String  @map("image_url") @db.VarChar(255)
 
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   createdBy Int       @map("created_by")
