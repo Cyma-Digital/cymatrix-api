@@ -9,6 +9,7 @@ export interface CreateProductData {
   description: string
   additionalInfo: any
   avaliable: boolean
+  imageUrl: string
   createdBy: number
   updatedBy: number
 }

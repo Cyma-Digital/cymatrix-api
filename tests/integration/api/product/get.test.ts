@@ -45,6 +45,7 @@ describe("GET /api/products/:id", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
+          imageUrl: "medias/chair.png",
           createdBy: 1,
         })
 
@@ -67,6 +68,7 @@ describe("GET /api/products/:id", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
+          imageUrl: "medias/chair.png",
           createdBy: 1,
         })
 
@@ -88,6 +90,7 @@ describe("GET /api/products/:id", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
+          imageUrl: "medias/chair.png",
           createdBy: 1,
         })
 
@@ -135,6 +138,7 @@ describe("GET /api/products/:id", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
+          imageUrl: "medias/chair.png",
           createdBy: 1,
         })
 
@@ -181,6 +185,7 @@ describe("GET /api/products/:id", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
+          imageUrl: "medias/chair.png",
           createdBy: 1,
         })
 

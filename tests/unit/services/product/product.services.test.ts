@@ -13,17 +13,63 @@ const mockRepository = {
   softDelete: vi.fn(),
 }
 
+const mockBrandRepository = {
+  create: vi.fn(),
+  listAll: vi.fn(),
+  getById: vi.fn(),
+  update: vi.fn(),
+  softDelete: vi.fn(),
+}
+
+const mockCategoryRepository = {
+  create: vi.fn(),
+  listAll: vi.fn(),
+  getById: vi.fn(),
+  update: vi.fn(),
+  softDelete: vi.fn(),
+}
+
 describe("@services/ProductService", () => {
   let productService: ProductService
 
   beforeEach(() => {
     vi.clearAllMocks()
-    productService = new ProductService(mockRepository)
+    productService = new ProductService(
+      mockRepository,
+      mockBrandRepository,
+      mockCategoryRepository,
+    )
   })
 
   describe("create()", () => {
     describe("Success cases", () => {
       test("Should create and return product", async () => {
+        const category = {
+          id: 1,
+          name: "Mesas",
+          slug: "mesas",
+          iconUrl: "medias/table-icon.png",
+          createdBy: 1,
+          updatedBy: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
+        const brand = {
+          id: 1,
+          name: "Heineken",
+          slug: "heineken",
+          logoUrl: "medias/hnk.png",
+          createdBy: 1,
+          updatedBy: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
         const input: CreateProductData = {
           categoryId: 1,
           brandId: 1,
@@ -41,6 +87,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
+          imageUrl: "medias/chair.png",
           createdBy: 1,
           updatedBy: 1,
         }
@@ -55,6 +102,9 @@ describe("@services/ProductService", () => {
         }
 
         mockRepository.create.mockResolvedValue(expectedProduct)
+
+        mockBrandRepository.getById.mockResolvedValue(brand)
+        mockCategoryRepository.getById.mockResolvedValue(category)
 
         const result = await productService.create(input)
 
@@ -74,6 +124,9 @@ describe("@services/ProductService", () => {
 
         expect(mockRepository.update).not.toHaveBeenCalled()
         expect(mockRepository.softDelete).not.toHaveBeenCalled()
+
+        expect(mockBrandRepository.getById).toHaveBeenCalled()
+        expect(mockCategoryRepository.getById).toHaveBeenCalled()
       })
     })
   })
@@ -99,6 +152,7 @@ describe("@services/ProductService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: true,
+            imageUrl: "medias/chair.png",
             createdBy: 1,
             updatedBy: 1,
           },
@@ -119,6 +173,7 @@ describe("@services/ProductService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: true,
+            imageUrl: "medias/table.png",
             createdBy: 1,
             updatedBy: 1,
           },
@@ -137,6 +192,7 @@ describe("@services/ProductService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: false,
+            imageUrl: "medias/fridge.png",
             createdBy: 1,
             updatedBy: 1,
           },
@@ -203,6 +259,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
+          imageUrl: "medias/chair.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -252,6 +309,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
+          imageUrl: "medias/chair.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -307,6 +365,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
+          imageUrl: "medias/chair.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),

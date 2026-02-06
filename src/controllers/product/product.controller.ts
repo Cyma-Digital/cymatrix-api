@@ -16,6 +16,7 @@ export async function create(
       description,
       additionalInfo,
       avaliable,
+      imageUrl,
     } = req.body
 
     const userId = 1
@@ -28,6 +29,7 @@ export async function create(
       description,
       additionalInfo,
       avaliable,
+      imageUrl,
       createdBy: userId,
       updatedBy: userId,
     })
