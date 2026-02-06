@@ -14,7 +14,7 @@ describe("POST /api/categories", () => {
   describe("Anonymous user", () => {
     test("Should create a category and return 201", async () => {
       const payload = {
-        name: "mesa",
+        name: "Mesa",
         slug: "mesa",
         iconUrl: "medias/table-icon.png",
         createdBy: 1,
