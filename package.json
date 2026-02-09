@@ -24,7 +24,8 @@
     "prisma:seed": "tsx src/seed/index.ts",
     "runner:orchestrator:setup": "npx tsx tests/helpers/orchestrator.runner.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "generate:users": "tsx scripts/generate.user.payloads.ts"
   },
   "keywords": [],
   "author": "",
@@ -42,6 +43,7 @@
     "@commitlint/cli": "^20.3.1",
     "@commitlint/config-conventional": "^20.3.1",
     "@eslint/js": "^9.39.2",
+    "@faker-js/faker": "^10.2.0",
     "@tsconfig/node24": "^24.0.4",
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",

@@ -10,6 +10,13 @@ const adapter = new PrismaPg(
     schema: env.POSTGRES_SCHEMA,
   },
 )
-const prisma = new PrismaClient({ adapter })
+const prisma = new PrismaClient({
+  adapter,
+  omit: {
+    user: {
+      passwordHash: true,
+    },
+  },
+})
 
 export default prisma
