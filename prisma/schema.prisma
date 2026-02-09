@@ -62,6 +62,11 @@ model User {
   productsUpdated Product[] @relation("ProductUpdatedBy")
   productsDeleted Product[] @relation("ProductDeletedBy")
 
+  addressesCreated Address[] @relation("AddressCreatedBy")
+  addressesUpdated Address[] @relation("AddressUpdatedBy")
+  addressesDeleted Address[] @relation("AddressDeletedBy")
+  addresses        Address[] @relation("AddressUserId")
+
   @@map("user")
 }
 
@@ -135,4 +140,33 @@ model Product {
   deleter User? @relation("ProductDeletedBy", fields: [deletedBy], references: [id])
 
   @@map("product")
+}
+
+model Address {
+  id           Int     @id @default(autoincrement())
+  userId       Int     @map("user_id")
+  label        String  @db.VarChar(50)
+  street       String  @db.VarChar(150)
+  number       Int
+  complement   String  @db.VarChar(100)
+  neighborhood String  @db.VarChar(100)
+  city         String  @db.VarChar(100)
+  state        String  @db.VarChar(50)
+  zipCode      String  @db.VarChar(20)
+  isDefault    Boolean @db.Boolean
+
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy Int       @map("created_by")
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedBy Int       @map("updated_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  deletedBy Int?      @map("deleted_by")
+
+  user User @relation("AddressUserId", fields: [userId], references: [id])
+
+  creator User? @relation("AddressCreatedBy", fields: [createdBy], references: [id])
+  updater User? @relation("AddressUpdatedBy", fields: [updatedBy], references: [id])
+  deleter User? @relation("AddressDeletedBy", fields: [deletedBy], references: [id])
+
+  @@map("address")
 }

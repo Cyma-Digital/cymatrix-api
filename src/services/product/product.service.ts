@@ -15,11 +15,12 @@ export class ProductService {
 
   async create(data: CreateProductData) {
     const brand = await this.brandRepo.getById(data.brandId)
-    const category = await this.categoryRepo.getById(data.categoryId)
 
     if (!brand) {
       throw new HttpError(404, "Brand not found")
     }
+
+    const category = await this.categoryRepo.getById(data.categoryId)
 
     if (!category) {
       throw new HttpError(404, "Category not found")
