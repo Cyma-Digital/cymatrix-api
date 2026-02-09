@@ -14,6 +14,11 @@ export interface CreateUserData {
 }
 
 export class UserRepository {
+  private softDeleteFilter = {
+    deletedAt: null,
+    deletedBy: null,
+  }
+
   async create(data: CreateUserData) {
     const result = await prisma.user.create({
       data: {
@@ -28,6 +33,16 @@ export class UserRepository {
     const result = prisma.user.findUnique({
       where: {
         email: userEmail,
+      },
+    })
+
+    return result
+  }
+
+  async listAll() {
+    const result = prisma.user.findMany({
+      where: {
+        ...this.softDeleteFilter,
       },
     })
 

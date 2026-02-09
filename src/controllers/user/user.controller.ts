@@ -24,3 +24,15 @@ export async function create(
     next(error)
   }
 }
+
+export async function list(req: Request, res: Response, next: NextFunction) {
+  try {
+    const users = await userService.listAll()
+    return res.status(200).json({
+      status: "success",
+      data: users,
+    })
+  } catch (error) {
+    next(error)
+  }
+}

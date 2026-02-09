@@ -38,6 +38,10 @@ export class UserService {
       passwordHash,
     })
   }
+
+  async listAll() {
+    return await this.repository.listAll()
+  }
 }
 
 export default new UserService()
