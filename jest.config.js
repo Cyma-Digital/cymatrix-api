@@ -6,16 +6,16 @@ export default {
     "^.+\\.[tj]s$": [
       "ts-jest",
       {
-        useESM: true
-      }
-    ]
+        useESM: true,
+      },
+    ],
   },
   moduleNameMapper: {
     "^@config/(.*)$": "<rootDir>/src/config/$1",
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@lib/(.*)$": "<rootDir>/src/lib/$1",
     // for ESM TS path aliases
-    "^(\\.{1,2}/.*)\\.js$": "$1"
+    "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   testMatch: ["**/*.test.ts"],
-};
+}

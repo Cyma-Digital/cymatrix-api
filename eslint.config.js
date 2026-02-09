@@ -26,10 +26,9 @@ export default defineConfig([
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
           caughtErrorsIgnorePattern: "^_",
-          destructuredArrayIgnorePattern: "^_"
-        }
-      ]
-    }
-  }
-  
+          destructuredArrayIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
 ])
