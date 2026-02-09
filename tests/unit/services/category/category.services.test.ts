@@ -1,9 +1,9 @@
-import { BrandService } from "@/services/brand/brand.service"
+import { CategoryService } from "@/services/category/category.service"
 import { HttpError } from "@/errors/httpError"
 import type {
-  CreateBrandData,
-  BrandUpdatedData,
-} from "@/repositories/brand/brand.repository"
+  CreateCategoryData,
+  CategoryUpdatedData,
+} from "@/repositories/category/category.repository"
 
 const mockRepository = {
   create: vi.fn(),
@@ -13,26 +13,26 @@ const mockRepository = {
   softDelete: vi.fn(),
 }
 
-describe("@services/BrandService", () => {
-  let brandService: BrandService
+describe("@services/CategoryService", () => {
+  let categoryService: CategoryService
 
   beforeEach(() => {
     vi.clearAllMocks()
-    brandService = new BrandService(mockRepository)
+    categoryService = new CategoryService(mockRepository)
   })
 
   describe("create()", () => {
     describe("Success cases", () => {
-      test("should create and return brand", async () => {
-        const input: CreateBrandData = {
-          name: "Heineken",
-          slug: "heineken",
-          logoUrl: "medias/hnk.png",
+      test("Should create and return category", async () => {
+        const input: CreateCategoryData = {
+          name: "Mesa",
+          slug: "mesa",
+          iconUrl: "medias/table-icon.png",
           createdBy: 1,
           updatedBy: 1,
         }
 
-        const expectedBrand = {
+        const expectedCategory = {
           id: 1,
           ...input,
           createdAt: new Date(),
@@ -41,14 +41,14 @@ describe("@services/BrandService", () => {
           deletedBy: null,
         }
 
-        mockRepository.create.mockResolvedValue(expectedBrand)
+        mockRepository.create.mockResolvedValue(expectedCategory)
 
-        const result = await brandService.create(input)
+        const result = await categoryService.create(input)
 
         expect(result).toBeDefined()
         expect(result.id).toBeDefined()
         expect(result).toMatchObject(input)
-        expect(result).toEqual(expectedBrand)
+        expect(result).toEqual(expectedCategory)
         expect(result.id).toBeTypeOf("number")
         expect(result.createdAt).toBeInstanceOf(Date)
 
@@ -64,12 +64,12 @@ describe("@services/BrandService", () => {
 
   describe("listAll()", () => {
     describe("Success cases", () => {
-      test("should return all brands", async () => {
-        const brands = [
+      test("Should return all categories", async () => {
+        const categories = [
           {
-            name: "Heineken",
-            slug: "heineken",
-            logoUrl: "medias/hnk.png",
+            name: "Mesas",
+            slug: "mesas",
+            iconUrl: "medias/table-icon.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -78,9 +78,9 @@ describe("@services/BrandService", () => {
             deletedBy: null,
           },
           {
-            name: "Eisenbahn",
-            slug: "eisenbahn",
-            logoUrl: "medias/eisenbahn.png",
+            name: "Cadeiras",
+            slug: "cadeiras",
+            iconUrl: "medias/chair-icon.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -89,9 +89,9 @@ describe("@services/BrandService", () => {
             deletedBy: null,
           },
           {
-            name: "Lagunitas",
-            slug: "lagunitas",
-            logoUrl: "medias/lagunitas.png",
+            name: "Geladeiras",
+            slug: "geladeiras",
+            iconUrl: "medias/fridge-icon.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -101,13 +101,13 @@ describe("@services/BrandService", () => {
           },
         ]
 
-        mockRepository.listAll.mockResolvedValue(brands)
+        mockRepository.listAll.mockResolvedValue(categories)
 
-        const result = await brandService.listAll()
+        const result = await categoryService.listAll()
 
         expect(result).toBeDefined()
         expect(result).toHaveLength(3)
-        expect(result).toMatchObject(brands)
+        expect(result).toMatchObject(categories)
         expect(Array.isArray(result)).toBe(true)
 
         expect(mockRepository.listAll).toHaveBeenCalled()
@@ -119,10 +119,10 @@ describe("@services/BrandService", () => {
         expect(mockRepository.softDelete).not.toHaveBeenCalled()
       })
 
-      test("should return empty array when no brands", async () => {
+      test("Should return empty array when no categories", async () => {
         mockRepository.listAll.mockResolvedValue([])
 
-        const result = await brandService.listAll()
+        const result = await categoryService.listAll()
 
         expect(result).toBeDefined()
         expect(result).toEqual([])
@@ -143,12 +143,12 @@ describe("@services/BrandService", () => {
 
   describe("getById()", () => {
     describe("Success cases", () => {
-      test("should return brand when existis", async () => {
-        const brand = {
+      test("Should return category when exists", async () => {
+        const category = {
           id: 1,
-          name: "Heineken",
-          slug: "heineken",
-          logoUrl: "medias/hnk.png",
+          name: "Mesas",
+          slug: "mesas",
+          iconUrl: "medias/table-icon.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -157,17 +157,17 @@ describe("@services/BrandService", () => {
           deletedBy: null,
         }
 
-        mockRepository.getById.mockResolvedValue(brand)
+        mockRepository.getById.mockResolvedValue(category)
 
-        const result = await brandService.getById(brand.id)
+        const result = await categoryService.getById(category.id)
 
         expect(result).toBeDefined()
-        expect(result).toEqual(brand)
-        expect(result).toMatchObject(brand)
+        expect(result).toEqual(category)
+        expect(result).toMatchObject(category)
         expect(Array.isArray(result)).toBe(false)
 
         expect(mockRepository.getById).toHaveBeenCalled()
-        expect(mockRepository.getById).toHaveBeenCalledWith(brand.id)
+        expect(mockRepository.getById).toHaveBeenCalledWith(category.id)
         expect(mockRepository.getById).toHaveBeenCalledTimes(1)
 
         expect(mockRepository.update).not.toHaveBeenCalled()
@@ -178,13 +178,12 @@ describe("@services/BrandService", () => {
   })
 
   describe("updatePartial()", () => {
-    describe("Success case", () => {
-      test("should update and return brand", async () => {
-        const existingBrand = {
-          id: 1,
-          name: "Heineken",
-          slug: "heineken",
-          logoUrl: "medias/hnk.png",
+    describe("Success cases", () => {
+      test("Should update and return category", async () => {
+        const existingCategory = {
+          name: "Mesas",
+          slug: "mesas",
+          iconUrl: "medias/table-icon.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -193,23 +192,23 @@ describe("@services/BrandService", () => {
           deletedBy: null,
         }
 
-        const updateData: BrandUpdatedData = {
-          name: "Heineken 0.0",
-          slug: "heineken00",
+        const updateData: CategoryUpdatedData = {
+          name: "Mesas customizadas",
+          slug: "mesas-customizadas",
           updatedBy: 1,
         }
 
-        const updatedBrand = {
-          ...existingBrand,
+        const updatedCategory = {
+          ...existingCategory,
           ...updateData,
         }
 
-        mockRepository.getById.mockResolvedValue(existingBrand)
-        mockRepository.update.mockResolvedValue(updatedBrand)
+        mockRepository.getById.mockResolvedValue(existingCategory)
+        mockRepository.update.mockResolvedValue(updatedCategory)
 
-        const result = await brandService.updatePartial(1, updateData)
+        const result = await categoryService.updatePartial(1, updateData)
 
-        expect(result).toEqual(updatedBrand)
+        expect(result).toEqual(updatedCategory)
         expect(mockRepository.getById).toHaveBeenCalledWith(1)
         expect(mockRepository.update).toHaveBeenCalledWith(1, updateData)
 
@@ -221,12 +220,11 @@ describe("@services/BrandService", () => {
 
   describe("delete()", () => {
     describe("Success cases", () => {
-      test("should soft delete brand", async () => {
-        const brand = {
-          id: 1,
-          name: "Heineken",
-          slug: "heineken",
-          logoUrl: "medias/hnk.png",
+      test("Should soft delete category", async () => {
+        const category = {
+          name: "Mesas",
+          slug: "mesas",
+          iconUrl: "medias/table-icon.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -235,10 +233,10 @@ describe("@services/BrandService", () => {
           deletedBy: null,
         }
 
-        mockRepository.getById.mockResolvedValue(brand)
+        mockRepository.getById.mockResolvedValue(category)
         mockRepository.softDelete.mockResolvedValue(undefined)
 
-        const result = await brandService.delete(1, 1)
+        const result = await categoryService.delete(1, 1)
 
         expect(result).toBeUndefined()
         expect(mockRepository.getById).toHaveBeenCalledWith(1)
@@ -251,11 +249,13 @@ describe("@services/BrandService", () => {
     })
 
     describe("Error cases", () => {
-      test("should throw 404 when brand not found", async () => {
+      test("Should throw 404 when category not found", async () => {
         mockRepository.getById.mockResolvedValue(null)
 
-        await expect(brandService.delete(999, 1)).rejects.toThrow(HttpError)
-        await expect(brandService.delete(999, 1)).rejects.toThrow("Not found")
+        await expect(categoryService.delete(999, 1)).rejects.toThrow(HttpError)
+        await expect(categoryService.delete(999, 1)).rejects.toThrow(
+          "Not found",
+        )
 
         expect(mockRepository.softDelete).not.toHaveBeenCalled()
       })

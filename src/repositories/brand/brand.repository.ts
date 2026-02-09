@@ -9,7 +9,7 @@ export interface CreateBrandData {
   updatedBy: number
 }
 
-export type BradUpdatedData = Partial<Omit<CreateBrandData, "createdBy">>
+export type BrandUpdatedData = Partial<Omit<CreateBrandData, "createdBy">>
 
 export class BrandRepository {
   async create(data: CreateBrandData): Promise<Brand> {
@@ -43,7 +43,7 @@ export class BrandRepository {
     return result
   }
 
-  async update(brandId: number, data: BradUpdatedData) {
+  async update(brandId: number, data: BrandUpdatedData) {
     const result = prisma.brand.update({
       where: {
         id: brandId,
