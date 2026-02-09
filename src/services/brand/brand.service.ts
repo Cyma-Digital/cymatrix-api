@@ -1,6 +1,6 @@
 import { HttpError } from "@/errors/httpError"
 import brandRepository, {
-  BradUpdatedData,
+  BrandUpdatedData,
   CreateBrandData,
 } from "@/repositories/brand/brand.repository"
 
@@ -24,7 +24,7 @@ export class BrandService {
     return brand
   }
 
-  async updatePartial(brandId: number, data: BradUpdatedData) {
+  async updatePartial(brandId: number, data: BrandUpdatedData) {
     const brand = await this.respository.getById(brandId)
 
     if (!brand) {

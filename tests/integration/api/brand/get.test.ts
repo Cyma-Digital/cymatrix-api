@@ -10,7 +10,7 @@ afterAll(async () => {
   await orchestrator.tearDown()
 })
 
-describe("GET /api/brands:id", () => {
+describe("GET /api/brands/:id", () => {
   describe("Anonymous user", () => {
     test("Should list all brands", async () => {
       await request(app).post("/api/brands").send({

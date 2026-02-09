@@ -2,7 +2,7 @@ import { BrandService } from "@/services/brand/brand.service"
 import { HttpError } from "@/errors/httpError"
 import type {
   CreateBrandData,
-  BradUpdatedData,
+  BrandUpdatedData,
 } from "@/repositories/brand/brand.repository"
 
 const mockRepository = {
@@ -193,7 +193,7 @@ describe("@services/BrandService", () => {
           deletedBy: null,
         }
 
-        const updateData: BradUpdatedData = {
+        const updateData: BrandUpdatedData = {
           name: "Heineken 0.0",
           slug: "heineken00",
           updatedBy: 1,
