@@ -38,6 +38,20 @@ export class AddressService {
 
     return updatedAddress
   }
+
+  async delete(addressId: number, userId: number) {
+    const address = await this.repository.getById(addressId)
+
+    if (!address) {
+      throw new HttpError(404, "Not found")
+    }
+
+    try {
+      await this.repository.softDelete(addressId, userId)
+    } catch {
+      throw new HttpError(500, "Failed to delete address")
+    }
+  }
 }
 
 export default new AddressService()

@@ -90,3 +90,20 @@ export async function updatePartial(
     next(error)
   }
 }
+
+export async function deleteAddress(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = validateIdParam(req)
+    const userId = 1
+
+    await addressService.delete(id, userId)
+
+    return res.status(204).send()
+  } catch (error) {
+    next(error)
+  }
+}

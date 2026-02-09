@@ -7,5 +7,6 @@ router.post("/", addressController.create)
 router.get("/", addressController.list)
 router.get("/:id", addressController.getById)
 router.patch("/:id", addressController.updatePartial)
+router.delete("/:id", addressController.deleteAddress)
 
 export default router

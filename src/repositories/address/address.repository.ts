@@ -61,6 +61,18 @@ export class AddressRepository {
 
     return result
   }
+
+  async softDelete(addressId: number, userId: number) {
+    await prisma.address.update({
+      where: {
+        id: addressId,
+      },
+      data: {
+        deletedAt: new Date(),
+        deletedBy: userId,
+      },
+    })
+  }
 }
 
 export default new AddressRepository()
