@@ -23,6 +23,21 @@ export class AddressService {
     }
     return address
   }
+
+  async updatePartial(addressId: number, data: AddressUpdatedData) {
+    const address = await this.repository.getById(addressId)
+
+    if (!address) {
+      throw new HttpError(404, "Not found")
+    }
+    const updatedAddress = await this.repository.update(addressId, data)
+
+    if (!updatedAddress) {
+      throw new Error("Error on update")
+    }
+
+    return updatedAddress
+  }
 }
 
 export default new AddressService()

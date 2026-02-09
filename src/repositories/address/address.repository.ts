@@ -48,6 +48,19 @@ export class AddressRepository {
     })
     return result
   }
+
+  async update(addressId: number, data: AddressUpdatedData) {
+    const result = prisma.address.update({
+      where: {
+        id: addressId,
+      },
+      data: {
+        ...data,
+      },
+    })
+
+    return result
+  }
 }
 
 export default new AddressRepository()
