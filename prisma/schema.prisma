@@ -28,6 +28,15 @@ enum UserRole {
   @@map("user_role")
 }
 
+enum OrderStatus {
+  APROVADO
+  ENVIADO
+  CANCELADO
+  PENDENTE
+
+  @@map("order_status")
+}
+
 model User {
   id        Int     @id @default(autoincrement())
   firstName String  @map("first_name") @db.VarChar(100)
@@ -66,6 +75,11 @@ model User {
   addressesUpdated Address[] @relation("AddressUpdatedBy")
   addressesDeleted Address[] @relation("AddressDeletedBy")
   addresses        Address[] @relation("AddressUserId")
+
+  ordersCreated Order[] @relation("OrderCreatedBy")
+  ordersUpdated Order[] @relation("OrderUpdatedBy")
+  ordersDeleted Order[] @relation("OrderDeletedBy")
+  orders        Order[] @relation("OrderUserId")
 
   @@map("user")
 }
@@ -168,5 +182,32 @@ model Address {
   updater User? @relation("AddressUpdatedBy", fields: [updatedBy], references: [id])
   deleter User? @relation("AddressDeletedBy", fields: [deletedBy], references: [id])
 
+  orders Order[] @relation("OrderAddressId")
+
   @@map("address")
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  userId          Int         @map("user_id")
+  status          OrderStatus @default(PENDENTE)
+  addressId       Int         @map("address_id")
+  shippingAddress Json
+  total           Decimal     @db.Decimal(12, 2)
+
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy Int       @map("created_by")
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedBy Int       @map("updated_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  deletedBy Int?      @map("deleted_by")
+
+  user    User    @relation("OrderUserId", fields: [userId], references: [id])
+  address Address @relation("OrderAddressId", fields: [addressId], references: [id])
+
+  creator User? @relation("OrderCreatedBy", fields: [createdBy], references: [id])
+  updater User? @relation("OrderUpdatedBy", fields: [updatedBy], references: [id])
+  deleter User? @relation("OrderDeletedBy", fields: [deletedBy], references: [id])
+
+  @@map("order")
 }
