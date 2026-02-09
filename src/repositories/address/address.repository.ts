@@ -37,6 +37,17 @@ export class AddressRepository {
     })
     return result
   }
+
+  async getById(addressId: number) {
+    const result = prisma.address.findUnique({
+      where: {
+        id: addressId,
+        deletedAt: null,
+        deletedBy: null,
+      },
+    })
+    return result
+  }
 }
 
 export default new AddressRepository()

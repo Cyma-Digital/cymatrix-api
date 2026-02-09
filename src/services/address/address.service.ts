@@ -10,6 +10,19 @@ export class AddressService {
   async create(data: CreateAddressData) {
     return await this.repository.create(data)
   }
+
+  async listAll() {
+    return await this.repository.listAll()
+  }
+
+  async getById(addressId: number) {
+    const address = await this.repository.getById(addressId)
+
+    if (!address) {
+      throw new HttpError(404, "Not found")
+    }
+    return address
+  }
 }
 
 export default new AddressService()
