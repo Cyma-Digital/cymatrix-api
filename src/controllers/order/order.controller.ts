@@ -30,3 +30,27 @@ export async function create(
     next(error)
   }
 }
+
+export async function list(req: Request, res: Response, next: NextFunction) {
+  try {
+    const orders = await orderService.listAll()
+    return res.status(200).json({
+      status: "success",
+      data: orders,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function getById(req: Request, res: Response, next: NextFunction) {
+  try {
+    const id = validateIdParam(req)
+
+    const order = await orderService.getById(id)
+
+    return res.status(200).send({ status: "success", data: order })
+  } catch (error) {
+    next(error)
+  }
+}

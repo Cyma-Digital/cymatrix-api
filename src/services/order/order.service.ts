@@ -20,6 +20,19 @@ export class OrderService {
 
     return await this.repository.create(data)
   }
+
+  async listAll() {
+    return await this.repository.listAll()
+  }
+
+  async getById(orderId: number) {
+    const order = await this.repository.getById(orderId)
+
+    if (!order) {
+      throw new HttpError(404, "Not found")
+    }
+    return order
+  }
 }
 
 export default new OrderService()
