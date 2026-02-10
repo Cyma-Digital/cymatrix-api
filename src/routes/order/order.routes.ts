@@ -6,5 +6,6 @@ const router = Router()
 router.post("/", orderController.create)
 router.get("/", orderController.list)
 router.get("/:id", orderController.getById)
+router.patch("/:id", orderController.updatePartial)
 
 export default router

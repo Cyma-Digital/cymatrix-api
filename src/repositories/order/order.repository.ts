@@ -43,6 +43,35 @@ export class OrderRepository {
     })
     return result
   }
+
+  async update(orderId: number, data: OrderUpdatedData) {
+    const result = prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        ...data,
+      },
+    })
+
+    return result
+  }
+
+  async updateStatus(
+    orderId: number,
+    status: "APROVADO" | "ENVIADO" | "CANCELADO" | "PENDENTE",
+  ) {
+    const result = prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        status: status,
+      },
+    })
+
+    return result
+  }
 }
 
 export default new OrderRepository()

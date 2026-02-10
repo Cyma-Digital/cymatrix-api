@@ -33,6 +33,42 @@ export class OrderService {
     }
     return order
   }
+
+  async updatePartial(orderId: number, data: OrderUpdatedData) {
+    const order = await this.repository.getById(orderId)
+
+    if (!order) {
+      throw new HttpError(404, "Not found")
+    }
+
+    if (order.status === "PENDENTE") {
+      const updatedOrder = await this.repository.update(orderId, data)
+
+      if (!updatedOrder) {
+        throw new Error("Error on update")
+      }
+      return updatedOrder
+    }
+
+    if (
+      (data.status && order.status === "APROVADO") ||
+      order.status === "ENVIADO"
+    ) {
+      const updatedOrderStatus = await this.repository.updateStatus(
+        orderId,
+        data.status!,
+      )
+
+      if (!updatedOrderStatus) {
+        throw new Error("Error on update")
+      }
+      return updatedOrderStatus
+    }
+
+    if (order.status === "CANCELADO") {
+      throw new HttpError(403, "Not allowed change order after cancelled")
+    }
+  }
 }
 
 export default new OrderService()
