@@ -69,6 +69,20 @@ export class OrderService {
       throw new HttpError(403, "Not allowed change order after cancelled")
     }
   }
+
+  async delete(orderId: number, userId: number) {
+    const order = await this.repository.getById(orderId)
+
+    if (!order) {
+      throw new HttpError(404, "Not found")
+    }
+
+    try {
+      await this.repository.softDelete(orderId, userId)
+    } catch {
+      throw new HttpError(500, "Failed to delete order")
+    }
+  }
 }
 
 export default new OrderService()

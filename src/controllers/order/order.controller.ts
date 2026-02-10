@@ -71,3 +71,20 @@ export async function updatePartial(
     next(error)
   }
 }
+
+export async function deleteOrder(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = validateIdParam(req)
+    const userId = 1
+
+    await orderService.delete(id, userId)
+
+    return res.status(204).send()
+  } catch (error) {
+    next(error)
+  }
+}
