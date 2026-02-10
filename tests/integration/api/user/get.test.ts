@@ -68,3 +68,39 @@ describe("GET /api/users", () => {
     })
   })
 })
+
+describe("GET/ api/users/:id", () => {
+  describe("Anonymous user", () => {
+    describe("Success cases", () => {
+      test("should return user by id", async () => {
+        const userCreatedResponse = await request(app).post("/api/users").send({
+          firstName: "Alessandro",
+          lastName: "Santos",
+          email: "alessandro_santos@gmail.com",
+          phone: "(15) 7614-8559",
+          document: "137.602.222-26",
+          documentType: "CPF",
+          password: "Test@123",
+          role: "ADMIN",
+          createdBy: 1,
+          updatedBy: 1,
+        })
+
+        const user = userCreatedResponse.body.data
+
+        const response = await request(app).get(`/api/users/${user.id}`)
+
+        expect(response.status).toBe(200)
+        expect(response.body.data).toBeDefined()
+        expect(response.body.data).toMatchObject({
+          id: user.id,
+          firstName: "Alessandro",
+          lastName: "Santos",
+          email: "alessandro_santos@gmail.com",
+          phone: "(15) 7614-8559",
+          document: "137.602.222-26",
+        })
+      })
+    })
+  })
+})

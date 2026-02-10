@@ -39,6 +39,15 @@ export class UserRepository {
     return result
   }
 
+  async getById(userId: number) {
+    return await prisma.user.findUnique({
+      where: {
+        id: userId,
+        ...this.softDeleteFilter,
+      },
+    })
+  }
+
   async listAll() {
     const result = prisma.user.findMany({
       where: {
