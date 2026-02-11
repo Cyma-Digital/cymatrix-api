@@ -1,32 +1,23 @@
 import { HttpError } from "@/errors/httpError"
 import bcrypt from "bcrypt"
 import UserRepository from "@/repositories/user/user.repository"
-
-export interface CreateUserInput {
-  firstName: string
-  lastName: string
-  email: string
-  phone?: string
-  document: string
-  documentType: "CPF" | "CNPJ"
-  password: string
-  role: "STAFF" | "ADMIN" | "CLIENT"
-  createdBy: number
-  updatedBy: number
-}
+import {
+  CreateUserServiceSchemaInput,
+  updateUserServiceInput,
+} from "@/schemas/user/user.schemas"
 
 export class UserService {
   constructor(private repository = UserRepository) {}
 
-  async create(data: CreateUserInput) {
+  async create(data: CreateUserServiceSchemaInput) {
     const user = await this.repository.getByEmail(data.email)
 
     if (user) {
-      throw new HttpError(400, "Email already exists.")
+      throw new HttpError(409, "Email already exists.")
     }
 
     if (!data.password) {
-      throw new HttpError(404, "Passwork not provide.")
+      throw new HttpError(400, "Password is required")
     }
 
     const passwordHash = await bcrypt.hash(data.password, 10)
@@ -49,6 +40,22 @@ export class UserService {
     if (!task) throw new HttpError(404, "User not found")
 
     return task
+  }
+
+  async update(userId: number, data: updateUserServiceInput) {
+    const existingUser = await this.repository.getById(userId)
+    if (!existingUser) {
+      throw new HttpError(404, "User not found")
+    }
+
+    if (data.email !== existingUser.email) {
+      const userWithEmail = await this.repository.getByEmail(data.email)
+      if (userWithEmail && userWithEmail.id !== userId) {
+        throw new HttpError(409, "Email already exists")
+      }
+    }
+
+    return await this.repository.update(userId, data)
   }
 }
 
