@@ -1,15 +1,25 @@
 import prisma from "@/lib/prisma"
+import { DocumentType, UserRole } from "@/schemas/base.schemas"
 
 export interface CreateUserData {
   firstName: string
   lastName: string
   email: string
-  phone?: string
+  phone?: string | null
   document: string
-  documentType: "CPF" | "CNPJ"
+  documentType: DocumentType
   passwordHash: string
-  role: "STAFF" | "ADMIN" | "CLIENT"
+  role: UserRole
   createdBy: number
+  updatedBy: number
+}
+
+export interface UpdateUserData {
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  role: UserRole
   updatedBy: number
 }
 
@@ -56,6 +66,16 @@ export class UserRepository {
     })
 
     return result
+  }
+
+  async update(userId: number, data: UpdateUserData) {
+    return await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...data,
+        updatedAt: new Date(),
+      },
+    })
   }
 }
 
