@@ -81,6 +81,10 @@ model User {
   ordersDeleted Order[] @relation("OrderDeletedBy")
   orders        Order[] @relation("OrderUserId")
 
+  orderItemsCreated OrderItem[] @relation("OrderItemCreatedBy")
+  orderItemsUpdated OrderItem[] @relation("OrderItemUpdatedBy")
+  orderItemsDeleted OrderItem[] @relation("OrderItemDeletedBy")
+
   @@map("user")
 }
 
@@ -153,6 +157,8 @@ model Product {
   updater User? @relation("ProductUpdatedBy", fields: [updatedBy], references: [id])
   deleter User? @relation("ProductDeletedBy", fields: [deletedBy], references: [id])
 
+  orderItems OrderItem[] @relation("OrderItemProductId")
+
   @@map("product")
 }
 
@@ -209,5 +215,31 @@ model Order {
   updater User? @relation("OrderUpdatedBy", fields: [updatedBy], references: [id])
   deleter User? @relation("OrderDeletedBy", fields: [deletedBy], references: [id])
 
+  orderItems OrderItem[] @relation("OrderItemOrderId")
+
   @@map("order")
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int     @map("order_id")
+  productId Int     @map("product_id")
+  quantity  Int     @db.Integer
+  unitPrice Decimal @db.Decimal(12, 2)
+
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy Int       @map("created_by")
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedBy Int       @map("updated_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  deletedBy Int?      @map("deleted_by")
+
+  order   Order   @relation("OrderItemOrderId", fields: [orderId], references: [id])
+  product Product @relation("OrderItemProductId", fields: [productId], references: [id])
+
+  creator User? @relation("OrderItemCreatedBy", fields: [createdBy], references: [id])
+  updater User? @relation("OrderItemUpdatedBy", fields: [updatedBy], references: [id])
+  deleter User? @relation("OrderItemDeletedBy", fields: [deletedBy], references: [id])
+
+  @@map("order_item")
 }
