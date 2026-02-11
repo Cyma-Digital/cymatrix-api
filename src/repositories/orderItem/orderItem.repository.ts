@@ -23,6 +23,27 @@ export class OrderItemRepository {
     })
     return result
   }
+
+  async listAll() {
+    const result = prisma.orderItem.findMany({
+      where: {
+        deletedAt: null,
+        deletedBy: null,
+      },
+    })
+    return result
+  }
+
+  async getById(orderItemId: number) {
+    const result = prisma.orderItem.findUnique({
+      where: {
+        id: orderItemId,
+        deletedAt: null,
+        deletedBy: null,
+      },
+    })
+    return result
+  }
 }
 
 export default new OrderItemRepository()

@@ -76,6 +76,7 @@ describe("POST /api/order-items", () => {
           imageUrl: "medias/chair.png",
           createdBy: 1,
         })
+
       const payload = {
         orderId: 1,
         productId: 1,
