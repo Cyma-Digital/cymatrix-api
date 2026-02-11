@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from "express"
-import userService, { CreateUserInput } from "@/services/user/user.service"
-import { userIdSchema } from "@/schemas/user"
+import userService from "@/services/user/user.service"
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  userIdSchema,
+} from "@/schemas/user/user.schemas"
 
 export async function create(
   req: Request,
@@ -8,7 +12,7 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const data = req.body as CreateUserInput
+    const data = req.body as CreateUserDto
     const userId = 1
 
     const user = await userService.create({
@@ -43,6 +47,26 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
     const { id } = userIdSchema.parse(req.params)
 
     const user = await userService.getById(id)
+
+    return res.status(200).json({
+      status: "success",
+      data: user,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function update(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { id } = userIdSchema.parse(req.params)
+    const data = req.body as UpdateUserDto
+    const userId = 1
+
+    const user = await userService.update(id, {
+      ...data,
+      updatedBy: userId,
+    })
 
     return res.status(200).json({
       status: "success",
