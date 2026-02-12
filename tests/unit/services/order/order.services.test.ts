@@ -9,6 +9,7 @@ const mockRepository = {
   create: vi.fn(),
   listAll: vi.fn(),
   getById: vi.fn(),
+  getOrderWithOrderItems: vi.fn(),
   update: vi.fn(),
   updateStatus: vi.fn(),
   softDelete: vi.fn(),
@@ -216,6 +217,64 @@ describe("@services/OrderService", () => {
         expect(mockRepository.getById).toHaveBeenCalled()
         expect(mockRepository.getById).toHaveBeenCalledWith(order.id)
         expect(mockRepository.getById).toHaveBeenCalledTimes(1)
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe("getOrderWithOrderItems()", () => {
+    describe("Success cases", () => {
+      test("should return order with order items when exists", async () => {
+        const order = {
+          id: 1,
+          userId: 1,
+          status: "PENDENTE",
+          addressId: 1,
+          shippingAddress: {
+            address: {
+              street: "Rua de ruas",
+              number: 82,
+            },
+          },
+          total: "409.99",
+          createdBy: 1,
+          updatedBy: 1,
+          orderItems: [
+            {
+              id: 1,
+              orderId: 1,
+              productId: 1,
+              quantity: 2,
+              unitPrice: "209.99",
+            },
+            {
+              id: 1,
+              orderId: 1,
+              productId: 1,
+              quantity: 1,
+              unitPrice: "200",
+            },
+          ],
+        }
+
+        mockRepository.getOrderWithOrderItems.mockResolvedValue(order)
+
+        const result = await orderService.getOrderWithOrderItems(order.id)
+
+        expect(result).toBeDefined()
+        expect(result).toEqual(order)
+        expect(result).toMatchObject(order)
+        expect(Array.isArray(result)).toBe(false)
+        expect(Array.isArray(result.orderItems)).toBe(true)
+
+        expect(mockRepository.getOrderWithOrderItems).toHaveBeenCalled()
+        expect(mockRepository.getOrderWithOrderItems).toHaveBeenCalledWith(
+          order.id,
+        )
+        expect(mockRepository.getOrderWithOrderItems).toHaveBeenCalledTimes(1)
 
         expect(mockRepository.update).not.toHaveBeenCalled()
         expect(mockRepository.create).not.toHaveBeenCalled()

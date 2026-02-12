@@ -17,6 +17,7 @@ const mockOrderRepository = {
   create: vi.fn(),
   listAll: vi.fn(),
   getById: vi.fn(),
+  getOrderWithOrderItems: vi.fn(),
   update: vi.fn(),
   updateStatus: vi.fn(),
   softDelete: vi.fn(),

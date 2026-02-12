@@ -44,6 +44,21 @@ export class OrderRepository {
     return result
   }
 
+  async getOrderWithOrderItems(orderId: number) {
+    const result = prisma.order.findUnique({
+      where: {
+        id: orderId,
+        deletedAt: null,
+        deletedBy: null,
+      },
+      include: {
+        orderItems: true,
+      },
+    })
+
+    return result
+  }
+
   async update(orderId: number, data: OrderUpdatedData) {
     const result = prisma.order.update({
       where: {

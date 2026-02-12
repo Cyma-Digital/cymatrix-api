@@ -55,6 +55,22 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+export async function getOrderWithOrderItems(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = validateIdParam(req)
+
+    const order = await orderService.getOrderWithOrderItems(id)
+
+    return res.status(200).send({ status: "success", data: order })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export async function updatePartial(
   req: Request,
   res: Response,

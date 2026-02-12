@@ -34,6 +34,15 @@ export class OrderService {
     return order
   }
 
+  async getOrderWithOrderItems(orderId: number) {
+    const order = await this.repository.getOrderWithOrderItems(orderId)
+
+    if (!order) {
+      throw new HttpError(404, "Not found")
+    }
+    return order
+  }
+
   async updatePartial(orderId: number, data: OrderUpdatedData) {
     const order = await this.repository.getById(orderId)
 
