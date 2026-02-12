@@ -41,6 +41,38 @@ export class OrderItemService {
     }
     return orderItem
   }
+
+  async updatePartial(orderItemId: number, data: OrderItemUpdatedData) {
+    const orderItem = await this.repository.getById(orderItemId)
+
+    if (!orderItem) {
+      throw new HttpError(404, "Not found")
+    }
+
+    if (data.orderId !== undefined) {
+      const order = await this.orderRepo.getById(data.orderId)
+
+      if (!order) {
+        throw new HttpError(404, "Order not found")
+      }
+    }
+
+    if (data.productId !== undefined) {
+      const product = await this.productRepo.getById(data.productId)
+
+      if (!product) {
+        throw new HttpError(404, "Product not found")
+      }
+    }
+
+    const updatedOrderItem = await this.repository.update(orderItemId, data)
+
+    if (!updatedOrderItem) {
+      throw new Error("Error on update")
+    }
+
+    return updatedOrderItem
+  }
 }
 
 export default new OrderItemService()

@@ -77,7 +77,7 @@ export async function updatePartial(
     const id = validateIdParam(req)
     const data = validateEmptyBody(req)
 
-    const product = await productService.updateParcial(id, data)
+    const product = await productService.updatePartial(id, data)
 
     return res.status(200).send({ status: "success", data: product })
   } catch (error) {

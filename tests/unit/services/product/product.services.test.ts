@@ -332,7 +332,7 @@ describe("@services/ProductService", () => {
         mockRepository.getById.mockResolvedValue(existingProduct)
         mockRepository.update.mockResolvedValue(updatedProduct)
 
-        const result = await productService.updateParcial(1, updateData)
+        const result = await productService.updatePartial(1, updateData)
 
         expect(result).toEqual(updatedProduct)
         expect(mockRepository.getById).toHaveBeenCalledWith(1)
