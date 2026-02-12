@@ -73,6 +73,20 @@ export class OrderItemService {
 
     return updatedOrderItem
   }
+
+  async delete(orderItemId: number, userId: number) {
+    const orderItem = await this.repository.getById(orderItemId)
+
+    if (!orderItem) {
+      throw new HttpError(404, "Not found")
+    }
+
+    try {
+      await this.repository.softDelete(orderItemId, userId)
+    } catch {
+      throw new HttpError(500, "Failed to delete order item")
+    }
+  }
 }
 
 export default new OrderItemService()

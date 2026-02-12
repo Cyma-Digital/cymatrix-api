@@ -7,5 +7,6 @@ router.post("/", orderItemController.create)
 router.get("/", orderItemController.list)
 router.get("/:id", orderItemController.getById)
 router.patch("/:id", orderItemController.updatePartial)
+router.delete("/:id", orderItemController.deleteOrderItem)
 
 export default router

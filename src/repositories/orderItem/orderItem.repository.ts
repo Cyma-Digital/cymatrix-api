@@ -57,6 +57,18 @@ export class OrderItemRepository {
 
     return result
   }
+
+  async softDelete(orderItemId: number, userId: number) {
+    await prisma.orderItem.update({
+      where: {
+        id: orderItemId,
+      },
+      data: {
+        deletedAt: new Date(),
+        deletedBy: userId,
+      },
+    })
+  }
 }
 
 export default new OrderItemRepository()
