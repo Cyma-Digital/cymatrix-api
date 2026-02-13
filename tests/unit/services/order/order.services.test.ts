@@ -57,7 +57,7 @@ describe("@services/OrderService", () => {
               number: 82,
             },
           },
-          total: "135999.99",
+          total: "0",
           createdBy: 1,
           updatedBy: 1,
         }

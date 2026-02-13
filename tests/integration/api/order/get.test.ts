@@ -53,7 +53,7 @@ describe("GET /api/orders/:id", () => {
               number: 97,
             },
           },
-          total: "2135999.99",
+          // total: "2135999.99",
         })
 
       await request(app)
@@ -68,7 +68,7 @@ describe("GET /api/orders/:id", () => {
               number: 97,
             },
           },
-          total: "2135999.99",
+          // total: "2135999.99",
         })
 
       const response = await request(app).get("/api/orders")
@@ -108,7 +108,7 @@ describe("GET /api/orders/:id", () => {
               number: 82,
             },
           },
-          total: "135999.99",
+          // total: "135999.99",
         })
 
       const { id } = orderCreatedResponse.body.data
@@ -118,7 +118,7 @@ describe("GET /api/orders/:id", () => {
       expect(response.status).toBe(200)
       expect(response.body.data.status).toBe("PENDENTE")
       expect(response.body.data.addressId).toBe(1)
-      expect(response.body.data.total).toBe("135999.99")
+      expect(response.body.data.total).toBe("0")
     })
 
     test("Should return order by id with order items", async () => {
@@ -206,7 +206,7 @@ describe("GET /api/orders/:id", () => {
               number: 82,
             },
           },
-          total: "409.99",
+          // total: "409.99",
         })
 
       await request(app).post("/api/order-items").send({
@@ -230,7 +230,7 @@ describe("GET /api/orders/:id", () => {
       expect(response.status).toBe(200)
       expect(response.body.data.status).toBe("PENDENTE")
       expect(response.body.data.addressId).toBe(1)
-      expect(response.body.data.total).toBe("409.99")
+      expect(response.body.data.total).toBe("0")
       expect(Array.isArray(response.body.data.orderItems)).toBe(true)
     })
 
@@ -260,7 +260,7 @@ describe("GET /api/orders/:id", () => {
               number: 82,
             },
           },
-          total: "135999.99",
+          // total: "135999.99",
         })
 
       const nonExistentOrder = 2

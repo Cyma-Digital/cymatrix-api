@@ -17,7 +17,7 @@ export async function create(
       status,
       addressId,
       shippingAddress,
-      total,
+      total: "0",
       createdBy: idUser,
       updatedBy: idUser,
     })
