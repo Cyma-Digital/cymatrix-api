@@ -36,7 +36,6 @@ describe("POST /api/orders", () => {
             number: 82,
           },
         },
-        total: "135999.99",
       }
 
       const response = await request(app)

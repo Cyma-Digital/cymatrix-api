@@ -38,7 +38,7 @@ describe("PATCH /api/orders/:id", () => {
               number: 82,
             },
           },
-          total: "135999.99",
+          // total: "135999.99",
         })
 
       const { id } = orderCreatedResponse.body.data
@@ -53,7 +53,7 @@ describe("PATCH /api/orders/:id", () => {
 
       expect(response.status).toBe(200)
       expect(response.body.data.status).toBe("APROVADO")
-      expect(response.body.data.total).toBe("135999.99")
+      expect(response.body.data.total).toBe("0")
     })
 
     test("Should return 404 (not found)", async () => {
@@ -167,7 +167,6 @@ describe("PATCH /api/orders/:id", () => {
                 number: 82,
               },
             },
-            total: "135999.99",
           })
 
         const { id } = orderCreatedResponse.body.data
@@ -182,7 +181,7 @@ describe("PATCH /api/orders/:id", () => {
 
         expect(response.status).toBe(200)
         expect(response.body.data.status).toBe("CANCELADO")
-        expect(response.body.data.total).toBe("135999.99")
+        expect(response.body.data.total).toBe("0")
       })
     })
   })
