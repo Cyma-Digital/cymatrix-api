@@ -10,6 +10,7 @@ const mockRepository = {
   listAll: vi.fn(),
   getById: vi.fn(),
   getOrderWithOrderItems: vi.fn(),
+  getByUserId: vi.fn(),
   update: vi.fn(),
   updateStatus: vi.fn(),
   softDelete: vi.fn(),

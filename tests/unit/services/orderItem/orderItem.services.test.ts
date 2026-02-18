@@ -9,6 +9,7 @@ const mockRepository = {
   create: vi.fn(),
   listAll: vi.fn(),
   getById: vi.fn(),
+  getByUserId: vi.fn(),
   update: vi.fn(),
   softDelete: vi.fn(),
 }
@@ -18,6 +19,7 @@ const mockOrderRepository = {
   listAll: vi.fn(),
   getById: vi.fn(),
   getOrderWithOrderItems: vi.fn(),
+  getByUserId: vi.fn(),
   update: vi.fn(),
   updateStatus: vi.fn(),
   softDelete: vi.fn(),
@@ -45,169 +47,218 @@ describe("@services/OrderItemService", () => {
 
   describe("create()", () => {
     describe("Success cases", () => {
-      test("Should create and return order item", async () => {
-        const order = {
-          id: 1,
-          userId: 1,
-          status: "PENDENTE",
-          addressId: 1,
-          shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
+      describe("order status pendent", () => {
+        describe("order item and order already exist", () => {
+          test("Should create and return order item", async () => {
+            const order = {
+              id: 1,
+              userId: 1,
+              status: "PENDENTE",
+              addressId: 1,
+              shippingAddress: {
+                address: {
+                  street: "Rua de ruas",
+                  number: 82,
+                },
+              },
+              total: "135999.99",
+              createdBy: 1,
+              updatedBy: 1,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              deletedAt: null,
+              deletedBy: null,
+            }
+
+            const product = {
+              id: 2,
+              categoryId: 1,
+              brandId: 1,
+              name: "cadeira customizada heineken",
+              price: "209.99",
+              description: "cadeira customizada com o log da heineken",
+              additionalInfo: {
+                dimentions: {
+                  width: 50,
+                  height: 100,
+                  thickness: 5,
+                },
+                warranty: 12,
+                material: "madeira",
+                madeAt: "2026-02-04T16:40:23.130Z",
+              },
+              avaliable: true,
+              imageUrl: "medias/chair.png",
+              createdBy: 1,
+              updatedBy: 1,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              deletedAt: null,
+              deletedBy: null,
+            }
+
+            const existentOrderItem = {
+              id: 1,
+              orderId: 1,
+              productId: 1,
+              quantity: 10,
+              unitPrice: "209.99",
+              createdBy: 1,
+              updatedBy: 1,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              deletedAt: null,
+              deletedBy: null,
+            }
+
+            const input: CreateOrderItemData = {
+              orderId: 1,
+              productId: 2,
+              quantity: 10,
+              unitPrice: "209.99",
+              createdBy: 1,
+              updatedBy: 1,
+            }
+
+            const expectedOrderItem = {
+              id: 1,
+              ...input,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              deletedAt: null,
+              deletedBy: null,
+            }
+
+            mockRepository.getByUserId.mockResolvedValue(existentOrderItem)
+            mockRepository.create.mockResolvedValue(expectedOrderItem)
+
+            mockOrderRepository.getById.mockResolvedValue(order)
+            mockProductRepository.getById.mockResolvedValue(product)
+
+            const result = await orderItemService.create(input, 1)
+
+            expect(result).toBeDefined()
+            expect(result!.id).toBeDefined()
+            expect(result).toMatchObject(input)
+            expect(result).toEqual(expectedOrderItem)
+            expect(result!.id).toBeTypeOf("number")
+            expect(result!.orderId).toBeTypeOf("number")
+            expect(result!.productId).toBeTypeOf("number")
+            expect(result!.quantity).toBeTypeOf("number")
+            expect(result!.unitPrice).toBeTypeOf("string")
+            expect(result!.createdAt).toBeInstanceOf(Date)
+
+            expect(mockRepository.create).toHaveBeenCalled()
+            expect(mockRepository.create).toHaveBeenCalledWith(input)
+            expect(mockRepository.create).toHaveBeenCalledTimes(1)
+
+            expect(mockRepository.update).not.toHaveBeenCalled()
+            expect(mockRepository.softDelete).not.toHaveBeenCalled()
+
+            expect(mockRepository.getByUserId).toEqual(existentOrderItem)
+            expect(mockOrderRepository.getByUserId).toEqual("PENDENTE")
+
+            expect(mockOrderRepository.getByUserId).toHaveBeenCalled()
+            expect(mockOrderRepository.getById).toHaveBeenCalled()
+            expect(mockProductRepository.getById).toHaveBeenCalled()
+          })
+        })
+
+        test("should create and return order item (order not exist)", async () => {
+          const product = {
+            id: 1,
+            categoryId: 1,
+            brandId: 1,
+            name: "cadeira customizada heineken",
+            price: "209.99",
+            description: "cadeira customizada com o log da heineken",
+            additionalInfo: {
+              dimentions: {
+                width: 50,
+                height: 100,
+                thickness: 5,
+              },
+              warranty: 12,
+              material: "madeira",
+              madeAt: "2026-02-04T16:40:23.130Z",
             },
-          },
-          total: "135999.99",
-          createdBy: 1,
-          updatedBy: 1,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
-          deletedBy: null,
-        }
+            avaliable: true,
+            imageUrl: "medias/chair.png",
+            createdBy: 1,
+            updatedBy: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            deletedBy: null,
+          }
 
-        const product = {
-          id: 1,
-          categoryId: 1,
-          brandId: 1,
-          name: "cadeira customizada heineken",
-          price: "209.99",
-          description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
-          avaliable: true,
-          imageUrl: "medias/chair.png",
-          createdBy: 1,
-          updatedBy: 1,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
-          deletedBy: null,
-        }
+          const input: CreateOrderItemData = {
+            // orderId: 2,
+            productId: 1,
+            quantity: 10,
+            unitPrice: "209.99",
+            createdBy: 1,
+            updatedBy: 1,
+          }
 
-        const input: CreateOrderItemData = {
-          orderId: 1,
-          productId: 1,
-          quantity: 10,
-          unitPrice: "209.99",
-          createdBy: 1,
-          updatedBy: 1,
-        }
+          const expectedOrderItem = {
+            id: 1,
+            orderId: 1,
+            ...input,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            deletedBy: null,
+          }
 
-        const expectedOrderItem = {
-          id: 1,
-          ...input,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
-          deletedBy: null,
-        }
+          mockRepository.getByUserId.mockResolvedValue(null)
+          mockOrderRepository.getById.mockResolvedValue(null)
+          mockProductRepository.getById.mockResolvedValue(product)
+          mockRepository.create.mockResolvedValue(expectedOrderItem)
 
-        mockRepository.create.mockResolvedValue(expectedOrderItem)
+          const result = await orderItemService.create(input, 1)
 
-        mockOrderRepository.getById.mockResolvedValue(order)
-        mockProductRepository.getById.mockResolvedValue(product)
+          expect(result).toBeDefined()
+          expect(result!.id).toBeDefined()
+          expect(result).toMatchObject(input)
+          expect(result).toEqual(expectedOrderItem)
+          expect(result!.id).toBeTypeOf("number")
+          expect(result!.orderId).toBeTypeOf("number")
+          expect(result!.productId).toBeTypeOf("number")
+          expect(result!.quantity).toBeTypeOf("number")
+          expect(result!.unitPrice).toBeTypeOf("string")
+          expect(result!.createdAt).toBeInstanceOf(Date)
 
-        const result = await orderItemService.create(input)
+          expect(mockOrderRepository.create).toHaveBeenCalled()
+          expect(mockOrderRepository.create).toHaveBeenCalledTimes(1)
 
-        expect(result).toBeDefined()
-        expect(result.id).toBeDefined()
-        expect(result).toMatchObject(input)
-        expect(result).toEqual(expectedOrderItem)
-        expect(result.id).toBeTypeOf("number")
-        expect(result.orderId).toBeTypeOf("number")
-        expect(result.productId).toBeTypeOf("number")
-        expect(result.quantity).toBeTypeOf("number")
-        expect(result.unitPrice).toBeTypeOf("string")
-        expect(result.createdAt).toBeInstanceOf(Date)
-
-        expect(mockRepository.create).toHaveBeenCalled()
-        expect(mockRepository.create).toHaveBeenCalledWith(input)
-        expect(mockRepository.create).toHaveBeenCalledTimes(1)
-
-        expect(mockRepository.update).not.toHaveBeenCalled()
-        expect(mockRepository.softDelete).not.toHaveBeenCalled()
-
-        expect(mockOrderRepository.getById).toHaveBeenCalled()
-        expect(mockProductRepository.getById).toHaveBeenCalled()
+          expect(mockRepository.update).toHaveBeenCalled()
+          expect(mockRepository.getById).toHaveBeenCalled()
+        })
       })
     })
 
     describe("Error cases", () => {
-      test("should throw 404 when order not found", async () => {
-        const product = {
-          id: 1,
-          categoryId: 1,
-          brandId: 1,
-          name: "cadeira customizada heineken",
-          price: "209.99",
-          description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
-          avaliable: true,
-          imageUrl: "medias/chair.png",
-          createdBy: 1,
-          updatedBy: 1,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
-          deletedBy: null,
-        }
-
-        const input: CreateOrderItemData = {
-          orderId: 2,
-          productId: 1,
-          quantity: 10,
-          unitPrice: "209.99",
-          createdBy: 1,
-          updatedBy: 1,
-        }
-
-        mockOrderRepository.getById.mockResolvedValue(null)
-        mockProductRepository.getById.mockResolvedValue(product)
-
-        await expect(orderItemService.create(input)).rejects.toThrow(HttpError)
-        await expect(orderItemService.create(input)).rejects.toThrow(
-          "Order not found",
-        )
-      })
-
       test("should throw 404 when product not found", async () => {
-        const order = {
-          id: 1,
-          userId: 1,
-          status: "PENDENTE",
-          addressId: 1,
-          shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
-          },
-          total: "135999.99",
-          createdBy: 1,
-          updatedBy: 1,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
-          deletedBy: null,
-        }
+        // const order = {
+        //   id: 1,
+        //   userId: 1,
+        //   status: "PENDENTE",
+        //   addressId: 1,
+        //   shippingAddress: {
+        //     address: {
+        //       street: "Rua de ruas",
+        //       number: 82,
+        //     },
+        //   },
+        //   total: "135999.99",
+        //   createdBy: 1,
+        //   updatedBy: 1,
+        //   createdAt: new Date(),
+        //   updatedAt: new Date(),
+        //   deletedAt: null,
+        //   deletedBy: null,
+        // }
 
         const input: CreateOrderItemData = {
           orderId: 1,
@@ -218,11 +269,13 @@ describe("@services/OrderItemService", () => {
           updatedBy: 1,
         }
 
-        mockOrderRepository.getById.mockResolvedValue(order)
+        // mockOrderRepository.getById.mockResolvedValue(order)
         mockProductRepository.getById.mockResolvedValue(null)
 
-        await expect(orderItemService.create(input)).rejects.toThrow(HttpError)
-        await expect(orderItemService.create(input)).rejects.toThrow(
+        await expect(orderItemService.create(input, 1)).rejects.toThrow(
+          HttpError,
+        )
+        await expect(orderItemService.create(input, 1)).rejects.toThrow(
           "Product not found",
         )
       })

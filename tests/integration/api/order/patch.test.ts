@@ -38,7 +38,6 @@ describe("PATCH /api/orders/:id", () => {
               number: 82,
             },
           },
-          // total: "135999.99",
         })
 
       const { id } = orderCreatedResponse.body.data

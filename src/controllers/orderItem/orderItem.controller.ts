@@ -13,14 +13,17 @@ export async function create(
 
     const userId = 1
 
-    const orderItem = await orderItemService.create({
-      orderId,
-      productId,
-      quantity,
-      unitPrice,
-      createdBy: userId,
-      updatedBy: userId,
-    })
+    const orderItem = await orderItemService.create(
+      {
+        orderId,
+        productId,
+        quantity,
+        unitPrice,
+        createdBy: userId,
+        updatedBy: userId,
+      },
+      userId,
+    )
 
     return res.status(201).json({
       status: "success",

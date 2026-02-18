@@ -13,33 +13,33 @@ afterAll(async () => {
 describe("POST /api/order-items", () => {
   describe("Anonymous user", () => {
     test("Should create an order item and return 201", async () => {
-      await request(app).post("/api/addresses").send({
-        userId: 1,
-        label: "comércio",
-        street: "Rua João Silva Souza Soares Santos",
-        number: 1,
-        complement: "terceiro andar",
-        neighborhood: "Jardim de jardins",
-        city: "Jacareí",
-        state: "SP",
-        zipCode: "123.456-78",
-        isDefault: true,
-      })
+      // await request(app).post("/api/addresses").send({
+      //   userId: 1,
+      //   label: "comércio",
+      //   street: "Rua João Silva Souza Soares Santos",
+      //   number: 1,
+      //   complement: "terceiro andar",
+      //   neighborhood: "Jardim de jardins",
+      //   city: "Jacareí",
+      //   state: "SP",
+      //   zipCode: "123.456-78",
+      //   isDefault: true,
+      // })
 
-      await request(app)
-        .post("/api/orders")
-        .send({
-          userId: 1,
-          status: "PENDENTE",
-          addressId: 1,
-          shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
-          },
-          total: "135999.99",
-        })
+      // await request(app)
+      //   .post("/api/orders")
+      //   .send({
+      //     userId: 1,
+      //     status: "PENDENTE",
+      //     addressId: 1,
+      //     shippingAddress: {
+      //       address: {
+      //         street: "Rua de ruas",
+      //         number: 82,
+      //       },
+      //     },
+      //     total: "135999.99",
+      //   })
 
       await request(app).post("/api/categories").send({
         name: "Mesa",
@@ -78,9 +78,9 @@ describe("POST /api/order-items", () => {
         })
 
       const payload = {
-        orderId: 1,
+        // orderId: 1,
         productId: 1,
-        quantity: 50,
+        quantity: 2,
         unitPrice: "120.89",
       }
 

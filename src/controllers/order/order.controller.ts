@@ -8,7 +8,7 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const { userId, status, addressId, shippingAddress } = req.body
+    const { userId, status, addressId, shippingAddress, total } = req.body
 
     const idUser = 1
 
@@ -17,7 +17,7 @@ export async function create(
       status,
       addressId,
       shippingAddress,
-      total: "0",
+      total,
       createdBy: idUser,
       updatedBy: idUser,
     })

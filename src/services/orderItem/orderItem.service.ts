@@ -1,5 +1,8 @@
 import { HttpError } from "@/errors/httpError"
-import orderRepository from "@/repositories/order/order.repository"
+import orderRepository, {
+  CreateOrderData,
+  OrderUpdatedData,
+} from "@/repositories/order/order.repository"
 import productRepository from "@/repositories/product/product.repository"
 import orderItemRepository, {
   OrderItemUpdatedData,
@@ -13,20 +16,74 @@ export class OrderItemService {
     private productRepo = productRepository,
   ) {}
 
-  async create(data: CreateOrderItemData) {
-    const order = await this.orderRepo.getById(data.orderId)
-
-    if (!order) {
-      throw new HttpError(404, "Order not found")
-    }
-
+  async create(data: CreateOrderItemData, userId: number) {
     const product = await this.productRepo.getById(data.productId)
 
     if (!product) {
       throw new HttpError(404, "Product not found")
     }
 
-    return await this.repository.create(data)
+    const orderItemExistent = await this.repository.getByUserId(userId)
+
+    const orderItem = await this.repository.create(data)
+
+    const totalPrice = Number(orderItem.unitPrice) * orderItem.quantity
+
+    if (orderItemExistent) {
+      const order = await this.orderRepo.getByUserId(userId)
+
+      if (order?.status === "PENDENTE") {
+        const totalPriceOrder = Number(order?.total) + totalPrice
+
+        const totalOrder: OrderUpdatedData = {
+          total: totalPriceOrder.toString(),
+        }
+        await this.orderRepo.update(order!.id, totalOrder)
+
+        const orderItemData: OrderItemUpdatedData = {
+          orderId: order!.id,
+        }
+        await this.repository.update(orderItem.id, orderItemData)
+      } else {
+        const orderData: CreateOrderData = {
+          userId: userId,
+          status: "PENDENTE",
+          // addressId: null,
+          shippingAddress: "",
+          total: totalPrice.toString(),
+          createdBy: userId,
+          updatedBy: userId,
+        }
+
+        const orderCreated = await this.orderRepo.create(orderData)
+        const orderCreatedId = orderCreated.id
+
+        const orderItemData: OrderItemUpdatedData = {
+          orderId: orderCreatedId,
+        }
+        await this.repository.update(orderItem.id, orderItemData)
+      }
+    } else if (!orderItemExistent) {
+      const orderData: CreateOrderData = {
+        userId: userId,
+        status: "PENDENTE",
+        // addressId: null,
+        shippingAddress: "",
+        total: totalPrice.toString(),
+        createdBy: userId,
+        updatedBy: userId,
+      }
+
+      const orderCreated = await this.orderRepo.create(orderData)
+
+      const orderItemData: OrderItemUpdatedData = {
+        orderId: orderCreated!.id,
+      }
+      await this.repository.update(orderItem.id, orderItemData)
+    }
+    const orderItemUpdated = await this.repository.getById(orderItem.id)
+
+    return orderItemUpdated
   }
 
   async listAll() {

@@ -12,7 +12,7 @@ export class OrderService {
   ) {}
 
   async create(data: CreateOrderData) {
-    const address = await this.addressRepo.getById(data.addressId)
+    const address = await this.addressRepo.getById(data.addressId!)
 
     if (!address) {
       throw new HttpError(404, "Address not found")

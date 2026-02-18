@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma"
 import { OrderItem } from "@/generated/prisma/client"
 
 export interface CreateOrderItemData {
-  orderId: number
+  orderId?: number
   productId: number
   quantity: number
   unitPrice: string
@@ -38,6 +38,17 @@ export class OrderItemRepository {
     const result = prisma.orderItem.findUnique({
       where: {
         id: orderItemId,
+        deletedAt: null,
+        deletedBy: null,
+      },
+    })
+    return result
+  }
+
+  async getByUserId(userId: number) {
+    const result = prisma.orderItem.findFirst({
+      where: {
+        createdBy: userId,
         deletedAt: null,
         deletedBy: null,
       },
