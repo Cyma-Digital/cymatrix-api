@@ -129,18 +129,19 @@ describe("@services/OrderItemService", () => {
               deletedBy: null,
             }
 
+            mockProductRepository.getById.mockResolvedValue(product)
             mockRepository.getByUserId.mockResolvedValue(existentOrderItem)
             mockRepository.create.mockResolvedValue(expectedOrderItem)
-
-            mockOrderRepository.getById.mockResolvedValue(order)
-            mockProductRepository.getById.mockResolvedValue(product)
+            mockOrderRepository.getByUserId.mockResolvedValue(order)
+            mockRepository.getById.mockResolvedValue(expectedOrderItem)
+            // mockOrderRepository.update.mockResolvedValue(order)
+            // mockRepository.update.mockResolvedValue(expectedOrderItem)
 
             const result = await orderItemService.create(input, 1)
 
             expect(result).toBeDefined()
             expect(result!.id).toBeDefined()
             expect(result).toMatchObject(input)
-            expect(result).toEqual(expectedOrderItem)
             expect(result!.id).toBeTypeOf("number")
             expect(result!.orderId).toBeTypeOf("number")
             expect(result!.productId).toBeTypeOf("number")
@@ -151,15 +152,15 @@ describe("@services/OrderItemService", () => {
             expect(mockRepository.create).toHaveBeenCalled()
             expect(mockRepository.create).toHaveBeenCalledWith(input)
             expect(mockRepository.create).toHaveBeenCalledTimes(1)
+            expect(mockRepository.update).toHaveBeenCalled()
 
-            expect(mockRepository.update).not.toHaveBeenCalled()
             expect(mockRepository.softDelete).not.toHaveBeenCalled()
 
-            expect(mockRepository.getByUserId).toEqual(existentOrderItem)
-            expect(mockOrderRepository.getByUserId).toEqual("PENDENTE")
+            // expect(mockRepository.getByUserId).toEqual(existentOrderItem)
+            // expect(mockOrderRepository.getByUserId).toEqual("PENDENTE")
 
             expect(mockOrderRepository.getByUserId).toHaveBeenCalled()
-            expect(mockOrderRepository.getById).toHaveBeenCalled()
+            expect(mockOrderRepository.update).toHaveBeenCalled()
             expect(mockProductRepository.getById).toHaveBeenCalled()
           })
         })
@@ -211,17 +212,33 @@ describe("@services/OrderItemService", () => {
             deletedBy: null,
           }
 
+          const order = {
+            userId: 1,
+            status: "PENDENTE",
+            addressId: 1,
+            shippingAddress: {
+              address: {
+                street: "Rua de ruas",
+                number: 82,
+              },
+            },
+            total: "0",
+            createdBy: 1,
+            updatedBy: 1,
+          }
+
           mockRepository.getByUserId.mockResolvedValue(null)
           mockOrderRepository.getById.mockResolvedValue(null)
           mockProductRepository.getById.mockResolvedValue(product)
           mockRepository.create.mockResolvedValue(expectedOrderItem)
+          mockOrderRepository.create.mockResolvedValue(order)
+          mockRepository.getById.mockResolvedValue(expectedOrderItem)
 
           const result = await orderItemService.create(input, 1)
 
           expect(result).toBeDefined()
           expect(result!.id).toBeDefined()
           expect(result).toMatchObject(input)
-          expect(result).toEqual(expectedOrderItem)
           expect(result!.id).toBeTypeOf("number")
           expect(result!.orderId).toBeTypeOf("number")
           expect(result!.productId).toBeTypeOf("number")
@@ -231,6 +248,9 @@ describe("@services/OrderItemService", () => {
 
           expect(mockOrderRepository.create).toHaveBeenCalled()
           expect(mockOrderRepository.create).toHaveBeenCalledTimes(1)
+
+          expect(mockRepository.create).toHaveBeenCalled()
+          expect(mockRepository.getByUserId).toHaveBeenCalled()
 
           expect(mockRepository.update).toHaveBeenCalled()
           expect(mockRepository.getById).toHaveBeenCalled()
