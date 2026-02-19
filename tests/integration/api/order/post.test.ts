@@ -10,36 +10,53 @@ afterAll(async () => {
   await orchestrator.tearDown()
 })
 
-describe("POST /api/orders", () => {
+describe("POST /api/order-items", () => {
   describe("Anonymous user", () => {
     test("Should create a order and return 201", async () => {
-      await request(app).post("/api/addresses").send({
-        userId: 1,
-        label: "comércio",
-        street: "Rua João Silva Souza Soares Santos",
-        number: 1,
-        complement: "terceiro andar",
-        neighborhood: "Jardim de jardins",
-        city: "Jacareí",
-        state: "SP",
-        zipCode: "123.456-78",
-        isDefault: true,
+      await request(app).post("/api/categories").send({
+        name: "Mesa",
+        slug: "mesa",
+        iconUrl: "medias/table-icon.png",
+        createdBy: 1,
       })
 
-      const payload = {
-        userId: 1,
-        status: "PENDENTE",
-        addressId: 1,
-        shippingAddress: {
-          address: {
-            street: "Rua de ruas",
-            number: 82,
+      await request(app).post("/api/brands").send({
+        name: "Heineken",
+        slug: "heineken",
+        logoUrl: "medias/hnk.png",
+      })
+
+      await request(app)
+        .post("/api/products")
+        .send({
+          categoryId: 1,
+          brandId: 1,
+          name: "cadeira customizada heineken",
+          price: "209.99",
+          description: "cadeira customizada com o log da heineken",
+          additionalInfo: {
+            dimentions: {
+              width: 50,
+              height: 100,
+              thickness: 5,
+            },
+            warranty: 12,
+            material: "madeira",
+            madeAt: "2026-02-04T16:40:23.130Z",
           },
-        },
+          avaliable: true,
+          imageUrl: "medias/chair.png",
+          createdBy: 1,
+        })
+
+      const payload = {
+        productId: 1,
+        quantity: 10,
+        unitPrice: "209.99",
       }
 
       const response = await request(app)
-        .post("/api/orders")
+        .post("/api/order-items")
         .send(payload)
         .expect(201)
 
