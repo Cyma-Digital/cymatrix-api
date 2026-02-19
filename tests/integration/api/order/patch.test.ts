@@ -13,18 +13,27 @@ afterAll(async () => {
 describe("PATCH /api/orders/:id", () => {
   describe("Anonymous user", () => {
     test("Should update an order and return 200", async () => {
-      await request(app).post("/api/addresses").send({
-        userId: 1,
-        label: "comércio",
-        street: "Rua João Silva Souza Soares Santos",
-        number: 1,
-        complement: "terceiro andar",
-        neighborhood: "Jardim de jardins",
-        city: "Jacareí",
-        state: "SP",
-        zipCode: "123.456-78",
-        isDefault: true,
-      })
+      // await request(app).post("/api/addresses").send({
+      //   userId: 1,
+      //   label: "comércio",
+      //   street: "Rua João Silva Souza Soares Santos",
+      //   number: 1,
+      //   complement: "terceiro andar",
+      //   neighborhood: "Jardim de jardins",
+      //   city: "Jacareí",
+      //   state: "SP",
+      //   zipCode: "123.456-78",
+      //   isDefault: true,
+      // })
+
+      // const orderCreatedResponse = await request(app)
+      //     .post("/api/order-items")
+      //     .send({
+      //       productId: 1,
+      //       quantity: 2,
+      //       unitPrice: "200.99",
+      //     })
+      //     .expect(201)
 
       const orderCreatedResponse = await request(app)
         .post("/api/orders")

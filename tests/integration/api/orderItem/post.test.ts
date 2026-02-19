@@ -94,5 +94,109 @@ describe("POST /api/order-items", () => {
         data: payload,
       })
     })
+
+    describe("order already exist with status pendent", () => {
+      test("Should create an order item and return 201", async () => {
+        // await request(app)
+        //   .post("/api/orders")
+        //   .send({
+        //     userId: 1,
+        //     status: "PENDENTE",
+        //     addressId: 1,
+        //     shippingAddress: {
+        //       address: {
+        //         street: "Rua de ruas",
+        //         number: 82,
+        //       },
+        //     },
+        //     total: "100",
+        //   })
+
+        await request(app).post("/api/categories").send({
+          name: "Mesa",
+          slug: "mesa",
+          iconUrl: "medias/table-icon.png",
+          createdBy: 1,
+        })
+
+        await request(app).post("/api/brands").send({
+          name: "Heineken",
+          slug: "heineken",
+          logoUrl: "medias/hnk.png",
+        })
+
+        await request(app)
+          .post("/api/products")
+          .send({
+            categoryId: 1,
+            brandId: 1,
+            name: "cadeira customizada heineken",
+            price: "200.99",
+            description: "cadeira customizada com o log da heineken",
+            additionalInfo: {
+              dimentions: {
+                width: 50,
+                height: 100,
+                thickness: 5,
+              },
+              warranty: 12,
+              material: "madeira",
+              madeAt: "2026-02-04T16:40:23.130Z",
+            },
+            avaliable: true,
+            imageUrl: "medias/chair.png",
+            createdBy: 1,
+          })
+
+        await request(app)
+          .post("/api/products")
+          .send({
+            categoryId: 1,
+            brandId: 1,
+            name: "mesa customizada heineken",
+            price: "1209.01",
+            description: "mesa customizada com o log da heineken",
+            additionalInfo: {
+              dimentions: {
+                width: 120,
+                height: 100,
+                thickness: 5,
+              },
+              warranty: 12,
+              material: "madeira",
+              madeAt: "2026-02-04T16:40:23.130Z",
+            },
+            avaliable: true,
+            imageUrl: "medias/chair.png",
+            createdBy: 1,
+          })
+
+        await request(app)
+          .post("/api/order-items")
+          .send({
+            productId: 1,
+            quantity: 2,
+            unitPrice: "200.99",
+          })
+          .expect(201)
+
+        const payload = {
+          // orderId: 1,
+          productId: 1,
+          quantity: 2,
+          unitPrice: "1209.01",
+        }
+
+        const response = await request(app)
+          .post("/api/order-items")
+          .send(payload)
+          .expect(201)
+
+        expect(response.body).toMatchObject({
+          status: "success",
+          data: payload,
+        })
+      })
+    })
   })
 })

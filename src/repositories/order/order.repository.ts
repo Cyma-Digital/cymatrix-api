@@ -33,6 +33,18 @@ export class OrderRepository {
     return result
   }
 
+  async getPendentOrderStatus(userId: number) {
+    const result = prisma.order.findFirst({
+      where: {
+        id: userId,
+        deletedAt: null,
+        deletedBy: null,
+        status: "PENDENTE",
+      },
+    })
+    return result
+  }
+
   async getById(orderId: number) {
     const result = prisma.order.findUnique({
       where: {

@@ -17,6 +17,7 @@ const mockRepository = {
 const mockOrderRepository = {
   create: vi.fn(),
   listAll: vi.fn(),
+  getPendentOrderStatus: vi.fn(),
   getById: vi.fn(),
   getOrderWithOrderItems: vi.fn(),
   getByUserId: vi.fn(),
@@ -132,10 +133,8 @@ describe("@services/OrderItemService", () => {
             mockProductRepository.getById.mockResolvedValue(product)
             mockRepository.getByUserId.mockResolvedValue(existentOrderItem)
             mockRepository.create.mockResolvedValue(expectedOrderItem)
-            mockOrderRepository.getByUserId.mockResolvedValue(order)
+            mockOrderRepository.getPendentOrderStatus.mockResolvedValue(order)
             mockRepository.getById.mockResolvedValue(expectedOrderItem)
-            // mockOrderRepository.update.mockResolvedValue(order)
-            // mockRepository.update.mockResolvedValue(expectedOrderItem)
 
             const result = await orderItemService.create(input, 1)
 
@@ -156,10 +155,7 @@ describe("@services/OrderItemService", () => {
 
             expect(mockRepository.softDelete).not.toHaveBeenCalled()
 
-            // expect(mockRepository.getByUserId).toEqual(existentOrderItem)
-            // expect(mockOrderRepository.getByUserId).toEqual("PENDENTE")
-
-            expect(mockOrderRepository.getByUserId).toHaveBeenCalled()
+            expect(mockOrderRepository.getPendentOrderStatus).toHaveBeenCalled()
             expect(mockOrderRepository.update).toHaveBeenCalled()
             expect(mockProductRepository.getById).toHaveBeenCalled()
           })
@@ -254,6 +250,79 @@ describe("@services/OrderItemService", () => {
 
           expect(mockRepository.update).toHaveBeenCalled()
           expect(mockRepository.getById).toHaveBeenCalled()
+        })
+      })
+
+      describe("order status approved, sent or cancelled", () => {
+        test("should create and return order item (create new order)", async () => {
+          const order = {
+            id: 1,
+            userId: 1,
+            status: "APROVADO",
+            addressId: 1,
+            shippingAddress: {
+              address: {
+                street: "Rua de ruas",
+                number: 82,
+              },
+            },
+            total: "135999.99",
+            createdBy: 1,
+            updatedBy: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            deletedBy: null,
+          }
+
+          const product = {
+            id: 2,
+            categoryId: 1,
+            brandId: 1,
+            name: "cadeira customizada heineken",
+            price: "209.99",
+            description: "cadeira customizada com o log da heineken",
+            additionalInfo: {
+              dimentions: {
+                width: 50,
+                height: 100,
+                thickness: 5,
+              },
+              warranty: 12,
+              material: "madeira",
+              madeAt: "2026-02-04T16:40:23.130Z",
+            },
+            avaliable: true,
+            imageUrl: "medias/chair.png",
+            createdBy: 1,
+            updatedBy: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            deletedBy: null,
+          }
+
+          const input: CreateOrderItemData = {
+            // orderId: 2,
+            productId: 1,
+            quantity: 10,
+            unitPrice: "209.99",
+            createdBy: 1,
+            updatedBy: 1,
+          }
+
+          const expectedOrderItem = {
+            id: 1,
+            orderId: 1,
+            ...input,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+            deletedBy: null,
+          }
+
+          mockProductRepository.getById.mockResolvedValue(product)
+          mockRepository.create.mockResolvedValue(expectedOrderItem)
         })
       })
     })

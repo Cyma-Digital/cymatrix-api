@@ -30,25 +30,24 @@ export class OrderItemService {
     const totalPrice = Number(orderItem.unitPrice) * orderItem.quantity
 
     if (orderItemExistent) {
-      const order = await this.orderRepo.getByUserId(userId)
+      const pendentOrder = await this.orderRepo.getPendentOrderStatus(userId)
 
-      if (order?.status === "PENDENTE") {
-        const totalPriceOrder = Number(order?.total) + totalPrice
+      if (pendentOrder) {
+        const totalPriceOrder = Number(pendentOrder?.total) + totalPrice
 
         const totalOrder: OrderUpdatedData = {
           total: totalPriceOrder.toString(),
         }
-        await this.orderRepo.update(order!.id, totalOrder)
+        await this.orderRepo.update(pendentOrder!.id, totalOrder)
 
         const orderItemData: OrderItemUpdatedData = {
-          orderId: order!.id,
+          orderId: pendentOrder!.id,
         }
         await this.repository.update(orderItem.id, orderItemData)
       } else {
         const orderData: CreateOrderData = {
           userId: userId,
           status: "PENDENTE",
-          // addressId: null,
           shippingAddress: "",
           total: totalPrice.toString(),
           createdBy: userId,
@@ -67,7 +66,6 @@ export class OrderItemService {
       const orderData: CreateOrderData = {
         userId: userId,
         status: "PENDENTE",
-        // addressId: null,
         shippingAddress: "",
         total: totalPrice.toString(),
         createdBy: userId,
