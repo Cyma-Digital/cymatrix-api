@@ -13,72 +13,107 @@ afterAll(async () => {
 describe("PATCH /api/orders/:id", () => {
   describe("Anonymous user", () => {
     test("Should update an order and return 200", async () => {
-      // await request(app).post("/api/addresses").send({
-      //   userId: 1,
-      //   label: "comércio",
-      //   street: "Rua João Silva Souza Soares Santos",
-      //   number: 1,
-      //   complement: "terceiro andar",
-      //   neighborhood: "Jardim de jardins",
-      //   city: "Jacareí",
-      //   state: "SP",
-      //   zipCode: "123.456-78",
-      //   isDefault: true,
-      // })
+      await request(app).post("/api/categories").send({
+        name: "Mesa",
+        slug: "mesa",
+        iconUrl: "medias/table-icon.png",
+        createdBy: 1,
+      })
 
-      // const orderCreatedResponse = await request(app)
-      //     .post("/api/order-items")
-      //     .send({
-      //       productId: 1,
-      //       quantity: 2,
-      //       unitPrice: "200.99",
-      //     })
-      //     .expect(201)
+      await request(app).post("/api/brands").send({
+        name: "Heineken",
+        slug: "heineken",
+        logoUrl: "medias/hnk.png",
+      })
 
-      const orderCreatedResponse = await request(app)
-        .post("/api/orders")
+      await request(app)
+        .post("/api/products")
         .send({
-          userId: 1,
-          status: "PENDENTE",
-          addressId: 1,
-          shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
+          categoryId: 1,
+          brandId: 1,
+          name: "cadeira customizada heineken",
+          price: "209.99",
+          description: "cadeira customizada com o log da heineken",
+          additionalInfo: {
+            dimentions: {
+              width: 50,
+              height: 100,
+              thickness: 5,
             },
+            warranty: 12,
+            material: "madeira",
+            madeAt: "2026-02-04T16:40:23.130Z",
           },
+          avaliable: true,
+          imageUrl: "medias/chair.png",
+          createdBy: 1,
         })
 
-      const { id } = orderCreatedResponse.body.data
+      const orderCreatedResponse = await request(app)
+        .post("/api/order-items")
+        .send({
+          productId: 1,
+          quantity: 2,
+          unitPrice: "200.50",
+        })
+
+      const { orderId } = orderCreatedResponse.body.data
 
       const payload = {
         status: "APROVADO",
       }
 
       const response = await request(app)
-        .patch(`/api/orders/${id}`)
+        .patch(`/api/orders/${orderId}`)
         .send(payload)
 
       expect(response.status).toBe(200)
       expect(response.body.data.status).toBe("APROVADO")
-      expect(response.body.data.total).toBe("0")
+      expect(response.body.data.total).toBe("401")
     })
 
     test("Should return 404 (not found)", async () => {
+      await request(app).post("/api/categories").send({
+        name: "Mesa",
+        slug: "mesa",
+        iconUrl: "medias/table-icon.png",
+        createdBy: 1,
+      })
+
+      await request(app).post("/api/brands").send({
+        name: "Heineken",
+        slug: "heineken",
+        logoUrl: "medias/hnk.png",
+      })
+
       await request(app)
-        .patch(`/api/orders`)
+        .post("/api/products")
         .send({
-          userId: 1,
-          status: "PENDENTE",
-          addressId: 1,
-          shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
+          categoryId: 1,
+          brandId: 1,
+          name: "cadeira customizada heineken",
+          price: "209.99",
+          description: "cadeira customizada com o log da heineken",
+          additionalInfo: {
+            dimentions: {
+              width: 50,
+              height: 100,
+              thickness: 5,
             },
+            warranty: 12,
+            material: "madeira",
+            madeAt: "2026-02-04T16:40:23.130Z",
           },
-          total: "135999.99",
+          avaliable: true,
+          imageUrl: "medias/chair.png",
+          createdBy: 1,
         })
+
+      await request(app).post("/api/order-items").send({
+        productId: 1,
+        quantity: 2,
+        unitPrice: "200.50",
+      })
 
       const nonExistentOrder = 2
 
@@ -99,35 +134,55 @@ describe("PATCH /api/orders/:id", () => {
 
     describe("order cancelled case", () => {
       test("Should return 403 (Not allowed change order after cancelled)", async () => {
-        await request(app).post("/api/addresses").send({
-          userId: 1,
-          label: "comércio",
-          street: "Rua João Silva Souza Soares Santos",
-          number: 1,
-          complement: "terceiro andar",
-          neighborhood: "Jardim de jardins",
-          city: "Jacareí",
-          state: "SP",
-          zipCode: "123.456-78",
-          isDefault: true,
+        await request(app).post("/api/categories").send({
+          name: "Mesa",
+          slug: "mesa",
+          iconUrl: "medias/table-icon.png",
+          createdBy: 1,
         })
 
-        const orderCreatedResponse = await request(app)
-          .post("/api/orders")
+        await request(app).post("/api/brands").send({
+          name: "Heineken",
+          slug: "heineken",
+          logoUrl: "medias/hnk.png",
+        })
+
+        await request(app)
+          .post("/api/products")
           .send({
-            userId: 1,
-            status: "CANCELADO",
-            addressId: 1,
-            shippingAddress: {
-              address: {
-                street: "Rua de ruas",
-                number: 82,
+            categoryId: 1,
+            brandId: 1,
+            name: "cadeira customizada heineken",
+            price: "209.99",
+            description: "cadeira customizada com o log da heineken",
+            additionalInfo: {
+              dimentions: {
+                width: 50,
+                height: 100,
+                thickness: 5,
               },
+              warranty: 12,
+              material: "madeira",
+              madeAt: "2026-02-04T16:40:23.130Z",
             },
-            total: "135999.99",
+            avaliable: true,
+            imageUrl: "medias/chair.png",
+            createdBy: 1,
           })
 
-        const { id } = orderCreatedResponse.body.data
+        const orderCreatedResponse = await request(app)
+          .post("/api/order-items")
+          .send({
+            productId: 1,
+            quantity: 2,
+            unitPrice: "200.50",
+          })
+
+        const { orderId } = orderCreatedResponse.body.data
+
+        await request(app).patch(`/api/orders/${orderId}`).send({
+          status: "CANCELADO",
+        })
 
         const payload = {
           status: "ENVIADO",
@@ -135,7 +190,7 @@ describe("PATCH /api/orders/:id", () => {
         }
 
         const response = await request(app)
-          .patch(`/api/orders/${id}`)
+          .patch(`/api/orders/${orderId}`)
           .send(payload)
 
         expect(response.status).toBe(403)
@@ -150,46 +205,67 @@ describe("PATCH /api/orders/:id", () => {
 
     describe("order status approved or sent case", () => {
       test("Should return 200 (update order status)", async () => {
-        await request(app).post("/api/addresses").send({
-          userId: 1,
-          label: "comércio",
-          street: "Rua João Silva Souza Soares Santos",
-          number: 1,
-          complement: "terceiro andar",
-          neighborhood: "Jardim de jardins",
-          city: "Jacareí",
-          state: "SP",
-          zipCode: "123.456-78",
-          isDefault: true,
+        await request(app).post("/api/categories").send({
+          name: "Mesa",
+          slug: "mesa",
+          iconUrl: "medias/table-icon.png",
+          createdBy: 1,
         })
 
-        const orderCreatedResponse = await request(app)
-          .post("/api/orders")
+        await request(app).post("/api/brands").send({
+          name: "Heineken",
+          slug: "heineken",
+          logoUrl: "medias/hnk.png",
+        })
+
+        await request(app)
+          .post("/api/products")
           .send({
-            userId: 1,
-            status: "APROVADO",
-            addressId: 1,
-            shippingAddress: {
-              address: {
-                street: "Rua de ruas",
-                number: 82,
+            categoryId: 1,
+            brandId: 1,
+            name: "cadeira customizada heineken",
+            price: "209.99",
+            description: "cadeira customizada com o log da heineken",
+            additionalInfo: {
+              dimentions: {
+                width: 50,
+                height: 100,
+                thickness: 5,
               },
+              warranty: 12,
+              material: "madeira",
+              madeAt: "2026-02-04T16:40:23.130Z",
             },
+            avaliable: true,
+            imageUrl: "medias/chair.png",
+            createdBy: 1,
           })
 
-        const { id } = orderCreatedResponse.body.data
+        const orderCreatedResponse = await request(app)
+          .post("/api/order-items")
+          .send({
+            productId: 1,
+            quantity: 2,
+            unitPrice: "200.50",
+          })
+
+        const { orderId } = orderCreatedResponse.body.data
+
+        await request(app).patch(`/api/orders/${orderId}`).send({
+          status: "ENVIADO",
+        })
 
         const payload = {
           status: "CANCELADO",
         }
 
         const response = await request(app)
-          .patch(`/api/orders/${id}`)
+          .patch(`/api/orders/${orderId}`)
           .send(payload)
 
         expect(response.status).toBe(200)
         expect(response.body.data.status).toBe("CANCELADO")
-        expect(response.body.data.total).toBe("0")
+        expect(response.body.data.total).toBe("401")
       })
     })
   })
