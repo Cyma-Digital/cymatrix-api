@@ -8,6 +8,7 @@ import type {
 const mockRepository = {
   create: vi.fn(),
   listAll: vi.fn(),
+  getPendentOrderStatus: vi.fn(),
   getById: vi.fn(),
   getOrderWithOrderItems: vi.fn(),
   getByUserId: vi.fn(),
@@ -16,38 +17,17 @@ const mockRepository = {
   softDelete: vi.fn(),
 }
 
-const mockAddressRepository = {
-  create: vi.fn(),
-  listAll: vi.fn(),
-  getById: vi.fn(),
-  update: vi.fn(),
-  softDelete: vi.fn(),
-}
-
 describe("@services/OrderService", () => {
   let orderService: OrderService
 
   beforeEach(() => {
     vi.clearAllMocks()
-    orderService = new OrderService(mockRepository, mockAddressRepository)
+    orderService = new OrderService(mockRepository)
   })
 
   describe("create()", () => {
     describe("Success cases", () => {
       test("should create and return order", async () => {
-        const address = {
-          userId: 1,
-          label: "comércio",
-          street: "Rua João Silva Souza Soares Santos",
-          number: 1,
-          complement: "terceiro andar",
-          neighborhood: "Jardim de jardins",
-          city: "Jacareí",
-          state: "SP",
-          zipCode: "123.456-78",
-          isDefault: true,
-        }
-
         const input: CreateOrderData = {
           userId: 1,
           status: "PENDENTE",
@@ -58,7 +38,7 @@ describe("@services/OrderService", () => {
               number: 82,
             },
           },
-          total: "0",
+          total: "200",
           createdBy: 1,
           updatedBy: 1,
         }
@@ -73,8 +53,6 @@ describe("@services/OrderService", () => {
         }
 
         mockRepository.create.mockResolvedValue(expectedOrder)
-
-        mockAddressRepository.getById.mockResolvedValue(address)
 
         const result = await orderService.create(input)
 
@@ -93,8 +71,6 @@ describe("@services/OrderService", () => {
 
         expect(mockRepository.update).not.toHaveBeenCalled()
         expect(mockRepository.softDelete).not.toHaveBeenCalled()
-
-        expect(mockAddressRepository.getById).toHaveBeenCalled()
       })
     })
   })
@@ -352,7 +328,6 @@ describe("@services/OrderService", () => {
 
         const updateData: OrderUpdatedData = {
           status: "CANCELADO",
-          // total: "1",
         }
 
         const updatedOrder = {
@@ -452,11 +427,6 @@ describe("@services/OrderService", () => {
         const updateData: OrderUpdatedData = {
           status: "PENDENTE",
           total: "10",
-        }
-
-        const updatedOrder = {
-          ...existingOrder,
-          ...updateData,
         }
 
         mockRepository.getById.mockResolvedValue(existingOrder)
