@@ -13,34 +13,6 @@ afterAll(async () => {
 describe("PATCH /api/order-items/:id", () => {
   describe("Anonymous user", () => {
     test("Should update an order item and return 200", async () => {
-      await request(app).post("/api/addresses").send({
-        userId: 1,
-        label: "comércio",
-        street: "Rua João Silva Souza Soares Santos",
-        number: 1,
-        complement: "terceiro andar",
-        neighborhood: "Jardim de jardins",
-        city: "Jacareí",
-        state: "SP",
-        zipCode: "123.456-78",
-        isDefault: true,
-      })
-
-      await request(app)
-        .post("/api/orders")
-        .send({
-          userId: 1,
-          status: "PENDENTE",
-          addressId: 1,
-          shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
-          },
-          total: "135999.99",
-        })
-
       await request(app).post("/api/categories").send({
         name: "Mesa",
         slug: "mesa",
@@ -80,7 +52,6 @@ describe("PATCH /api/order-items/:id", () => {
       const orderItemCreatedResponse = await request(app)
         .post("/api/order-items")
         .send({
-          orderId: 1,
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
@@ -103,34 +74,6 @@ describe("PATCH /api/order-items/:id", () => {
     })
 
     test("Should return 404 (order not found)", async () => {
-      await request(app).post("/api/addresses").send({
-        userId: 1,
-        label: "comércio",
-        street: "Rua João Silva Souza Soares Santos",
-        number: 1,
-        complement: "terceiro andar",
-        neighborhood: "Jardim de jardins",
-        city: "Jacareí",
-        state: "SP",
-        zipCode: "123.456-78",
-        isDefault: true,
-      })
-
-      await request(app)
-        .post("/api/orders")
-        .send({
-          userId: 1,
-          status: "PENDENTE",
-          addressId: 1,
-          shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
-          },
-          total: "135999.99",
-        })
-
       await request(app).post("/api/categories").send({
         name: "Mesa",
         slug: "mesa",
@@ -170,7 +113,6 @@ describe("PATCH /api/order-items/:id", () => {
       const orderItemCreatedResponse = await request(app)
         .post("/api/order-items")
         .send({
-          orderId: 1,
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
@@ -195,34 +137,6 @@ describe("PATCH /api/order-items/:id", () => {
     })
 
     test("Should return 404 (product not found)", async () => {
-      await request(app).post("/api/addresses").send({
-        userId: 1,
-        label: "comércio",
-        street: "Rua João Silva Souza Soares Santos",
-        number: 1,
-        complement: "terceiro andar",
-        neighborhood: "Jardim de jardins",
-        city: "Jacareí",
-        state: "SP",
-        zipCode: "123.456-78",
-        isDefault: true,
-      })
-
-      await request(app)
-        .post("/api/orders")
-        .send({
-          userId: 1,
-          status: "PENDENTE",
-          addressId: 1,
-          shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
-          },
-          total: "135999.99",
-        })
-
       await request(app).post("/api/categories").send({
         name: "Mesa",
         slug: "mesa",
@@ -262,7 +176,6 @@ describe("PATCH /api/order-items/:id", () => {
       const orderItemCreatedResponse = await request(app)
         .post("/api/order-items")
         .send({
-          orderId: 1,
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
