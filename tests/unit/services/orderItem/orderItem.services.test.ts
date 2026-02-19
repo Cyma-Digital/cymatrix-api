@@ -190,7 +190,6 @@ describe("@services/OrderItemService", () => {
           }
 
           const input: CreateOrderItemData = {
-            // orderId: 2,
             productId: 1,
             quantity: 10,
             unitPrice: "209.99",
@@ -223,10 +222,10 @@ describe("@services/OrderItemService", () => {
             updatedBy: 1,
           }
 
-          mockRepository.getByUserId.mockResolvedValue(null)
-          mockOrderRepository.getById.mockResolvedValue(null)
           mockProductRepository.getById.mockResolvedValue(product)
+          mockRepository.getByUserId.mockResolvedValue(null)
           mockRepository.create.mockResolvedValue(expectedOrderItem)
+          // mockOrderRepository.getById.mockResolvedValue(null)
           mockOrderRepository.create.mockResolvedValue(order)
           mockRepository.getById.mockResolvedValue(expectedOrderItem)
 
@@ -258,7 +257,7 @@ describe("@services/OrderItemService", () => {
           const order = {
             id: 1,
             userId: 1,
-            status: "APROVADO",
+            status: "PENDENTE",
             addressId: 1,
             shippingAddress: {
               address: {
@@ -303,7 +302,6 @@ describe("@services/OrderItemService", () => {
           }
 
           const input: CreateOrderItemData = {
-            // orderId: 2,
             productId: 1,
             quantity: 10,
             unitPrice: "209.99",
@@ -311,8 +309,17 @@ describe("@services/OrderItemService", () => {
             updatedBy: 1,
           }
 
+          const existentOrderItem = {
+            orderId: 1,
+            productId: 2,
+            quantity: 10,
+            unitPrice: "209.99",
+            createdBy: 1,
+            updatedBy: 1,
+          }
+
           const expectedOrderItem = {
-            id: 1,
+            id: 2,
             orderId: 1,
             ...input,
             createdAt: new Date(),
@@ -322,33 +329,39 @@ describe("@services/OrderItemService", () => {
           }
 
           mockProductRepository.getById.mockResolvedValue(product)
+          mockRepository.getByUserId.mockResolvedValue(existentOrderItem)
           mockRepository.create.mockResolvedValue(expectedOrderItem)
+          mockOrderRepository.getPendentOrderStatus.mockResolvedValue(null)
+          mockOrderRepository.create.mockResolvedValue(order)
+          mockRepository.getById.mockResolvedValue(expectedOrderItem)
+
+          const result = await orderItemService.create(input, 1)
+
+          expect(result).toBeDefined()
+          expect(result!.id).toBeDefined()
+          expect(result).toMatchObject(input)
+          expect(result!.id).toBeTypeOf("number")
+          expect(result!.orderId).toBeTypeOf("number")
+          expect(result!.productId).toBeTypeOf("number")
+          expect(result!.quantity).toBeTypeOf("number")
+          expect(result!.unitPrice).toBeTypeOf("string")
+          expect(result!.createdAt).toBeInstanceOf(Date)
+
+          expect(mockOrderRepository.create).toHaveBeenCalled()
+          expect(mockOrderRepository.create).toHaveBeenCalledTimes(1)
+          expect(mockOrderRepository.getPendentOrderStatus).toHaveBeenCalled()
+
+          expect(mockRepository.create).toHaveBeenCalled()
+          expect(mockRepository.getByUserId).toHaveBeenCalled()
+
+          expect(mockRepository.update).toHaveBeenCalled()
+          expect(mockRepository.getById).toHaveBeenCalled()
         })
       })
     })
 
     describe("Error cases", () => {
       test("should throw 404 when product not found", async () => {
-        // const order = {
-        //   id: 1,
-        //   userId: 1,
-        //   status: "PENDENTE",
-        //   addressId: 1,
-        //   shippingAddress: {
-        //     address: {
-        //       street: "Rua de ruas",
-        //       number: 82,
-        //     },
-        //   },
-        //   total: "135999.99",
-        //   createdBy: 1,
-        //   updatedBy: 1,
-        //   createdAt: new Date(),
-        //   updatedAt: new Date(),
-        //   deletedAt: null,
-        //   deletedBy: null,
-        // }
-
         const input: CreateOrderItemData = {
           orderId: 1,
           productId: 1,
@@ -358,7 +371,6 @@ describe("@services/OrderItemService", () => {
           updatedBy: 1,
         }
 
-        // mockOrderRepository.getById.mockResolvedValue(order)
         mockProductRepository.getById.mockResolvedValue(null)
 
         await expect(orderItemService.create(input, 1)).rejects.toThrow(
