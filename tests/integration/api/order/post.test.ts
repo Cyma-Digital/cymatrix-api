@@ -225,5 +225,95 @@ describe("POST /api/order-items", () => {
       expect(orderCreated.body.data.status).toBe("PENDENTE")
       expect(orderCreated.body.data.total).toBe("1209.9")
     })
+
+    test("Should create an order item and add in order existent and return 201", async () => {
+      await request(app).post("/api/categories").send({
+        name: "Mesa",
+        slug: "mesa",
+        iconUrl: "medias/table-icon.png",
+        createdBy: 1,
+      })
+
+      await request(app).post("/api/brands").send({
+        name: "Heineken",
+        slug: "heineken",
+        logoUrl: "medias/hnk.png",
+      })
+
+      await request(app)
+        .post("/api/products")
+        .send({
+          categoryId: 1,
+          brandId: 1,
+          name: "geladeira customizada heineken",
+          price: "1209.99",
+          description: "geladeira customizada com o log da heineken",
+          additionalInfo: {
+            dimentions: {
+              width: 50,
+              height: 100,
+              thickness: 5,
+            },
+            warranty: 12,
+            material: "madeira",
+            madeAt: "2026-02-04T16:40:23.130Z",
+          },
+          avaliable: true,
+          imageUrl: "medias/chair.png",
+          createdBy: 1,
+        })
+
+      await request(app)
+        .post("/api/products")
+        .send({
+          categoryId: 1,
+          brandId: 1,
+          name: "poltrona customizada heineken",
+          price: "120.99",
+          description: "poltrona customizada com o log da heineken",
+          additionalInfo: {
+            dimentions: {
+              width: 50,
+              height: 100,
+              thickness: 5,
+            },
+            warranty: 12,
+            material: "madeira",
+            madeAt: "2026-02-04T16:40:23.130Z",
+          },
+          avaliable: true,
+          imageUrl: "medias/chair.png",
+          createdBy: 1,
+        })
+
+      await request(app).post("/api/order-items").send({
+        productId: 1,
+        quantity: 10,
+        unitPrice: "1209.99",
+      })
+
+      const payload = {
+        productId: 2,
+        quantity: 10,
+        unitPrice: "120.99",
+      }
+
+      const response = await request(app)
+        .post("/api/order-items")
+        .send(payload)
+        .expect(201)
+
+      const { orderId } = response.body.data
+
+      const orderCreated = await request(app).get(`/api/orders/${orderId}`)
+
+      expect(response.body).toMatchObject({
+        status: "success",
+        data: payload,
+      })
+
+      expect(orderCreated.body.data.status).toBe("PENDENTE")
+      expect(orderCreated.body.data.total).toBe("13309.8")
+    })
   })
 })
