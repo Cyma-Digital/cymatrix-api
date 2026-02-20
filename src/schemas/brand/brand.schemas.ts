@@ -1,0 +1,40 @@
+import { z } from "zod"
+import { auditCreatedFields, auditUpdatedFields } from "../base.schemas"
+
+export const brandIdSchema = z.object({
+  id: z
+    .string()
+    .regex(/^\d+$/, "ID invalid")
+    .transform((value) => parseInt(value))
+    .pipe(z.number().positive()),
+})
+
+export const createBrandSchema = z.strictObject({
+  name: z.string().min(1, "name is required"),
+  slug: z.string().min(1, "slug is required"),
+  logoUrl: z.url(),
+})
+
+export const createBrandServiceSchema = createBrandSchema.extend(
+  auditCreatedFields.shape,
+)
+
+export const updateBrandSchema = z.strictObject({
+  name: z.string().min(1, "name is required").optional(),
+  slug: z.string().min(1, "slug is required").optional(),
+  logoUrl: z.url().optional(),
+})
+
+export const updateBrandServiceSchema = updateBrandSchema.extend(
+  auditUpdatedFields.shape,
+)
+
+export type BrandId = z.infer<typeof brandIdSchema>
+
+export type CreateBrandDto = z.infer<typeof createBrandSchema>
+export type CreateBrandServiceSchemaInput = z.infer<
+  typeof createBrandServiceSchema
+>
+
+export type UpdateBrandDto = z.infer<typeof updateBrandSchema>
+export type updateBrandServiceInput = z.infer<typeof updateBrandServiceSchema>
