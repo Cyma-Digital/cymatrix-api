@@ -37,4 +37,4 @@ export type CreateBrandServiceSchemaInput = z.infer<
 >
 
 export type UpdateBrandDto = z.infer<typeof updateBrandSchema>
-export type updateBrandServiceInput = z.infer<typeof updateBrandServiceSchema>
+export type UpdateBrandServiceInput = z.infer<typeof updateBrandServiceSchema>

@@ -1,13 +1,16 @@
 import { HttpError } from "@/errors/httpError"
 import brandRepository, {
   BrandUpdatedData,
-  CreateBrandData,
 } from "@/repositories/brand/brand.repository"
+import {
+  CreateBrandServiceSchemaInput,
+  UpdateBrandServiceInput,
+} from "@/schemas/brand/brand.schemas"
 
 export class BrandService {
   constructor(private repository = brandRepository) {}
 
-  async create(data: CreateBrandData) {
+  async create(data: CreateBrandServiceSchemaInput) {
     return await this.repository.create(data)
   }
 
@@ -24,13 +27,16 @@ export class BrandService {
     return brand
   }
 
-  async updatePartial(brandId: number, data: BrandUpdatedData) {
+  async updatePartial(brandId: number, data: UpdateBrandServiceInput) {
     const brand = await this.repository.getById(brandId)
 
     if (!brand) {
       throw new HttpError(404, "Not found")
     }
-    const updatedBrand = await this.repository.update(brandId, data)
+    const updatedBrand = await this.repository.update(
+      brandId,
+      data as BrandUpdatedData,
+    )
 
     if (!updatedBrand) {
       throw new Error("Erro on update")
