@@ -3,6 +3,11 @@ import orderRepository, {
   OrderUpdatedData,
   CreateOrderData,
 } from "@/repositories/order/order.repository"
+import {
+  CreateOrderServiceSchemaInput,
+  UpdateOrderServiceInput,
+} from "@/schemas/order/order.schemas"
+import { UpdateOrderItemServiceInput } from "@/schemas/orderItem/orderItem.schemas"
 
 export class OrderService {
   constructor(
@@ -10,7 +15,7 @@ export class OrderService {
     // private addressRepo = addressRepository,
   ) {}
 
-  async create(data: CreateOrderData) {
+  async create(data: CreateOrderServiceSchemaInput) {
     // const address = await this.addressRepo.getById(data.addressId!)
 
     // if (!address) {
@@ -42,7 +47,7 @@ export class OrderService {
     return order
   }
 
-  async updatePartial(orderId: number, data: OrderUpdatedData) {
+  async updatePartial(orderId: number, data: UpdateOrderServiceInput) {
     const order = await this.repository.getById(orderId)
 
     if (!order) {
