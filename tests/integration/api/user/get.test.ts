@@ -23,8 +23,6 @@ describe("GET /api/users", () => {
           documentType: "CPF",
           password: "Test@123",
           role: "ADMIN",
-          createdBy: 1,
-          updatedBy: 1,
         })
 
         await request(app).post("/api/users").send({
@@ -36,8 +34,6 @@ describe("GET /api/users", () => {
           documentType: "CPF",
           password: "Test@123",
           role: "STAFF",
-          createdBy: 1,
-          updatedBy: 1,
         })
 
         await request(app).post("/api/users").send({
@@ -48,8 +44,6 @@ describe("GET /api/users", () => {
           documentType: "CPF",
           password: "Test@123",
           role: "CLIENT",
-          createdBy: 1,
-          updatedBy: 1,
         })
 
         const response = await request(app).get("/api/users")
@@ -82,8 +76,6 @@ describe("GET/ api/users/:id", () => {
           documentType: "CPF",
           password: "Test@123",
           role: "ADMIN",
-          createdBy: 1,
-          updatedBy: 1,
         })
 
         const user = userCreatedResponse.body.data

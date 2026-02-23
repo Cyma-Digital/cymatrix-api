@@ -12,6 +12,11 @@ const router = Router()
 router.post("/", validateBody(createUserSchama), userController.create)
 router.get("/", userController.list)
 router.get("/:id", validateParams(userIdSchema), userController.getById)
-router.put("/:id", validateBody(updateUserSchema), userController.update)
+router.put(
+  "/:id",
+  validateParams(userIdSchema),
+  validateBody(updateUserSchema),
+  userController.update,
+)
 
 export default router

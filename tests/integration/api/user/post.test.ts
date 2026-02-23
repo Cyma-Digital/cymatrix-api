@@ -23,8 +23,6 @@ describe("POST /api/users", () => {
           documentType: "CPF",
           password: "Test@123",
           role: "ADMIN",
-          createdBy: 1,
-          updatedBy: 1,
         }
 
         const response = await request(app).post("/api/users").send(payload)
@@ -54,8 +52,6 @@ describe("POST /api/users", () => {
           documentType: "CPF",
           password: "Test@123",
           role: "STAFF",
-          createdBy: 1,
-          updatedBy: 1,
         }
 
         const response = await request(app).post("/api/users").send(payload)
@@ -84,8 +80,6 @@ describe("POST /api/users", () => {
           documentType: "CPF",
           password: "Test@123",
           role: "CLIENT",
-          createdBy: 1,
-          updatedBy: 1,
         }
 
         const response = await request(app).post("/api/users").send(payload)
