@@ -6,7 +6,6 @@ import orderRepository, {
 import productRepository from "@/repositories/product/product.repository"
 import orderItemRepository, {
   OrderItemUpdatedData,
-  CreateOrderItemData,
 } from "@/repositories/orderItem/orderItem.repository"
 import {
   CreateOrderItemServiceSchemaInput,

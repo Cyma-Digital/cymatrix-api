@@ -18,7 +18,12 @@ export const createAddressSchema = z.strictObject({
   label: z.string().min(1, "Label is required"),
   street: z.string().min(1, "Street is required"),
   number: z.number().positive(),
-  complement: z.string().min(1, "Complement is required").optional().nullable(),
+  complement: z
+    .string()
+    .min(1, "Complement is required")
+    .optional()
+    .nullable()
+    .transform((value) => value ?? null),
   neighborhood: z.string().min(1, "Neighborhood is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
@@ -34,7 +39,12 @@ export const updateAddressSchema = z.strictObject({
   label: z.string().min(1, "Label is required"),
   street: z.string().min(1, "Street is required"),
   number: z.number().positive(),
-  complement: z.string().min(1, "Complement is required").optional().nullable(),
+  complement: z
+    .string()
+    .min(1, "Complement is required")
+    .optional()
+    .nullable()
+    .transform((value) => value ?? null),
   neighborhood: z.string().min(1, "Neighborhood is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
@@ -50,7 +60,11 @@ export const updateAddressPartialSchema = z.strictObject({
   label: z.string().min(1, "Label is required").optional(),
   street: z.string().min(1, "Street is required").optional(),
   number: z.number().positive().optional(),
-  complement: z.string().min(1, "Complement is required").optional(),
+  complement: z
+    .string()
+    .min(1, "Complement is required")
+    .optional()
+    .transform((value) => value ?? null),
   neighborhood: z.string().min(1, "Neighborhood is required").optional(),
   city: z.string().min(1, "City is required").optional(),
   state: z.string().min(1, "State is required").optional(),

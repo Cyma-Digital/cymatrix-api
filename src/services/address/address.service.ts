@@ -12,7 +12,7 @@ export class AddressService {
   constructor(private repository = addressRepository) {}
 
   async create(data: CreateAddressServiceSchemaInput) {
-    return await this.repository.create(data as CreateAddressData)
+    return await this.repository.create(data)
   }
 
   async listAll() {
@@ -34,10 +34,7 @@ export class AddressService {
     if (!address) {
       throw new HttpError(404, "Not found")
     }
-    const updatedAddress = await this.repository.update(
-      addressId,
-      data as AddressUpdatedData,
-    )
+    const updatedAddress = await this.repository.update(addressId, data)
 
     if (!updatedAddress) {
       throw new Error("Error on update")
