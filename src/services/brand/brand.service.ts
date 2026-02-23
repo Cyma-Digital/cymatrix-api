@@ -33,10 +33,7 @@ export class BrandService {
     if (!brand) {
       throw new HttpError(404, "Not found")
     }
-    const updatedBrand = await this.repository.update(
-      brandId,
-      data as BrandUpdatedData,
-    )
+    const updatedBrand = await this.repository.update(brandId, data)
 
     if (!updatedBrand) {
       throw new Error("Erro on update")

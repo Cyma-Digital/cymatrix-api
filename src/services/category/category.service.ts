@@ -1,13 +1,14 @@
 import { HttpError } from "@/errors/httpError"
-import categoryRepository, {
-  CategoryUpdatedData,
-  CreateCategoryData,
-} from "@/repositories/category/category.repository"
+import categoryRepository from "@/repositories/category/category.repository"
+import {
+  CreateCategoryServiceSchemaInput,
+  UpdateCategoryServiceInput,
+} from "@/schemas/category/category.schemas"
 
 export class CategoryService {
   constructor(private repository = categoryRepository) {}
 
-  async create(data: CreateCategoryData) {
+  async create(data: CreateCategoryServiceSchemaInput) {
     return await this.repository.create(data)
   }
 
@@ -25,7 +26,7 @@ export class CategoryService {
     return category
   }
 
-  async updatePartial(categoryId: number, data: CategoryUpdatedData) {
+  async updatePartial(categoryId: number, data: UpdateCategoryServiceInput) {
     const category = await this.getById(categoryId)
 
     if (!category) {

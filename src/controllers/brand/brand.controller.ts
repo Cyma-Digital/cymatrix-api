@@ -1,5 +1,4 @@
 import brandService from "@/services/brand/brand.service"
-import { validateEmptyBody, validateIdParam } from "@utils/http"
 import { Request, Response, NextFunction } from "express"
 import {
   CreateBrandDto,
@@ -90,7 +89,8 @@ export async function deleteBrand(
   next: NextFunction,
 ) {
   try {
-    const id = validateIdParam(req)
+    // const id = validateIdParam(req)
+    const { id } = brandIdSchema.parse(req.params)
     const userId = 1
 
     await brandService.delete(id, userId)

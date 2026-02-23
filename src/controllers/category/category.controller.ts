@@ -1,5 +1,9 @@
+import {
+  categoryIdSchema,
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from "@/schemas/category/category.schemas"
 import categoryService from "@/services/category/category.service"
-import { validateEmptyBody, validateIdParam } from "@utils/http"
 import { Request, Response, NextFunction } from "express"
 
 export async function create(
@@ -8,13 +12,15 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const { name, slug, iconUrl } = req.body
+    // const { name, slug, iconUrl } = req.body
+    const data = req.body as CreateCategoryDto
     const userId = 1
 
     const category = await categoryService.create({
-      name,
-      slug,
-      iconUrl,
+      // name,
+      // slug,
+      // iconUrl,
+      ...data,
       createdBy: userId,
       updatedBy: userId,
     })
@@ -42,7 +48,8 @@ export async function list(req: Request, res: Response, next: NextFunction) {
 
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
-    const id = validateIdParam(req)
+    // const id = validateIdParam(req)
+    const { id } = categoryIdSchema.parse(req.params)
 
     const category = await categoryService.getById(id)
 
@@ -58,10 +65,16 @@ export async function updatePartial(
   next: NextFunction,
 ) {
   try {
-    const id = validateIdParam(req)
-    const data = validateEmptyBody(req)
+    // const id = validateIdParam(req)
+    const { id } = categoryIdSchema.parse(req.params)
+    // const data = validateEmptyBody(req)
+    const data = req.body as UpdateCategoryDto
+    const userId = 1
 
-    const category = await categoryService.updatePartial(id, data)
+    const category = await categoryService.updatePartial(id, {
+      ...data,
+      updatedBy: userId,
+    })
 
     return res.status(200).send({ status: "success", data: category })
   } catch (error) {
@@ -75,7 +88,8 @@ export async function deleteCategory(
   next: NextFunction,
 ) {
   try {
-    const id = validateIdParam(req)
+    // const id = validateIdParam(req)
+    const { id } = categoryIdSchema.parse(req.params)
     const userId = 1
 
     await categoryService.delete(id, userId)
