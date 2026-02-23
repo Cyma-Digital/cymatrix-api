@@ -12,14 +12,10 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    // const { name, slug, iconUrl } = req.body
     const data = req.body as CreateCategoryDto
     const userId = 1
 
     const category = await categoryService.create({
-      // name,
-      // slug,
-      // iconUrl,
       ...data,
       createdBy: userId,
       updatedBy: userId,
@@ -65,9 +61,7 @@ export async function updatePartial(
   next: NextFunction,
 ) {
   try {
-    // const id = validateIdParam(req)
     const { id } = categoryIdSchema.parse(req.params)
-    // const data = validateEmptyBody(req)
     const data = req.body as UpdateCategoryDto
     const userId = 1
 
@@ -88,7 +82,6 @@ export async function deleteCategory(
   next: NextFunction,
 ) {
   try {
-    // const id = validateIdParam(req)
     const { id } = categoryIdSchema.parse(req.params)
     const userId = 1
 

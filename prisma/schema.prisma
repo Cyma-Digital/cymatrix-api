@@ -168,7 +168,7 @@ model Address {
   label        String  @db.VarChar(50)
   street       String  @db.VarChar(150)
   number       Int
-  complement   String  @db.VarChar(100)
+  complement   String? @db.VarChar(100)
   neighborhood String  @db.VarChar(100)
   city         String  @db.VarChar(100)
   state        String  @db.VarChar(50)

@@ -267,7 +267,7 @@ describe("GET /api/orders/:id", () => {
       const { orderId } = orderCreatedResponse.body.data
 
       const response = await request(app).get(
-        `/api/orders/order-items/${orderId}`,
+        `/api/orders/order/items/${orderId}`,
       )
 
       expect(response.status).toBe(200)

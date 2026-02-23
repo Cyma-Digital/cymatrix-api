@@ -6,7 +6,7 @@ export interface CreateAddressData {
   label: string
   street: string
   number: number
-  complement: string
+  complement?: string | null
   neighborhood: string
   city: string
   state: string
