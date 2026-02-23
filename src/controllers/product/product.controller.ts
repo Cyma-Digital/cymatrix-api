@@ -1,5 +1,9 @@
+import {
+  CreateProductDto,
+  productIdSchema,
+  UpdateProductDto,
+} from "@/schemas/product/product.schemas"
 import productService from "@/services/product/product.service"
-import { validateEmptyBody, validateIdParam } from "@utils/http"
 import { Request, Response, NextFunction } from "express"
 
 export async function create(
@@ -8,28 +12,11 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const {
-      categoryId,
-      brandId,
-      name,
-      price,
-      description,
-      additionalInfo,
-      avaliable,
-      imageUrl,
-    } = req.body
-
+    const data = req.body as CreateProductDto
     const userId = 1
 
     const product = await productService.create({
-      categoryId,
-      brandId,
-      name,
-      price,
-      description,
-      additionalInfo,
-      avaliable,
-      imageUrl,
+      ...data,
       createdBy: userId,
       updatedBy: userId,
     })
@@ -58,7 +45,7 @@ export async function list(req: Request, res: Response, next: NextFunction) {
 
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
-    const id = validateIdParam(req)
+    const { id } = productIdSchema.parse(req.params)
 
     const product = await productService.getById(id)
 
@@ -74,10 +61,14 @@ export async function updatePartial(
   next: NextFunction,
 ) {
   try {
-    const id = validateIdParam(req)
-    const data = validateEmptyBody(req)
+    const { id } = productIdSchema.parse(req.params)
+    const data = req.body as UpdateProductDto
+    const userId = 1
 
-    const product = await productService.updatePartial(id, data)
+    const product = await productService.updatePartial(id, {
+      ...data,
+      updatedBy: userId,
+    })
 
     return res.status(200).send({ status: "success", data: product })
   } catch (error) {
@@ -91,7 +82,7 @@ export async function deleteProduct(
   next: NextFunction,
 ) {
   try {
-    const id = validateIdParam(req)
+    const { id } = productIdSchema.parse(req.params)
     const userId = 1
 
     await productService.delete(id, userId)

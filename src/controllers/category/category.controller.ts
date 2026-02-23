@@ -44,7 +44,6 @@ export async function list(req: Request, res: Response, next: NextFunction) {
 
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
-    // const id = validateIdParam(req)
     const { id } = categoryIdSchema.parse(req.params)
 
     const category = await categoryService.getById(id)
