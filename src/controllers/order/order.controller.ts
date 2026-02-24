@@ -1,10 +1,11 @@
 import {
   CreateOrderDto,
+  createOrderSchema,
   orderIdSchema,
   UpdateOrderDto,
+  updateOrderPartialSchema,
 } from "@/schemas/order/order.schemas"
 import orderService from "@/services/order/order.service"
-import { validateEmptyBody, validateIdParam } from "@utils/http"
 import { Request, Response, NextFunction } from "express"
 
 export async function create(
@@ -13,7 +14,8 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const data = req.body as CreateOrderDto
+    // const data = req.body as CreateOrderDto
+    const data = createOrderSchema.parse(req.body)
 
     const idUser = 1
 
@@ -79,7 +81,8 @@ export async function updatePartial(
 ) {
   try {
     const { id } = orderIdSchema.parse(req.params)
-    const data = req.body as UpdateOrderDto
+    // const data = req.body as UpdateOrderDto
+    const data = updateOrderPartialSchema.parse(req.body)
     const userId = 1
 
     const order = await orderService.updatePartial(id, {

@@ -36,6 +36,10 @@ export const updateBrandPartialSchema = z.strictObject({
   updated: z.number().positive().optional(),
 })
 
+export const updateBrandPartialServiceSchema = updateBrandPartialSchema.extend(
+  auditUpdatedFields.shape,
+)
+
 export type BrandId = z.infer<typeof brandIdSchema>
 
 export type CreateBrandDto = z.infer<typeof createBrandSchema>
@@ -47,3 +51,6 @@ export type UpdateBrandDto = z.infer<typeof updateBrandSchema>
 export type UpdateBrandServiceInput = z.infer<typeof updateBrandServiceSchema>
 
 export type UpdateBrandPartialDto = z.infer<typeof updateBrandPartialSchema>
+export type UpdateBrandPartialServiceInput = z.infer<
+  typeof updateBrandPartialServiceSchema
+>

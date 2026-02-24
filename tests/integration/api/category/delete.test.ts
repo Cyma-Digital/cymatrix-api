@@ -18,7 +18,7 @@ describe("DELETE /api/categories/:id", () => {
         .send({
           name: "Mesa",
           slug: "mesa",
-          iconUrl: "medias/table-icon.png",
+          iconUrl: "https://example.com/tables.png",
           createdBy: 1,
         })
 

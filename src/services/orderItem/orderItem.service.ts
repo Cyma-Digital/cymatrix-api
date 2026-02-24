@@ -9,6 +9,7 @@ import orderItemRepository, {
 } from "@/repositories/orderItem/orderItem.repository"
 import {
   CreateOrderItemServiceSchemaInput,
+  UpdateOrderItemPartialServiceInput,
   UpdateOrderItemServiceInput,
 } from "@/schemas/orderItem/orderItem.schemas"
 
@@ -100,7 +101,10 @@ export class OrderItemService {
     return orderItem
   }
 
-  async updatePartial(orderItemId: number, data: UpdateOrderItemServiceInput) {
+  async updatePartial(
+    orderItemId: number,
+    data: UpdateOrderItemPartialServiceInput,
+  ) {
     const orderItem = await this.repository.getById(orderItemId)
 
     if (!orderItem) {

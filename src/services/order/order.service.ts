@@ -2,6 +2,7 @@ import { HttpError } from "@/errors/httpError"
 import orderRepository from "@/repositories/order/order.repository"
 import {
   CreateOrderServiceSchemaInput,
+  UpdateOrderPartialServiceInput,
   UpdateOrderServiceInput,
 } from "@/schemas/order/order.schemas"
 
@@ -34,7 +35,7 @@ export class OrderService {
     return order
   }
 
-  async updatePartial(orderId: number, data: UpdateOrderServiceInput) {
+  async updatePartial(orderId: number, data: UpdateOrderPartialServiceInput) {
     const order = await this.repository.getById(orderId)
 
     if (!order) {

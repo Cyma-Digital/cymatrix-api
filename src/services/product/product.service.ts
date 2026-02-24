@@ -4,6 +4,7 @@ import categoryRepository from "@/repositories/category/category.repository"
 import productRepository from "@/repositories/product/product.repository"
 import {
   CreateProductServiceSchemaInput,
+  UpdateProductPartialServiceInput,
   UpdateProductServiceInput,
 } from "@/schemas/product/product.schemas"
 
@@ -43,7 +44,10 @@ export class ProductService {
     return product
   }
 
-  async updatePartial(productId: number, data: UpdateProductServiceInput) {
+  async updatePartial(
+    productId: number,
+    data: UpdateProductPartialServiceInput,
+  ) {
     const product = await this.repository.getById(productId)
 
     if (!product) {

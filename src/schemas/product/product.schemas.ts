@@ -18,7 +18,7 @@ export const createProductSchema = z.strictObject({
     .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
     .refine((value) => Number(value) > 0, "Price must be greater than 0"),
   description: z.string().min(1, "Description is required"),
-  additionalInfo: z.string(),
+  additionalInfo: z.string().optional(),
   avaliable: z.boolean(),
   imageUrl: z.url(),
 })
@@ -36,7 +36,7 @@ export const updateProductSchema = z.strictObject({
     .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
     .refine((value) => Number(value) > 0, "Price must be greater than 0"),
   description: z.string().min(1, "Description is required"),
-  additionalInfo: z.string(),
+  additionalInfo: z.string().optional(),
   avaliable: z.boolean(),
   imageUrl: z.url(),
 })
@@ -61,6 +61,9 @@ export const updateProductPartialSchema = z.strictObject({
   updated: z.number().positive().optional(),
 })
 
+export const updateProductPartialServiceSchema =
+  updateProductPartialSchema.extend(auditUpdatedFields.shape)
+
 export type ProductId = z.infer<typeof productIdSchema>
 
 export type CreateProductDto = z.infer<typeof createProductSchema>
@@ -74,3 +77,6 @@ export type UpdateProductServiceInput = z.infer<
 >
 
 export type UpdateProductPartialDto = z.infer<typeof updateProductPartialSchema>
+export type UpdateProductPartialServiceInput = z.infer<
+  typeof updateProductPartialServiceSchema
+>

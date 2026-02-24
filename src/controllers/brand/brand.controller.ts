@@ -4,6 +4,8 @@ import {
   CreateBrandDto,
   UpdateBrandDto,
   brandIdSchema,
+  createBrandSchema,
+  updateBrandPartialSchema,
 } from "@/schemas/brand/brand.schemas"
 
 export async function create(
@@ -12,15 +14,12 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    // const { name, slug, logoUrl } = req.body
-    const data = req.body as CreateBrandDto
+    // const data = req.body as CreateBrandDto
+    const data = createBrandSchema.parse(req.body)
 
     const userId = 1
 
     const brand = await brandService.create({
-      // name,
-      // slug,
-      // logoUrl,
       ...data,
       createdBy: userId,
       updatedBy: userId,
@@ -49,7 +48,6 @@ export async function list(req: Request, res: Response, next: NextFunction) {
 
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
-    // const id = validateIdParam(req)
     const { id } = brandIdSchema.parse(req.params)
 
     const brand = await brandService.getById(id)
@@ -66,10 +64,9 @@ export async function updatePartial(
   next: NextFunction,
 ) {
   try {
-    //   const id = validateIdParam(req)
-    //   const data = validateEmptyBody(req)
     const { id } = brandIdSchema.parse(req.params)
-    const data = req.body as UpdateBrandDto
+    // const data = req.body as UpdateBrandDto
+    const data = updateBrandPartialSchema.parse(req.body)
     const userId = 1
 
     const brand = await brandService.updatePartial(id, {

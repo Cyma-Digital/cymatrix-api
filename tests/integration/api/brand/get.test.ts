@@ -16,25 +16,25 @@ describe("GET /api/brands/:id", () => {
       await request(app).post("/api/brands").send({
         name: "Heineken",
         slug: "heineken",
-        logoUrl: "medias/hnk.png",
+        logoUrl: "https://example.com/heineken.png",
       })
 
       await request(app).post("/api/brands").send({
         name: "Baden Baden",
         slug: "baden-baden",
-        logoUrl: "medias/baden.png",
+        logoUrl: "https://example.com/baden.png",
       })
 
       await request(app).post("/api/brands").send({
         name: "Eisenbahn",
         slug: "eisenbahn",
-        logoUrl: "medias/eisenbahn.png",
+        logoUrl: "https://example.com/eisenbahn.png",
       })
 
       await request(app).post("/api/brands").send({
         name: "Lagunitas",
         slug: "lagunitas",
-        logoUrl: "medias/lagunitas.png",
+        logoUrl: "https://example.com/lagunitas.png",
       })
 
       const response = await request(app).get("/api/brands")
@@ -52,7 +52,7 @@ describe("GET /api/brands/:id", () => {
       const brandCreatedResponse = await request(app).post("/api/brands").send({
         name: "Heineken",
         slug: "heineken",
-        logoUrl: "medias/hnk.png",
+        logoUrl: "https://example.com/heineken.png",
       })
 
       const brandId = brandCreatedResponse.body.data.id
@@ -67,7 +67,7 @@ describe("GET /api/brands/:id", () => {
       await request(app).post("/api/brands").send({
         name: "Heineken",
         slug: "heineken",
-        logoUrl: "medias/hnk.png",
+        logoUrl: "https://example.com/heineken.png",
       })
 
       const nonExistentBrand = 2

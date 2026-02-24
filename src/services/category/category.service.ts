@@ -2,6 +2,7 @@ import { HttpError } from "@/errors/httpError"
 import categoryRepository from "@/repositories/category/category.repository"
 import {
   CreateCategoryServiceSchemaInput,
+  UpdateCategoryPartialServiceInput,
   UpdateCategoryServiceInput,
 } from "@/schemas/category/category.schemas"
 
@@ -26,7 +27,10 @@ export class CategoryService {
     return category
   }
 
-  async updatePartial(categoryId: number, data: UpdateCategoryServiceInput) {
+  async updatePartial(
+    categoryId: number,
+    data: UpdateCategoryPartialServiceInput,
+  ) {
     const category = await this.getById(categoryId)
 
     if (!category) {

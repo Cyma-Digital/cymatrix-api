@@ -4,6 +4,7 @@ import type {
   CreateProductData,
   ProductUpdatedData,
 } from "@/repositories/product/product.repository"
+import { UpdateProductPartialServiceInput } from "@/schemas/product/product.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -48,7 +49,7 @@ describe("@services/ProductService", () => {
           id: 1,
           name: "Mesas",
           slug: "mesas",
-          iconUrl: "medias/table-icon.png",
+          iconUrl: "https://example.com/table.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -61,7 +62,7 @@ describe("@services/ProductService", () => {
           id: 1,
           name: "Heineken",
           slug: "heineken",
-          logoUrl: "medias/hnk.png",
+          logoUrl: "https://example.com/heineken.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -87,7 +88,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
           updatedBy: 1,
         }
@@ -136,8 +137,8 @@ describe("@services/ProductService", () => {
       test("should return all products", async () => {
         const products = [
           {
-            categoryId: 1,
-            brandId: 1,
+            categoryId: "1",
+            brandId: "1",
             name: "cadeira customizada heineken",
             price: "209.99",
             description: "cadeira customizada com o log da heineken",
@@ -152,13 +153,13 @@ describe("@services/ProductService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: true,
-            imageUrl: "medias/chair.png",
+            imageUrl: "https://example.com/chairs.png",
             createdBy: 1,
             updatedBy: 1,
           },
           {
-            categoryId: 1,
-            brandId: 1,
+            categoryId: "1",
+            brandId: "1",
             name: "mesa customizada heineken",
             price: "2209.99",
             description: "mesa customizada com o log da heineken",
@@ -173,13 +174,13 @@ describe("@services/ProductService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: true,
-            imageUrl: "medias/table.png",
+            imageUrl: "https://example.com/table.png",
             createdBy: 1,
             updatedBy: 1,
           },
           {
-            categoryId: 1,
-            brandId: 1,
+            categoryId: "1",
+            brandId: "1",
             name: "geladeira customizada heineken",
             price: "8209.99",
             description: "geladeira customizada com o log da heineken",
@@ -192,7 +193,7 @@ describe("@services/ProductService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: false,
-            imageUrl: "medias/fridge.png",
+            imageUrl: "https://example.com/fridge.png",
             createdBy: 1,
             updatedBy: 1,
           },
@@ -243,8 +244,8 @@ describe("@services/ProductService", () => {
       test("should return product when exists", async () => {
         const product = {
           id: 1,
-          categoryId: 1,
-          brandId: 1,
+          categoryId: "1",
+          brandId: "1",
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
@@ -259,7 +260,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -293,8 +294,8 @@ describe("@services/ProductService", () => {
       test("should update and return product", async () => {
         const existingProduct = {
           id: 1,
-          categoryId: 1,
-          brandId: 1,
+          categoryId: "1",
+          brandId: "1",
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
@@ -309,7 +310,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -318,7 +319,7 @@ describe("@services/ProductService", () => {
           deletedBy: null,
         }
 
-        const updateData: ProductUpdatedData = {
+        const updateData: UpdateProductPartialServiceInput = {
           name: "cadeira heineken",
           avaliable: false,
           updatedBy: 1,
@@ -349,8 +350,8 @@ describe("@services/ProductService", () => {
       test("should soft delete product", async () => {
         const product = {
           id: 1,
-          categoryId: 1,
-          brandId: 1,
+          categoryId: "1",
+          brandId: "1",
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
@@ -365,7 +366,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),

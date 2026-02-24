@@ -4,6 +4,10 @@ import type {
   CreateAddressData,
   AddressUpdatedData,
 } from "@/repositories/address/address.repository"
+import {
+  CreateAddressServiceSchemaInput,
+  UpdateAddressPartialServiceInput,
+} from "@/schemas/address/address.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -24,7 +28,7 @@ describe("@services/AddressService", () => {
   describe("create()", () => {
     describe("Success cases", () => {
       test("Should create and return address", async () => {
-        const input: CreateAddressData = {
+        const input: CreateAddressServiceSchemaInput = {
           userId: 1,
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
@@ -75,7 +79,7 @@ describe("@services/AddressService", () => {
       test("Should return all addresses", async () => {
         const addresses = [
           {
-            userId: 1,
+            userId: "1",
             label: "comércio",
             street: "Rua João Silva Souza Soares Santos",
             number: 1,
@@ -93,7 +97,7 @@ describe("@services/AddressService", () => {
             deletedBy: null,
           },
           {
-            userId: 1,
+            userId: "1",
             label: "loja",
             street: "Rua Zé Silva Souza Soares Santos",
             number: 2,
@@ -110,7 +114,7 @@ describe("@services/AddressService", () => {
             deletedBy: null,
           },
           {
-            userId: 1,
+            userId: "1",
             label: "indústria",
             street: "Rua Zeca Silva Souza Soares Santos",
             number: 234,
@@ -174,7 +178,7 @@ describe("@services/AddressService", () => {
       test("Should return address when exists", async () => {
         const address = {
           id: 1,
-          userId: 1,
+          userId: "1",
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
           number: 1,
@@ -217,7 +221,7 @@ describe("@services/AddressService", () => {
       test("Should update and return address", async () => {
         const existingAddress = {
           id: 1,
-          userId: 1,
+          userId: "1",
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
           number: 1,
@@ -235,7 +239,7 @@ describe("@services/AddressService", () => {
           deletedBy: null,
         }
 
-        const updateData: AddressUpdatedData = {
+        const updateData: UpdateAddressPartialServiceInput = {
           street: "Rua Paulo de Paula",
           number: 28,
           updatedBy: 1,
@@ -266,7 +270,7 @@ describe("@services/AddressService", () => {
       test("Should soft delete address", async () => {
         const address = {
           id: 1,
-          userId: 1,
+          userId: "1",
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
           number: 1,

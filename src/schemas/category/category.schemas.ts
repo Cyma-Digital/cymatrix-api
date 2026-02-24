@@ -36,6 +36,9 @@ export const updateCategoryPartialSchema = z.strictObject({
   updated: z.number().positive().optional(),
 })
 
+export const updateCategoryPartialServiceSchema =
+  updateCategoryPartialSchema.extend(auditUpdatedFields.shape)
+
 export type CategoryId = z.infer<typeof categoryIdSchema>
 
 export type CreateCategoryDto = z.infer<typeof createCategorySchema>
@@ -50,4 +53,7 @@ export type UpdateCategoryServiceInput = z.infer<
 
 export type UpdateCategoryPartialDto = z.infer<
   typeof updateCategoryPartialSchema
+>
+export type UpdateCategoryPartialServiceInput = z.infer<
+  typeof updateCategoryPartialServiceSchema
 >

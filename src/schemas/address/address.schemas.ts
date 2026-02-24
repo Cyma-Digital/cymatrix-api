@@ -23,7 +23,11 @@ export const createAddressSchema = z.strictObject({
   neighborhood: z.string().min(1, "Neighborhood is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
-  zipCode: z.string().regex(/^\d{5}-?\d{3}$/, "ZipCode is invalid"),
+  zipCode: z
+    .string()
+    .transform((value) => value.replace(/\D/g, ""))
+    .refine((value) => /^\d{8}$/.test(value), "ZipCode is invalid"),
+  // .regex(/^\d{5}-?\d{3}$/, "ZipCode is invalid"),
   isDefault: z.boolean(),
 })
 
@@ -44,7 +48,11 @@ export const updateAddressSchema = z.strictObject({
   neighborhood: z.string().min(1, "Neighborhood is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
-  zipCode: z.string().regex(/^\d{5}-?\d{3}$/, "ZipCode is invalid"),
+  zipCode: z
+    .string()
+    .transform((value) => value.replace(/\D/g, ""))
+    .refine((value) => /^\d{8}$/.test(value), "ZipCode is invalid"),
+  // .regex(/^\d{5}-?\d{3}$/, "ZipCode is invalid"),
   isDefault: z.boolean(),
 })
 
@@ -59,18 +67,24 @@ export const updateAddressPartialSchema = z.strictObject({
   complement: z
     .string()
     .min(1, "Complement is required")
-    .optional()
-    .transform((value) => value ?? null),
+
+    .transform((value) => value ?? null)
+    .optional(),
   neighborhood: z.string().min(1, "Neighborhood is required").optional(),
   city: z.string().min(1, "City is required").optional(),
   state: z.string().min(1, "State is required").optional(),
   zipCode: z
     .string()
-    .regex(/^\d{5}-?\d{3}$/, "ZipCode is invalid")
+    .transform((value) => value.replace(/\D/g, ""))
+    .refine((value) => /^\d{8}$/.test(value), "ZipCode is invalid")
+    // .regex(/^\d{5}-?\d{3}$/, "ZipCode is invalid")
     .optional(),
   isDefault: z.boolean().optional(),
   updated: z.number().positive().optional(),
 })
+
+export const updateAddressPartialServiceSchema =
+  updateAddressPartialSchema.extend(auditUpdatedFields.shape)
 
 export type AddressId = z.infer<typeof addressIdSchema>
 
@@ -85,3 +99,6 @@ export type UpdateAddressServiceInput = z.infer<
 >
 
 export type UpdateAddressPartialDto = z.infer<typeof updateAddressPartialSchema>
+export type UpdateAddressPartialServiceInput = z.infer<
+  typeof updateAddressPartialServiceSchema
+>

@@ -18,7 +18,7 @@ describe("PATCH /api/categories/:id", () => {
         .send({
           name: "Mesa",
           slug: "mesa",
-          iconUrl: "medias/table-icon.png",
+          iconUrl: "https://example.com/table.png",
           createdBy: 1,
         })
 
@@ -41,7 +41,7 @@ describe("PATCH /api/categories/:id", () => {
       await request(app).patch("/api/categories").send({
         name: "Mesa",
         slug: "mesa",
-        iconUrl: "medias/table-icon.png",
+        iconUrl: "https://example.com/table.png",
       })
 
       const nonExistentCategory = 2

@@ -1,10 +1,12 @@
 import {
   addressIdSchema,
   CreateAddressDto,
+  createAddressSchema,
   UpdateAddressDto,
+  updateAddressPartialSchema,
+  updateAddressSchema,
 } from "@/schemas/address/address.schemas"
 import addressService from "@/services/address/address.service"
-import { validateEmptyBody, validateIdParam } from "@utils/http"
 import { Request, Response, NextFunction } from "express"
 
 export async function create(
@@ -13,7 +15,8 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const data = req.body as CreateAddressDto
+    // const data = req.body as CreateAddressDto
+    const data = createAddressSchema.parse(req.body)
 
     const idUser = 1
 
@@ -64,7 +67,8 @@ export async function updatePartial(
 ) {
   try {
     const { id } = addressIdSchema.parse(req.params)
-    const data = req.body as UpdateAddressDto
+    // const data = req.body as UpdateAddressDto
+    const data = updateAddressPartialSchema.parse(req.body)
     const userId = 1
 
     const address = await addressService.updatePartial(id, {

@@ -4,6 +4,10 @@ import type {
   CreateOrderData,
   OrderUpdatedData,
 } from "@/repositories/order/order.repository"
+import {
+  CreateOrderServiceSchemaInput,
+  UpdateOrderPartialServiceInput,
+} from "@/schemas/order/order.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -28,15 +32,25 @@ describe("@services/OrderService", () => {
   describe("create()", () => {
     describe("Success cases", () => {
       test("should create and return order", async () => {
-        const input: CreateOrderData = {
+        const input: CreateOrderServiceSchemaInput = {
           userId: 1,
           status: "PENDENTE",
           addressId: 1,
           shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
+            // address: {
+            //   street: "Rua de ruas",
+            //   number: 82,
+            // },
+            userId: 1,
+            label: "comércio",
+            street: "Rua João Silva Souza Soares Santos",
+            number: 1,
+            complement: "terceiro andar",
+            neighborhood: "Jardim de jardins",
+            city: "Jacareí",
+            state: "SP",
+            zipCode: "123.456-78",
+            isDefault: true,
           },
           total: "200",
           createdBy: 1,
@@ -80,9 +94,9 @@ describe("@services/OrderService", () => {
       test("should return all orders", async () => {
         const orders = [
           {
-            userId: 1,
+            userId: "1",
             status: "PENDENTE",
-            addressId: 1,
+            addressId: "1",
             shippingAddress: {
               address: {
                 street: "Rua de ruas",
@@ -94,9 +108,9 @@ describe("@services/OrderService", () => {
             updatedBy: 1,
           },
           {
-            userId: 1,
+            userId: "1",
             status: "ENVIADO",
-            addressId: 1,
+            addressId: "1",
             shippingAddress: {
               address: {
                 street: "Rua de ruas",
@@ -108,9 +122,9 @@ describe("@services/OrderService", () => {
             updatedBy: 1,
           },
           {
-            userId: 1,
+            userId: "1",
             status: "CANCELADO",
-            addressId: 1,
+            addressId: "1",
             shippingAddress: {
               address: {
                 street: "Rua de ruas",
@@ -168,9 +182,9 @@ describe("@services/OrderService", () => {
       test("should return order when exists", async () => {
         const order = {
           id: 1,
-          userId: 1,
+          userId: "1",
           status: "PENDENTE",
-          addressId: 1,
+          addressId: "1",
           shippingAddress: {
             address: {
               street: "Rua de ruas",
@@ -207,9 +221,9 @@ describe("@services/OrderService", () => {
       test("should return order with order items when exists", async () => {
         const order = {
           id: 1,
-          userId: 1,
+          userId: "1",
           status: "PENDENTE",
-          addressId: 1,
+          addressId: "1",
           shippingAddress: {
             address: {
               street: "Rua de ruas",
@@ -222,14 +236,14 @@ describe("@services/OrderService", () => {
           orderItems: [
             {
               id: 1,
-              orderId: 1,
+              orderId: "1",
               productId: 1,
               quantity: 2,
               unitPrice: "209.99",
             },
             {
               id: 1,
-              orderId: 1,
+              orderId: "1",
               productId: 1,
               quantity: 1,
               unitPrice: "200",
@@ -265,9 +279,9 @@ describe("@services/OrderService", () => {
       test("should update and return order", async () => {
         const existingOrder = {
           id: 1,
-          userId: 1,
+          userId: "1",
           status: "PENDENTE",
-          addressId: 1,
+          addressId: "1",
           shippingAddress: {
             address: {
               street: "Rua de ruas",
@@ -283,8 +297,9 @@ describe("@services/OrderService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderUpdatedData = {
+        const updateData: UpdateOrderPartialServiceInput = {
           total: "150000.00",
+          updatedBy: 1,
         }
 
         const updatedOrder = {
@@ -308,9 +323,9 @@ describe("@services/OrderService", () => {
       test("should update order status and return order (approved status case)", async () => {
         const existingOrder = {
           id: 1,
-          userId: 1,
+          userId: "1",
           status: "APROVADO",
-          addressId: 1,
+          addressId: "1",
           shippingAddress: {
             address: {
               street: "Rua de ruas",
@@ -326,8 +341,9 @@ describe("@services/OrderService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderUpdatedData = {
+        const updateData: UpdateOrderPartialServiceInput = {
           status: "CANCELADO",
+          updatedBy: 1,
         }
 
         const updatedOrder = {
@@ -356,9 +372,9 @@ describe("@services/OrderService", () => {
       test("should update order status and return order (sent status case)", async () => {
         const existingOrder = {
           id: 1,
-          userId: 1,
+          userId: "1",
           status: "ENVIADO",
-          addressId: 1,
+          addressId: "1",
           shippingAddress: {
             address: {
               street: "Rua de ruas",
@@ -374,8 +390,9 @@ describe("@services/OrderService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderUpdatedData = {
+        const updateData: UpdateOrderPartialServiceInput = {
           status: "CANCELADO",
+          updatedBy: 1,
         }
 
         const updatedOrder = {
@@ -406,9 +423,9 @@ describe("@services/OrderService", () => {
       test("should throw 403 when order status is cancelled", async () => {
         const existingOrder = {
           id: 1,
-          userId: 1,
+          userId: "1",
           status: "CANCELADO",
-          addressId: 1,
+          addressId: "1",
           shippingAddress: {
             address: {
               street: "Rua de ruas",
@@ -424,9 +441,10 @@ describe("@services/OrderService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderUpdatedData = {
+        const updateData: UpdateOrderPartialServiceInput = {
           status: "PENDENTE",
           total: "10",
+          updatedBy: 1,
         }
 
         mockRepository.getById.mockResolvedValue(existingOrder)
@@ -449,9 +467,9 @@ describe("@services/OrderService", () => {
       test("should soft delete order", async () => {
         const order = {
           id: 1,
-          userId: 1,
+          userId: "1",
           status: "CANCELADO",
-          addressId: 1,
+          addressId: "1",
           shippingAddress: {
             address: {
               street: "Rua de ruas",

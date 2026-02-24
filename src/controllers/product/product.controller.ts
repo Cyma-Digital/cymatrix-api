@@ -1,7 +1,9 @@
 import {
   CreateProductDto,
+  createProductSchema,
   productIdSchema,
   UpdateProductDto,
+  updateProductPartialSchema,
 } from "@/schemas/product/product.schemas"
 import productService from "@/services/product/product.service"
 import { Request, Response, NextFunction } from "express"
@@ -12,7 +14,8 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const data = req.body as CreateProductDto
+    // const data = req.body as CreateProductDto
+    const data = createProductSchema.parse(req.body)
     const userId = 1
 
     const product = await productService.create({
@@ -62,7 +65,8 @@ export async function updatePartial(
 ) {
   try {
     const { id } = productIdSchema.parse(req.params)
-    const data = req.body as UpdateProductDto
+    // const data = req.body as UpdateProductDto
+    const data = updateProductPartialSchema.parse(req.body)
     const userId = 1
 
     const product = await productService.updatePartial(id, {

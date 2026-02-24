@@ -1,7 +1,9 @@
 import {
   categoryIdSchema,
   CreateCategoryDto,
+  createCategorySchema,
   UpdateCategoryDto,
+  updateCategoryPartialSchema,
 } from "@/schemas/category/category.schemas"
 import categoryService from "@/services/category/category.service"
 import { Request, Response, NextFunction } from "express"
@@ -12,7 +14,8 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const data = req.body as CreateCategoryDto
+    // const data = req.body as CreateCategoryDto
+    const data = createCategorySchema.parse(req.body)
     const userId = 1
 
     const category = await categoryService.create({
@@ -61,7 +64,8 @@ export async function updatePartial(
 ) {
   try {
     const { id } = categoryIdSchema.parse(req.params)
-    const data = req.body as UpdateCategoryDto
+    // const data = req.body as UpdateCategoryDto
+    const data = updateCategoryPartialSchema.parse(req.body)
     const userId = 1
 
     const category = await categoryService.updatePartial(id, {

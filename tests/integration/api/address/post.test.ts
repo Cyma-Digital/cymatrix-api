@@ -14,7 +14,7 @@ describe("POST /api/addresses", () => {
   describe("Anonymous user", () => {
     test("Should create a address and return 201", async () => {
       const payload = {
-        userId: 1,
+        userId: "1",
         label: "comércio",
         street: "Rua João Silva Souza Soares Santos",
         number: 1,

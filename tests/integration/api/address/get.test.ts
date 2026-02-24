@@ -14,7 +14,7 @@ describe("GET /api/addresses/:id", () => {
   describe("Anonymous user", () => {
     test("Should list all addresses", async () => {
       await request(app).post("/api/addresses").send({
-        userId: 1,
+        userId: "1",
         label: "comércio",
         street: "Rua João Silva Souza Soares Santos",
         number: 1,
@@ -27,7 +27,7 @@ describe("GET /api/addresses/:id", () => {
       })
 
       await request(app).post("/api/addresses").send({
-        userId: 1,
+        userId: "1",
         label: "loja",
         street: "Rua Zé Silva Souza Soares Santos",
         number: 2,
@@ -39,7 +39,7 @@ describe("GET /api/addresses/:id", () => {
       })
 
       await request(app).post("/api/addresses").send({
-        userId: 1,
+        userId: "1",
         label: "indústria",
         street: "Rua Zeca Silva Souza Soares Santos",
         number: 234,
@@ -66,7 +66,7 @@ describe("GET /api/addresses/:id", () => {
       const addressCreatedResponse = await request(app)
         .post("/api/addresses")
         .send({
-          userId: 1,
+          userId: "1",
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
           number: 1,
@@ -95,7 +95,7 @@ describe("GET /api/addresses/:id", () => {
 
     test("Should return 404 (not found)", async () => {
       await request(app).post("/api/addresses").send({
-        userId: 1,
+        userId: "1",
         label: "comércio",
         street: "Rua João Silva Souza Soares Santos",
         number: 1,

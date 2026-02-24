@@ -39,7 +39,7 @@ export const createOrderServiceSchema = createOrderSchema.extend(
 export const updateOrderSchema = z.strictObject({
   status: StatusEnum,
   addressId: IdSchema,
-  shippingAddress: updateAddressSchema.optional().nullable(),
+  shippingAddress: updateAddressSchema.nullable().optional(),
   total: z
     .string()
     .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
@@ -53,13 +53,17 @@ export const updateOrderServiceSchema = updateOrderSchema.extend(
 export const updateOrderPartialSchema = z.strictObject({
   status: StatusEnum.optional(),
   addressId: IdSchema.optional(),
-  shippingAddress: updateAddressPartialSchema.optional().nullable(),
+  shippingAddress: updateAddressPartialSchema.nullable().optional(),
   total: z
     .string()
     .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
     .refine((value) => Number(value) > 0, "Price must be greater than 0")
     .optional(),
 })
+
+export const updateOrderPartialServiceSchema = updateOrderPartialSchema.extend(
+  auditUpdatedFields.shape,
+)
 
 export type OrderId = z.infer<typeof orderIdSchema>
 
@@ -72,3 +76,6 @@ export type UpdateOrderDto = z.infer<typeof updateOrderSchema>
 export type UpdateOrderServiceInput = z.infer<typeof updateOrderServiceSchema>
 
 export type UpdateOrderPartialDto = z.infer<typeof updateOrderPartialSchema>
+export type UpdateOrderPartialServiceInput = z.infer<
+  typeof updateOrderPartialServiceSchema
+>

@@ -4,6 +4,7 @@ import type {
   CreateBrandData,
   BrandUpdatedData,
 } from "@/repositories/brand/brand.repository"
+import { UpdateBrandPartialServiceInput } from "@/schemas/brand/brand.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -27,7 +28,7 @@ describe("@services/BrandService", () => {
         const input: CreateBrandData = {
           name: "Heineken",
           slug: "heineken",
-          logoUrl: "medias/hnk.png",
+          logoUrl: "https://example.com/heineken.png",
           createdBy: 1,
           updatedBy: 1,
         }
@@ -69,7 +70,7 @@ describe("@services/BrandService", () => {
           {
             name: "Heineken",
             slug: "heineken",
-            logoUrl: "medias/hnk.png",
+            logoUrl: "https://example.com/heineken.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -80,7 +81,7 @@ describe("@services/BrandService", () => {
           {
             name: "Eisenbahn",
             slug: "eisenbahn",
-            logoUrl: "medias/eisenbahn.png",
+            logoUrl: "https://example.com/eisenbahn.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -91,7 +92,7 @@ describe("@services/BrandService", () => {
           {
             name: "Lagunitas",
             slug: "lagunitas",
-            logoUrl: "medias/lagunitas.png",
+            logoUrl: "https://example.com/lagunitas.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -148,7 +149,7 @@ describe("@services/BrandService", () => {
           id: 1,
           name: "Heineken",
           slug: "heineken",
-          logoUrl: "medias/hnk.png",
+          logoUrl: "https://example.com/heineken.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -184,7 +185,7 @@ describe("@services/BrandService", () => {
           id: 1,
           name: "Heineken",
           slug: "heineken",
-          logoUrl: "medias/hnk.png",
+          logoUrl: "https://example.com/heineken.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -193,7 +194,7 @@ describe("@services/BrandService", () => {
           deletedBy: null,
         }
 
-        const updateData: BrandUpdatedData = {
+        const updateData: UpdateBrandPartialServiceInput = {
           name: "Heineken 0.0",
           slug: "heineken00",
           updatedBy: 1,
@@ -226,7 +227,7 @@ describe("@services/BrandService", () => {
           id: 1,
           name: "Heineken",
           slug: "heineken",
-          logoUrl: "medias/hnk.png",
+          logoUrl: "https://example.com/heineken.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),

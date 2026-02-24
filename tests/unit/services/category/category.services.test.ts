@@ -4,6 +4,7 @@ import type {
   CreateCategoryData,
   CategoryUpdatedData,
 } from "@/repositories/category/category.repository"
+import { UpdateCategoryPartialServiceInput } from "@/schemas/category/category.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -27,7 +28,7 @@ describe("@services/CategoryService", () => {
         const input: CreateCategoryData = {
           name: "Mesa",
           slug: "mesa",
-          iconUrl: "medias/table-icon.png",
+          iconUrl: "https://example.com/table.png",
           createdBy: 1,
           updatedBy: 1,
         }
@@ -69,7 +70,7 @@ describe("@services/CategoryService", () => {
           {
             name: "Mesas",
             slug: "mesas",
-            iconUrl: "medias/table-icon.png",
+            iconUrl: "https://example.com/table.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -80,7 +81,7 @@ describe("@services/CategoryService", () => {
           {
             name: "Cadeiras",
             slug: "cadeiras",
-            iconUrl: "medias/chair-icon.png",
+            iconUrl: "https://example.com/chairs.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -91,7 +92,7 @@ describe("@services/CategoryService", () => {
           {
             name: "Geladeiras",
             slug: "geladeiras",
-            iconUrl: "medias/fridge-icon.png",
+            iconUrl: "https://example.com/fridge.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -148,7 +149,7 @@ describe("@services/CategoryService", () => {
           id: 1,
           name: "Mesas",
           slug: "mesas",
-          iconUrl: "medias/table-icon.png",
+          iconUrl: "https://example.com/table.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -183,7 +184,7 @@ describe("@services/CategoryService", () => {
         const existingCategory = {
           name: "Mesas",
           slug: "mesas",
-          iconUrl: "medias/table-icon.png",
+          iconUrl: "https://example.com/table.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -192,7 +193,7 @@ describe("@services/CategoryService", () => {
           deletedBy: null,
         }
 
-        const updateData: CategoryUpdatedData = {
+        const updateData: UpdateCategoryPartialServiceInput = {
           name: "Mesas customizadas",
           slug: "mesas-customizadas",
           updatedBy: 1,
@@ -224,7 +225,7 @@ describe("@services/CategoryService", () => {
         const category = {
           name: "Mesas",
           slug: "mesas",
-          iconUrl: "medias/table-icon.png",
+          iconUrl: "https://example.com/table.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),

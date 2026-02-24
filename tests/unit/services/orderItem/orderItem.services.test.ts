@@ -4,6 +4,10 @@ import type {
   CreateOrderItemData,
   OrderItemUpdatedData,
 } from "@/repositories/orderItem/orderItem.repository"
+import {
+  CreateOrderItemServiceSchemaInput,
+  UpdateOrderItemPartialServiceInput,
+} from "@/schemas/orderItem/orderItem.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -53,9 +57,9 @@ describe("@services/OrderItemService", () => {
           test("Should create and return order item", async () => {
             const order = {
               id: 1,
-              userId: 1,
+              userId: "1",
               status: "PENDENTE",
-              addressId: 1,
+              addressId: "1",
               shippingAddress: {
                 address: {
                   street: "Rua de ruas",
@@ -73,8 +77,8 @@ describe("@services/OrderItemService", () => {
 
             const product = {
               id: 2,
-              categoryId: 1,
-              brandId: 1,
+              categoryId: "1",
+              brandId: "1",
               name: "cadeira customizada heineken",
               price: "209.99",
               description: "cadeira customizada com o log da heineken",
@@ -89,7 +93,7 @@ describe("@services/OrderItemService", () => {
                 madeAt: "2026-02-04T16:40:23.130Z",
               },
               avaliable: true,
-              imageUrl: "medias/chair.png",
+              imageUrl: "https://example.com/chairs.png",
               createdBy: 1,
               updatedBy: 1,
               createdAt: new Date(),
@@ -100,7 +104,7 @@ describe("@services/OrderItemService", () => {
 
             const existentOrderItem = {
               id: 1,
-              orderId: 1,
+              orderId: "1",
               productId: 1,
               quantity: 10,
               unitPrice: "209.99",
@@ -112,7 +116,7 @@ describe("@services/OrderItemService", () => {
               deletedBy: null,
             }
 
-            const input: CreateOrderItemData = {
+            const input: CreateOrderItemServiceSchemaInput = {
               orderId: 1,
               productId: 2,
               quantity: 10,
@@ -164,8 +168,8 @@ describe("@services/OrderItemService", () => {
         test("should create and return order item (order not exist)", async () => {
           const product = {
             id: 1,
-            categoryId: 1,
-            brandId: 1,
+            categoryId: "1",
+            brandId: "1",
             name: "cadeira customizada heineken",
             price: "209.99",
             description: "cadeira customizada com o log da heineken",
@@ -180,7 +184,7 @@ describe("@services/OrderItemService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: true,
-            imageUrl: "medias/chair.png",
+            imageUrl: "https://example.com/chairs.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -189,7 +193,7 @@ describe("@services/OrderItemService", () => {
             deletedBy: null,
           }
 
-          const input: CreateOrderItemData = {
+          const input: CreateOrderItemServiceSchemaInput = {
             productId: 1,
             quantity: 10,
             unitPrice: "209.99",
@@ -199,7 +203,7 @@ describe("@services/OrderItemService", () => {
 
           const expectedOrderItem = {
             id: 1,
-            orderId: 1,
+            orderId: "1",
             ...input,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -208,9 +212,9 @@ describe("@services/OrderItemService", () => {
           }
 
           const order = {
-            userId: 1,
+            userId: "1",
             status: "PENDENTE",
-            addressId: 1,
+            addressId: "1",
             shippingAddress: {
               address: {
                 street: "Rua de ruas",
@@ -256,9 +260,9 @@ describe("@services/OrderItemService", () => {
         test("should create and return order item (create new order)", async () => {
           const order = {
             id: 1,
-            userId: 1,
+            userId: "1",
             status: "PENDENTE",
-            addressId: 1,
+            addressId: "1",
             shippingAddress: {
               address: {
                 street: "Rua de ruas",
@@ -276,8 +280,8 @@ describe("@services/OrderItemService", () => {
 
           const product = {
             id: 2,
-            categoryId: 1,
-            brandId: 1,
+            categoryId: "1",
+            brandId: "1",
             name: "cadeira customizada heineken",
             price: "209.99",
             description: "cadeira customizada com o log da heineken",
@@ -292,7 +296,7 @@ describe("@services/OrderItemService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: true,
-            imageUrl: "medias/chair.png",
+            imageUrl: "https://example.com/chairs.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -310,7 +314,7 @@ describe("@services/OrderItemService", () => {
           }
 
           const existentOrderItem = {
-            orderId: 1,
+            orderId: "1",
             productId: 2,
             quantity: 10,
             unitPrice: "209.99",
@@ -320,7 +324,7 @@ describe("@services/OrderItemService", () => {
 
           const expectedOrderItem = {
             id: 2,
-            orderId: 1,
+            orderId: "1",
             ...input,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -388,7 +392,7 @@ describe("@services/OrderItemService", () => {
       test("should return all order items", async () => {
         const orderItems = [
           {
-            orderId: 1,
+            orderId: "1",
             productId: 1,
             quantity: 10,
             unitPrice: "209.99",
@@ -396,7 +400,7 @@ describe("@services/OrderItemService", () => {
             updatedBy: 1,
           },
           {
-            orderId: 1,
+            orderId: "1",
             productId: 2,
             quantity: 10,
             unitPrice: "1209.99",
@@ -404,7 +408,7 @@ describe("@services/OrderItemService", () => {
             updatedBy: 1,
           },
           {
-            orderId: 1,
+            orderId: "1",
             productId: 3,
             quantity: 10,
             unitPrice: "2209.99",
@@ -457,7 +461,7 @@ describe("@services/OrderItemService", () => {
       test("should return order item when exists", async () => {
         const orderItem = {
           id: 1,
-          orderId: 1,
+          orderId: "1",
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
@@ -494,7 +498,7 @@ describe("@services/OrderItemService", () => {
       test("should update and return order item", async () => {
         const existingOrderItem = {
           id: 1,
-          orderId: 1,
+          orderId: "1",
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
@@ -506,9 +510,10 @@ describe("@services/OrderItemService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderItemUpdatedData = {
+        const updateData: UpdateOrderItemPartialServiceInput = {
           quantity: 2,
           unitPrice: "889.99",
+          updatedBy: 1,
         }
 
         const updatedOrderItem = {
@@ -534,7 +539,7 @@ describe("@services/OrderItemService", () => {
       test("should throw 404 when order not found", async () => {
         const existingOrderItem = {
           id: 1,
-          orderId: 1,
+          orderId: "1",
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
@@ -546,8 +551,9 @@ describe("@services/OrderItemService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderItemUpdatedData = {
+        const updateData: UpdateOrderItemPartialServiceInput = {
           orderId: 2,
+          updatedBy: 1,
         }
 
         mockRepository.getById.mockResolvedValue(existingOrderItem)
@@ -564,7 +570,7 @@ describe("@services/OrderItemService", () => {
       test("should throw 404 when product not found", async () => {
         const existingOrderItem = {
           id: 1,
-          orderId: 1,
+          orderId: "1",
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
@@ -576,8 +582,9 @@ describe("@services/OrderItemService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderItemUpdatedData = {
+        const updateData: UpdateOrderItemPartialServiceInput = {
           productId: 2,
+          updatedBy: 1,
         }
 
         mockRepository.getById.mockResolvedValue(existingOrderItem)
@@ -598,7 +605,7 @@ describe("@services/OrderItemService", () => {
       test("should soft delete order item", async () => {
         const orderItem = {
           id: 1,
-          orderId: 1,
+          orderId: "1",
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",

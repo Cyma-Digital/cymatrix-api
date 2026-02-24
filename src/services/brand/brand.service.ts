@@ -1,10 +1,8 @@
 import { HttpError } from "@/errors/httpError"
-import brandRepository, {
-  BrandUpdatedData,
-} from "@/repositories/brand/brand.repository"
+import brandRepository from "@/repositories/brand/brand.repository"
 import {
   CreateBrandServiceSchemaInput,
-  UpdateBrandServiceInput,
+  UpdateBrandPartialServiceInput,
 } from "@/schemas/brand/brand.schemas"
 
 export class BrandService {
@@ -27,7 +25,7 @@ export class BrandService {
     return brand
   }
 
-  async updatePartial(brandId: number, data: UpdateBrandServiceInput) {
+  async updatePartial(brandId: number, data: UpdateBrandPartialServiceInput) {
     const brand = await this.repository.getById(brandId)
 
     if (!brand) {

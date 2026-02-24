@@ -16,21 +16,21 @@ describe("GET /api/categories:id", () => {
       await request(app).post("/api/categories").send({
         name: "mesa",
         slug: "mesa",
-        iconUrl: "medias/table-icon.png",
+        iconUrl: "https://example.com/table.png",
         createdBy: 1,
       })
 
       await request(app).post("/api/categories").send({
         name: "cadeira heineken",
         slug: "cadeira-heineken",
-        iconUrl: "medias/chair-icon.png",
+        iconUrl: "https://example.com/chairs.png",
         createdBy: 1,
       })
 
       await request(app).post("/api/categories").send({
         name: "geladeira eisenbahn",
         slug: "geladeira-eisenbahn",
-        iconUrl: "medias/fridge-icon.png",
+        iconUrl: "https://example.com/fridge.png",
         createdBy: 1,
       })
 
@@ -51,7 +51,7 @@ describe("GET /api/categories:id", () => {
         .send({
           name: "mesa",
           slug: "mesa",
-          iconUrl: "medias/table-icon.png",
+          iconUrl: "https://example.com/table.png",
           createdBy: 1,
         })
 
@@ -67,7 +67,7 @@ describe("GET /api/categories:id", () => {
       await request(app).post("/api/categories").send({
         name: "mesa",
         slug: "mesa",
-        iconUrl: "medias/table-icon.png",
+        iconUrl: "https://example.com/table.png",
         createdBy: 1,
       })
 

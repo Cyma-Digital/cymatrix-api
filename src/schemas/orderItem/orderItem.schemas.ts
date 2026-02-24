@@ -10,7 +10,7 @@ export const orderItemIdSchema = z.object({
 })
 
 export const createOrderItemSchema = z.strictObject({
-  orderId: IdSchema,
+  orderId: IdSchema.optional(),
   productId: IdSchema,
   quantity: z.number().positive(),
   unitPrice: z
@@ -48,6 +48,9 @@ export const updateOrderItemPartialSchema = z.strictObject({
     .optional(),
 })
 
+export const updateOrderItemPartialServiceSchema =
+  updateOrderItemPartialSchema.extend(auditUpdatedFields.shape)
+
 export type OrderItemId = z.infer<typeof orderItemIdSchema>
 
 export type CreateOrderItemDto = z.infer<typeof createOrderItemSchema>
@@ -62,4 +65,7 @@ export type UpdateOrderItemServiceInput = z.infer<
 
 export type UpdateOrderItemPartialDto = z.infer<
   typeof updateOrderItemPartialSchema
+>
+export type UpdateOrderItemPartialServiceInput = z.infer<
+  typeof updateOrderItemPartialServiceSchema
 >

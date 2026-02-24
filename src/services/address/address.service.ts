@@ -1,10 +1,8 @@
 import { HttpError } from "@/errors/httpError"
-import addressRepository, {
-  AddressUpdatedData,
-  CreateAddressData,
-} from "@/repositories/address/address.repository"
+import addressRepository from "@/repositories/address/address.repository"
 import {
   CreateAddressServiceSchemaInput,
+  UpdateAddressPartialServiceInput,
   UpdateAddressServiceInput,
 } from "@/schemas/address/address.schemas"
 
@@ -28,7 +26,10 @@ export class AddressService {
     return address
   }
 
-  async updatePartial(addressId: number, data: UpdateAddressServiceInput) {
+  async updatePartial(
+    addressId: number,
+    data: UpdateAddressPartialServiceInput,
+  ) {
     const address = await this.repository.getById(addressId)
 
     if (!address) {

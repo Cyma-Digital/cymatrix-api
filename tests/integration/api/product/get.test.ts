@@ -16,21 +16,21 @@ describe("GET /api/products/:id", () => {
       await request(app).post("/api/categories").send({
         name: "Mesa",
         slug: "mesa",
-        iconUrl: "medias/table-icon.png",
+        iconUrl: "https://example.com/table.png",
         createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
         name: "Heineken",
         slug: "heineken",
-        logoUrl: "medias/hnk.png",
+        logoUrl: "https://example.com/heineken.png",
       })
 
       await request(app)
         .post("/api/products")
         .send({
-          categoryId: 1,
-          brandId: 1,
+          categoryId: "1",
+          brandId: "1",
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
@@ -45,15 +45,15 @@ describe("GET /api/products/:id", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
         })
 
       await request(app)
         .post("/api/products")
         .send({
-          categoryId: 1,
-          brandId: 1,
+          categoryId: "1",
+          brandId: "1",
           name: "mesa customizada heineken",
           price: "1209.99",
           description: "mesa customizada com o log da heineken",
@@ -68,15 +68,15 @@ describe("GET /api/products/:id", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
         })
 
       await request(app)
         .post("/api/products")
         .send({
-          categoryId: 1,
-          brandId: 1,
+          categoryId: "1",
+          brandId: "1",
           name: "geladeira customizada heineken",
           price: "8209.99",
           description: "geladeira customizada com o log da heineken",
@@ -90,7 +90,7 @@ describe("GET /api/products/:id", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
         })
 
@@ -109,21 +109,21 @@ describe("GET /api/products/:id", () => {
       await request(app).post("/api/categories").send({
         name: "Mesa",
         slug: "mesa",
-        iconUrl: "medias/table-icon.png",
+        iconUrl: "https://example.com/table.png",
         createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
         name: "Heineken",
         slug: "heineken",
-        logoUrl: "medias/hnk.png",
+        logoUrl: "https://example.com/heineken.png",
       })
 
       const productCreatedResponse = await request(app)
         .post("/api/products")
         .send({
-          categoryId: 1,
-          brandId: 1,
+          categoryId: "1",
+          brandId: "1",
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
@@ -138,7 +138,7 @@ describe("GET /api/products/:id", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
         })
 
@@ -156,21 +156,21 @@ describe("GET /api/products/:id", () => {
       await request(app).post("/api/categories").send({
         name: "Mesa",
         slug: "mesa",
-        iconUrl: "medias/table-icon.png",
+        iconUrl: "https://example.com/table.png",
         createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
         name: "Heineken",
         slug: "heineken",
-        logoUrl: "medias/hnk.png",
+        logoUrl: "https://example.com/heineken.png",
       })
 
       await request(app)
         .post("/api/products")
         .send({
-          categoryId: 1,
-          brandId: 1,
+          categoryId: "1",
+          brandId: "1",
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
@@ -185,7 +185,7 @@ describe("GET /api/products/:id", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
         })
 
