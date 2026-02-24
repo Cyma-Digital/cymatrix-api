@@ -1,12 +1,12 @@
 import { z } from "zod"
-import { auditCreatedFields, auditUpdatedFields } from "../base.schemas"
+import {
+  auditCreatedFields,
+  auditUpdatedFields,
+  IdSchema,
+} from "../base.schemas"
 
 export const brandIdSchema = z.object({
-  id: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  id: IdSchema,
 })
 
 export const createBrandSchema = z.strictObject({

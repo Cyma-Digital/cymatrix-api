@@ -1,29 +1,22 @@
 import { z } from "zod"
-import { auditCreatedFields, auditUpdatedFields } from "../base.schemas"
+import {
+  auditCreatedFields,
+  auditUpdatedFields,
+  IdSchema,
+} from "../base.schemas"
 
 export const productIdSchema = z.object({
-  id: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  id: IdSchema,
 })
 
 export const createProductSchema = z.strictObject({
-  categoryId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
-  brandId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  categoryId: IdSchema,
+  brandId: IdSchema,
   name: z.string().min(1, "Name is required"),
-  price: z.string().regex(/^\d+(\.\d{1,2})?$/, "Price invalid"),
-  // .transform((value) => Number(value))
-  // .pipe(z.number().positive()),
+  price: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
+    .refine((value) => Number(value) > 0, "Price must be greater than 0"),
   description: z.string().min(1, "Description is required"),
   additionalInfo: z.string(),
   avaliable: z.boolean(),
@@ -35,20 +28,13 @@ export const createProductServiceSchema = createProductSchema.extend(
 )
 
 export const updateProductSchema = z.strictObject({
-  categoryId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
-  brandId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  categoryId: IdSchema,
+  brandId: IdSchema,
   name: z.string().min(1, "Name is required"),
-  price: z.string().regex(/^\d+(\.\d{1,2})?$/, "Price invalid"),
-  // .transform((value) => Number(value))
-  // .pipe(z.number().positive()),
+  price: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
+    .refine((value) => Number(value) > 0, "Price must be greater than 0"),
   description: z.string().min(1, "Description is required"),
   additionalInfo: z.string(),
   avaliable: z.boolean(),
@@ -60,24 +46,13 @@ export const updateProductServiceSchema = updateProductSchema.extend(
 )
 
 export const updateProductPartialSchema = z.strictObject({
-  categoryId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive())
-    .optional(),
-  brandId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive())
-    .optional(),
+  categoryId: IdSchema.optional(),
+  brandId: IdSchema.optional(),
   name: z.string().min(1, "Name is required").optional(),
   price: z
     .string()
     .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
-    // .transform((value) => Number(value))
-    // .pipe(z.number().positive())
+    .refine((value) => Number(value) > 0, "Price must be greater than 0")
     .optional(),
   description: z.string().min(1, "Description is required").optional(),
   additionalInfo: z.string().optional(),

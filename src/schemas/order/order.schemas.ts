@@ -1,6 +1,14 @@
 import { z } from "zod"
-import { auditCreatedFields, auditUpdatedFields } from "../base.schemas"
-import { createAddressSchema } from "../address/address.schemas"
+import {
+  auditCreatedFields,
+  auditUpdatedFields,
+  IdSchema,
+} from "../base.schemas"
+import {
+  createAddressSchema,
+  updateAddressPartialSchema,
+  updateAddressSchema,
+} from "../address/address.schemas"
 
 export const StatusEnum = z.enum([
   "APROVADO",
@@ -10,27 +18,18 @@ export const StatusEnum = z.enum([
 ])
 
 export const orderIdSchema = z.object({
-  id: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  id: IdSchema,
 })
 
 export const createOrderSchema = z.strictObject({
-  userId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  userId: IdSchema,
   status: StatusEnum,
-  addressId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  addressId: IdSchema,
   shippingAddress: createAddressSchema.optional(),
-  total: z.string().regex(/^\d+(\.\d{1,2})?$/, "Price invalid"),
+  total: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
+    .refine((value) => Number(value) > 0, "Price must be greater than 0"),
 })
 
 export const createOrderServiceSchema = createOrderSchema.extend(
@@ -39,13 +38,12 @@ export const createOrderServiceSchema = createOrderSchema.extend(
 
 export const updateOrderSchema = z.strictObject({
   status: StatusEnum,
-  addressId: z
+  addressId: IdSchema,
+  shippingAddress: updateAddressSchema.optional().nullable(),
+  total: z
     .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
-  shippingAddress: createAddressSchema.optional().nullable(),
-  total: z.string().regex(/^\d+(\.\d{1,2})?$/, "Price invalid"),
+    .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
+    .refine((value) => Number(value) > 0, "Price must be greater than 0"),
 })
 
 export const updateOrderServiceSchema = updateOrderSchema.extend(
@@ -54,16 +52,12 @@ export const updateOrderServiceSchema = updateOrderSchema.extend(
 
 export const updateOrderPartialSchema = z.strictObject({
   status: StatusEnum.optional(),
-  addressId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive())
-    .optional(),
-  shippingAddress: createAddressSchema.optional().nullable(),
+  addressId: IdSchema.optional(),
+  shippingAddress: updateAddressPartialSchema.optional().nullable(),
   total: z
     .string()
     .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
+    .refine((value) => Number(value) > 0, "Price must be greater than 0")
     .optional(),
 })
 

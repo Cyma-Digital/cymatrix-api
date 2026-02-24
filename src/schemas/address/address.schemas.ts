@@ -1,20 +1,16 @@
 import { z } from "zod"
-import { auditCreatedFields, auditUpdatedFields } from "../base.schemas"
+import {
+  auditCreatedFields,
+  auditUpdatedFields,
+  IdSchema,
+} from "../base.schemas"
 
 export const addressIdSchema = z.object({
-  id: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  id: IdSchema,
 })
 
 export const createAddressSchema = z.strictObject({
-  userId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  userId: IdSchema,
   label: z.string().min(1, "Label is required"),
   street: z.string().min(1, "Street is required"),
   number: z.number().positive(),

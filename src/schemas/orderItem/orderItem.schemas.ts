@@ -1,27 +1,22 @@
 import { z } from "zod"
-import { auditCreatedFields, auditUpdatedFields } from "../base.schemas"
+import {
+  auditCreatedFields,
+  auditUpdatedFields,
+  IdSchema,
+} from "../base.schemas"
 
 export const orderItemIdSchema = z.object({
-  id: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  id: IdSchema,
 })
 
 export const createOrderItemSchema = z.strictObject({
-  orderId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
-  productId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  orderId: IdSchema,
+  productId: IdSchema,
   quantity: z.number().positive(),
-  unitPrice: z.string().regex(/^\d+(\.\d{1,2})?$/, "Price invalid"),
+  unitPrice: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
+    .refine((value) => Number(value) > 0, "Price must be greater than 0"),
 })
 
 export const createOrderItemServiceSchema = createOrderItemSchema.extend(
@@ -29,18 +24,13 @@ export const createOrderItemServiceSchema = createOrderItemSchema.extend(
 )
 
 export const updateOrderItemSchema = z.strictObject({
-  orderId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
-  productId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive()),
+  orderId: IdSchema,
+  productId: IdSchema,
   quantity: z.number().positive(),
-  unitPrice: z.string().regex(/^\d+(\.\d{1,2})?$/, "Price invalid"),
+  unitPrice: z
+    .string()
+    .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
+    .refine((value) => Number(value) > 0, "Price must be greater than 0"),
 })
 
 export const updateOrderItemServiceSchema = updateOrderItemSchema.extend(
@@ -48,22 +38,13 @@ export const updateOrderItemServiceSchema = updateOrderItemSchema.extend(
 )
 
 export const updateOrderItemPartialSchema = z.strictObject({
-  orderId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive())
-    .optional(),
-  productId: z
-    .string()
-    .regex(/^\d+$/, "ID invalid")
-    .transform((value) => parseInt(value))
-    .pipe(z.number().positive())
-    .optional(),
+  orderId: IdSchema.optional(),
+  productId: IdSchema.optional(),
   quantity: z.number().positive().optional(),
   unitPrice: z
     .string()
     .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
+    .refine((value) => Number(value) > 0, "Price must be greater than 0")
     .optional(),
 })
 
