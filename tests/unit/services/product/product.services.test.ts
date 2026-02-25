@@ -1,10 +1,9 @@
 import { ProductService } from "@/services/product/product.service"
 import { HttpError } from "@/errors/httpError"
-import type {
-  CreateProductData,
-  ProductUpdatedData,
-} from "@/repositories/product/product.repository"
-import { UpdateProductPartialServiceInput } from "@/schemas/product/product.schemas"
+import {
+  CreateProductServiceSchemaInput,
+  UpdateProductPartialServiceInput,
+} from "@/schemas/product/product.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -71,22 +70,22 @@ describe("@services/ProductService", () => {
           deletedBy: null,
         }
 
-        const input: CreateProductData = {
+        const input: CreateProductServiceSchemaInput = {
           categoryId: 1,
           brandId: 1,
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
+          // additionalInfo: {
+          //   dimentions: {
+          //     width: 50,
+          //     height: 100,
+          //     thickness: 5,
+          //   },
+          //   warranty: 12,
+          //   material: "madeira",
+          //   madeAt: "2026-02-04T16:40:23.130Z",
+          // },
           avaliable: true,
           imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
@@ -137,61 +136,61 @@ describe("@services/ProductService", () => {
       test("should return all products", async () => {
         const products = [
           {
-            categoryId: "1",
-            brandId: "1",
+            categoryId: 1,
+            brandId: 1,
             name: "cadeira customizada heineken",
             price: "209.99",
             description: "cadeira customizada com o log da heineken",
-            additionalInfo: {
-              dimentions: {
-                width: 50,
-                height: 100,
-                thickness: 5,
-              },
-              warranty: 12,
-              material: "madeira",
-              madeAt: "2026-02-04T16:40:23.130Z",
-            },
+            // additionalInfo: {
+            //   dimentions: {
+            //     width: 50,
+            //     height: 100,
+            //     thickness: 5,
+            //   },
+            //   warranty: 12,
+            //   material: "madeira",
+            //   madeAt: "2026-02-04T16:40:23.130Z",
+            // },
             avaliable: true,
             imageUrl: "https://example.com/chairs.png",
             createdBy: 1,
             updatedBy: 1,
           },
           {
-            categoryId: "1",
-            brandId: "1",
+            categoryId: 1,
+            brandId: 1,
             name: "mesa customizada heineken",
             price: "2209.99",
             description: "mesa customizada com o log da heineken",
-            additionalInfo: {
-              dimentions: {
-                width: 80,
-                height: 100,
-                thickness: 5,
-              },
-              warranty: 12,
-              material: "madeira",
-              madeAt: "2026-02-04T16:40:23.130Z",
-            },
+            // additionalInfo: {
+            //   dimentions: {
+            //     width: 80,
+            //     height: 100,
+            //     thickness: 5,
+            //   },
+            //   warranty: 12,
+            //   material: "madeira",
+            //   madeAt: "2026-02-04T16:40:23.130Z",
+            // },
             avaliable: true,
             imageUrl: "https://example.com/table.png",
             createdBy: 1,
             updatedBy: 1,
           },
           {
-            categoryId: "1",
-            brandId: "1",
+            categoryId: 1,
+            brandId: 1,
             name: "geladeira customizada heineken",
             price: "8209.99",
             description: "geladeira customizada com o log da heineken",
-            additionalInfo: {
-              dimentions: {
-                width: 80,
-                height: 180,
-              },
-              warranty: 12,
-              madeAt: "2026-02-04T16:40:23.130Z",
-            },
+            // additionalInfo: {
+            //   dimentions: {
+            //     width: 80,
+            //     height: 180,
+            //   },
+            //   warranty: 12,
+            //   madeAt: "2026-02-04T16:40:23.130Z",
+            // },
             avaliable: false,
             imageUrl: "https://example.com/fridge.png",
             createdBy: 1,
@@ -244,21 +243,21 @@ describe("@services/ProductService", () => {
       test("should return product when exists", async () => {
         const product = {
           id: 1,
-          categoryId: "1",
-          brandId: "1",
+          categoryId: 1,
+          brandId: 1,
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
+          // additionalInfo: {
+          //   dimentions: {
+          //     width: 50,
+          //     height: 100,
+          //     thickness: 5,
+          //   },
+          //   warranty: 12,
+          //   material: "madeira",
+          //   madeAt: "2026-02-04T16:40:23.130Z",
+          // },
           avaliable: true,
           imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
@@ -294,21 +293,21 @@ describe("@services/ProductService", () => {
       test("should update and return product", async () => {
         const existingProduct = {
           id: 1,
-          categoryId: "1",
-          brandId: "1",
+          categoryId: 1,
+          brandId: 1,
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
+          // additionalInfo: {
+          //   dimentions: {
+          //     width: 50,
+          //     height: 100,
+          //     thickness: 5,
+          //   },
+          //   warranty: 12,
+          //   material: "madeira",
+          //   madeAt: "2026-02-04T16:40:23.130Z",
+          // },
           avaliable: true,
           imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
@@ -350,21 +349,21 @@ describe("@services/ProductService", () => {
       test("should soft delete product", async () => {
         const product = {
           id: 1,
-          categoryId: "1",
-          brandId: "1",
+          categoryId: 1,
+          brandId: 1,
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
+          // additionalInfo: {
+          //   dimentions: {
+          //     width: 50,
+          //     height: 100,
+          //     thickness: 5,
+          //   },
+          //   warranty: 12,
+          //   material: "madeira",
+          //   madeAt: "2026-02-04T16:40:23.130Z",
+          // },
           avaliable: true,
           imageUrl: "https://example.com/chairs.png",
           createdBy: 1,

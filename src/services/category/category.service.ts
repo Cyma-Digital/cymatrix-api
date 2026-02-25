@@ -3,7 +3,6 @@ import categoryRepository from "@/repositories/category/category.repository"
 import {
   CreateCategoryServiceSchemaInput,
   UpdateCategoryPartialServiceInput,
-  UpdateCategoryServiceInput,
 } from "@/schemas/category/category.schemas"
 
 export class CategoryService {

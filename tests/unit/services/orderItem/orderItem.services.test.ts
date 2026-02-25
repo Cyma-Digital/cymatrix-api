@@ -1,9 +1,5 @@
 import { OrderItemService } from "@/services/orderItem/orderItem.service"
 import { HttpError } from "@/errors/httpError"
-import type {
-  CreateOrderItemData,
-  OrderItemUpdatedData,
-} from "@/repositories/orderItem/orderItem.repository"
 import {
   CreateOrderItemServiceSchemaInput,
   UpdateOrderItemPartialServiceInput,
@@ -57,14 +53,19 @@ describe("@services/OrderItemService", () => {
           test("Should create and return order item", async () => {
             const order = {
               id: 1,
-              userId: "1",
+              userId: 1,
               status: "PENDENTE",
               addressId: "1",
               shippingAddress: {
-                address: {
-                  street: "Rua de ruas",
-                  number: 82,
-                },
+                userId: 1,
+                label: "loja",
+                street: "Rua Zé Silva Souza Soares Santos",
+                number: 2,
+                neighborhood: "Jardim de cactos",
+                city: "Jacareí",
+                state: "SP",
+                zipCode: "987.654-32",
+                isDefault: true,
               },
               total: "135999.99",
               createdBy: 1,
@@ -77,21 +78,21 @@ describe("@services/OrderItemService", () => {
 
             const product = {
               id: 2,
-              categoryId: "1",
-              brandId: "1",
+              categoryId: 1,
+              brandId: 1,
               name: "cadeira customizada heineken",
               price: "209.99",
               description: "cadeira customizada com o log da heineken",
-              additionalInfo: {
-                dimentions: {
-                  width: 50,
-                  height: 100,
-                  thickness: 5,
-                },
-                warranty: 12,
-                material: "madeira",
-                madeAt: "2026-02-04T16:40:23.130Z",
-              },
+              // additionalInfo: {
+              //   dimentions: {
+              //     width: 50,
+              //     height: 100,
+              //     thickness: 5,
+              //   },
+              //   warranty: 12,
+              //   material: "madeira",
+              //   madeAt: "2026-02-04T16:40:23.130Z",
+              // },
               avaliable: true,
               imageUrl: "https://example.com/chairs.png",
               createdBy: 1,
@@ -104,7 +105,7 @@ describe("@services/OrderItemService", () => {
 
             const existentOrderItem = {
               id: 1,
-              orderId: "1",
+              orderId: 1,
               productId: 1,
               quantity: 10,
               unitPrice: "209.99",
@@ -268,7 +269,7 @@ describe("@services/OrderItemService", () => {
             id: 1,
             userId: 1,
             status: "PENDENTE",
-            addressId: "1",
+            addressId: 1,
             shippingAddress: {
               userId: 1,
               label: "indústria",
@@ -317,7 +318,7 @@ describe("@services/OrderItemService", () => {
             deletedBy: null,
           }
 
-          const input: CreateOrderItemData = {
+          const input: CreateOrderItemServiceSchemaInput = {
             productId: 1,
             quantity: 10,
             unitPrice: "209.99",
@@ -378,7 +379,7 @@ describe("@services/OrderItemService", () => {
 
     describe("Error cases", () => {
       test("should throw 404 when product not found", async () => {
-        const input: CreateOrderItemData = {
+        const input: CreateOrderItemServiceSchemaInput = {
           orderId: 1,
           productId: 1,
           quantity: 10,
@@ -404,7 +405,7 @@ describe("@services/OrderItemService", () => {
       test("should return all order items", async () => {
         const orderItems = [
           {
-            orderId: "1",
+            orderId: 1,
             productId: 1,
             quantity: 10,
             unitPrice: "209.99",
@@ -412,7 +413,7 @@ describe("@services/OrderItemService", () => {
             updatedBy: 1,
           },
           {
-            orderId: "1",
+            orderId: 1,
             productId: 2,
             quantity: 10,
             unitPrice: "1209.99",
@@ -420,7 +421,7 @@ describe("@services/OrderItemService", () => {
             updatedBy: 1,
           },
           {
-            orderId: "1",
+            orderId: 1,
             productId: 3,
             quantity: 10,
             unitPrice: "2209.99",
@@ -473,7 +474,7 @@ describe("@services/OrderItemService", () => {
       test("should return order item when exists", async () => {
         const orderItem = {
           id: 1,
-          orderId: "1",
+          orderId: 1,
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
@@ -510,7 +511,7 @@ describe("@services/OrderItemService", () => {
       test("should update and return order item", async () => {
         const existingOrderItem = {
           id: 1,
-          orderId: "1",
+          orderId: 1,
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
@@ -551,7 +552,7 @@ describe("@services/OrderItemService", () => {
       test("should throw 404 when order not found", async () => {
         const existingOrderItem = {
           id: 1,
-          orderId: "1",
+          orderId: 1,
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
@@ -582,7 +583,7 @@ describe("@services/OrderItemService", () => {
       test("should throw 404 when product not found", async () => {
         const existingOrderItem = {
           id: 1,
-          orderId: "1",
+          orderId: 1,
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",
@@ -617,7 +618,7 @@ describe("@services/OrderItemService", () => {
       test("should soft delete order item", async () => {
         const orderItem = {
           id: 1,
-          orderId: "1",
+          orderId: 1,
           productId: 1,
           quantity: 10,
           unitPrice: "209.99",

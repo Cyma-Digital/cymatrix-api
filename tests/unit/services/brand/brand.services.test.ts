@@ -1,10 +1,9 @@
 import { BrandService } from "@/services/brand/brand.service"
 import { HttpError } from "@/errors/httpError"
-import type {
-  CreateBrandData,
-  BrandUpdatedData,
-} from "@/repositories/brand/brand.repository"
-import { UpdateBrandPartialServiceInput } from "@/schemas/brand/brand.schemas"
+import {
+  CreateBrandServiceSchemaInput,
+  UpdateBrandPartialServiceInput,
+} from "@/schemas/brand/brand.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -25,7 +24,7 @@ describe("@services/BrandService", () => {
   describe("create()", () => {
     describe("Success cases", () => {
       test("should create and return brand", async () => {
-        const input: CreateBrandData = {
+        const input: CreateBrandServiceSchemaInput = {
           name: "Heineken",
           slug: "heineken",
           logoUrl: "https://example.com/heineken.png",

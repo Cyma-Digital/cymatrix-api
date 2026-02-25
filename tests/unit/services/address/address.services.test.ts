@@ -79,7 +79,7 @@ describe("@services/AddressService", () => {
       test("Should return all addresses", async () => {
         const addresses = [
           {
-            userId: "1",
+            userId: 1,
             label: "comércio",
             street: "Rua João Silva Souza Soares Santos",
             number: 1,
@@ -97,7 +97,7 @@ describe("@services/AddressService", () => {
             deletedBy: null,
           },
           {
-            userId: "1",
+            userId: 1,
             label: "loja",
             street: "Rua Zé Silva Souza Soares Santos",
             number: 2,
@@ -114,7 +114,7 @@ describe("@services/AddressService", () => {
             deletedBy: null,
           },
           {
-            userId: "1",
+            userId: 1,
             label: "indústria",
             street: "Rua Zeca Silva Souza Soares Santos",
             number: 234,
@@ -178,7 +178,7 @@ describe("@services/AddressService", () => {
       test("Should return address when exists", async () => {
         const address = {
           id: 1,
-          userId: "1",
+          userId: 1,
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
           number: 1,
@@ -221,7 +221,7 @@ describe("@services/AddressService", () => {
       test("Should update and return address", async () => {
         const existingAddress = {
           id: 1,
-          userId: "1",
+          userId: 1,
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
           number: 1,
@@ -270,7 +270,7 @@ describe("@services/AddressService", () => {
       test("Should soft delete address", async () => {
         const address = {
           id: 1,
-          userId: "1",
+          userId: 1,
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
           number: 1,

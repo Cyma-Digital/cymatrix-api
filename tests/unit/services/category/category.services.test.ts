@@ -1,10 +1,9 @@
 import { CategoryService } from "@/services/category/category.service"
 import { HttpError } from "@/errors/httpError"
-import type {
-  CreateCategoryData,
-  CategoryUpdatedData,
-} from "@/repositories/category/category.repository"
-import { UpdateCategoryPartialServiceInput } from "@/schemas/category/category.schemas"
+import {
+  CreateCategoryServiceSchemaInput,
+  UpdateCategoryPartialServiceInput,
+} from "@/schemas/category/category.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -25,7 +24,7 @@ describe("@services/CategoryService", () => {
   describe("create()", () => {
     describe("Success cases", () => {
       test("Should create and return category", async () => {
-        const input: CreateCategoryData = {
+        const input: CreateCategoryServiceSchemaInput = {
           name: "Mesa",
           slug: "mesa",
           iconUrl: "https://example.com/table.png",
