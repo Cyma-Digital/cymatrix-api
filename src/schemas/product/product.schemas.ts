@@ -18,7 +18,7 @@ export const createProductSchema = z.strictObject({
     .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
     .refine((value) => Number(value) > 0, "Price must be greater than 0"),
   description: z.string().min(1, "Description is required"),
-  additionalInfo: z.string().optional(),
+  additionalInfo: z.record(z.any(), z.any()).optional(),
   avaliable: z.boolean(),
   imageUrl: z.url(),
 })
@@ -36,7 +36,7 @@ export const updateProductSchema = z.strictObject({
     .regex(/^\d+(\.\d{1,2})?$/, "Price invalid")
     .refine((value) => Number(value) > 0, "Price must be greater than 0"),
   description: z.string().min(1, "Description is required"),
-  additionalInfo: z.string().optional(),
+  additionalInfo: z.record(z.any(), z.any()).optional(),
   avaliable: z.boolean(),
   imageUrl: z.url(),
 })
@@ -55,7 +55,7 @@ export const updateProductPartialSchema = z.strictObject({
     .refine((value) => Number(value) > 0, "Price must be greater than 0")
     .optional(),
   description: z.string().min(1, "Description is required").optional(),
-  additionalInfo: z.string().optional(),
+  additionalInfo: z.record(z.any(), z.any()).optional(),
   avaliable: z.boolean().optional(),
   imageUrl: z.url().optional(),
   updated: z.number().positive().optional(),

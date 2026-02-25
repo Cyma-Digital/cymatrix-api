@@ -34,16 +34,16 @@ describe("DELETE /api/products/:id", () => {
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
-          // additionalInfo: {
-          //   dimentions: {
-          //     width: 50,
-          //     height: 100,
-          //     thickness: 5,
-          //   },
-          //   warranty: 12,
-          //   material: "madeira",
-          //   madeAt: "2026-02-04T16:40:23.130Z",
-          // },
+          additionalInfo: {
+            dimentions: {
+              width: 50,
+              height: 100,
+              thickness: 5,
+            },
+            warranty: 12,
+            material: "madeira",
+            madeAt: "2026-02-04T16:40:23.130Z",
+          },
           avaliable: true,
           imageUrl: "https://example.com/chairs.png",
           // createdBy: 1,
