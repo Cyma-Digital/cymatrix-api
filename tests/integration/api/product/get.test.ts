@@ -17,7 +17,7 @@ describe("GET /api/products/:id", () => {
         name: "Mesa",
         slug: "mesa",
         iconUrl: "https://example.com/table.png",
-        createdBy: 1,
+        // createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
@@ -26,73 +26,67 @@ describe("GET /api/products/:id", () => {
         logoUrl: "https://example.com/heineken.png",
       })
 
-      await request(app)
-        .post("/api/products")
-        .send({
-          categoryId: "1",
-          brandId: "1",
-          name: "cadeira customizada heineken",
-          price: "209.99",
-          description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
-          avaliable: true,
-          imageUrl: "https://example.com/chairs.png",
-          createdBy: 1,
-        })
+      await request(app).post("/api/products").send({
+        categoryId: "1",
+        brandId: "1",
+        name: "cadeira customizada heineken",
+        price: "209.99",
+        description: "cadeira customizada com o log da heineken",
+        // additionalInfo: {
+        //   dimentions: {
+        //     width: 50,
+        //     height: 100,
+        //     thickness: 5,
+        //   },
+        //   warranty: 12,
+        //   material: "madeira",
+        //   madeAt: "2026-02-04T16:40:23.130Z",
+        // },
+        avaliable: true,
+        imageUrl: "https://example.com/chairs.png",
+        // createdBy: 1,
+      })
 
-      await request(app)
-        .post("/api/products")
-        .send({
-          categoryId: "1",
-          brandId: "1",
-          name: "mesa customizada heineken",
-          price: "1209.99",
-          description: "mesa customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 120,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
-          avaliable: true,
-          imageUrl: "https://example.com/chairs.png",
-          createdBy: 1,
-        })
+      await request(app).post("/api/products").send({
+        categoryId: "1",
+        brandId: "1",
+        name: "mesa customizada heineken",
+        price: "1209.99",
+        description: "mesa customizada com o log da heineken",
+        // additionalInfo: {
+        //   dimentions: {
+        //     width: 120,
+        //     height: 100,
+        //     thickness: 5,
+        //   },
+        //   warranty: 12,
+        //   material: "madeira",
+        //   madeAt: "2026-02-04T16:40:23.130Z",
+        // },
+        avaliable: true,
+        imageUrl: "https://example.com/chairs.png",
+        // createdBy: 1,
+      })
 
-      await request(app)
-        .post("/api/products")
-        .send({
-          categoryId: "1",
-          brandId: "1",
-          name: "geladeira customizada heineken",
-          price: "8209.99",
-          description: "geladeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 80,
-              height: 170,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
-          avaliable: true,
-          imageUrl: "https://example.com/chairs.png",
-          createdBy: 1,
-        })
+      await request(app).post("/api/products").send({
+        categoryId: "1",
+        brandId: "1",
+        name: "geladeira customizada heineken",
+        price: "8209.99",
+        description: "geladeira customizada com o log da heineken",
+        // additionalInfo: {
+        //   dimentions: {
+        //     width: 80,
+        //     height: 170,
+        //   },
+        //   warranty: 12,
+        //   material: "madeira",
+        //   madeAt: "2026-02-04T16:40:23.130Z",
+        // },
+        avaliable: true,
+        imageUrl: "https://example.com/chairs.png",
+        // createdBy: 1,
+      })
 
       const response = await request(app).get("/api/products")
 
@@ -110,7 +104,7 @@ describe("GET /api/products/:id", () => {
         name: "Mesa",
         slug: "mesa",
         iconUrl: "https://example.com/table.png",
-        createdBy: 1,
+        // createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
@@ -127,19 +121,19 @@ describe("GET /api/products/:id", () => {
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
+          // additionalInfo: {
+          //   dimentions: {
+          //     width: 50,
+          //     height: 100,
+          //     thickness: 5,
+          //   },
+          //   warranty: 12,
+          //   material: "madeira",
+          //   madeAt: "2026-02-04T16:40:23.130Z",
+          // },
           avaliable: true,
           imageUrl: "https://example.com/chairs.png",
-          createdBy: 1,
+          // createdBy: 1,
         })
 
       const productId = productCreatedResponse.body.data.id
@@ -157,7 +151,7 @@ describe("GET /api/products/:id", () => {
         name: "Mesa",
         slug: "mesa",
         iconUrl: "https://example.com/table.png",
-        createdBy: 1,
+        // createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
@@ -166,28 +160,26 @@ describe("GET /api/products/:id", () => {
         logoUrl: "https://example.com/heineken.png",
       })
 
-      await request(app)
-        .post("/api/products")
-        .send({
-          categoryId: "1",
-          brandId: "1",
-          name: "cadeira customizada heineken",
-          price: "209.99",
-          description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
-          avaliable: true,
-          imageUrl: "https://example.com/chairs.png",
-          createdBy: 1,
-        })
+      await request(app).post("/api/products").send({
+        categoryId: "1",
+        brandId: "1",
+        name: "cadeira customizada heineken",
+        price: "209.99",
+        description: "cadeira customizada com o log da heineken",
+        // additionalInfo: {
+        //   dimentions: {
+        //     width: 50,
+        //     height: 100,
+        //     thickness: 5,
+        //   },
+        //   warranty: 12,
+        //   material: "madeira",
+        //   madeAt: "2026-02-04T16:40:23.130Z",
+        // },
+        avaliable: true,
+        imageUrl: "https://example.com/chairs.png",
+        // createdBy: 1,
+      })
 
       const nonExistentProduct = 2
 

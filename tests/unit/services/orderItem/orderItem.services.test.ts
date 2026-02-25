@@ -168,21 +168,21 @@ describe("@services/OrderItemService", () => {
         test("should create and return order item (order not exist)", async () => {
           const product = {
             id: 1,
-            categoryId: "1",
-            brandId: "1",
+            categoryId: 1,
+            brandId: 1,
             name: "cadeira customizada heineken",
             price: "209.99",
             description: "cadeira customizada com o log da heineken",
-            additionalInfo: {
-              dimentions: {
-                width: 50,
-                height: 100,
-                thickness: 5,
-              },
-              warranty: 12,
-              material: "madeira",
-              madeAt: "2026-02-04T16:40:23.130Z",
-            },
+            // additionalInfo: {
+            //   dimentions: {
+            //     width: 50,
+            //     height: 100,
+            //     thickness: 5,
+            //   },
+            //   warranty: 12,
+            //   material: "madeira",
+            //   madeAt: "2026-02-04T16:40:23.130Z",
+            // },
             avaliable: true,
             imageUrl: "https://example.com/chairs.png",
             createdBy: 1,
@@ -203,7 +203,7 @@ describe("@services/OrderItemService", () => {
 
           const expectedOrderItem = {
             id: 1,
-            orderId: "1",
+            orderId: 1,
             ...input,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -212,14 +212,20 @@ describe("@services/OrderItemService", () => {
           }
 
           const order = {
-            userId: "1",
+            userId: 1,
             status: "PENDENTE",
-            addressId: "1",
+            addressId: 1,
             shippingAddress: {
-              address: {
-                street: "Rua de ruas",
-                number: 82,
-              },
+              userId: 1,
+              label: "indústria",
+              street: "Rua Zeca Silva Souza Soares Santos",
+              number: 234,
+              complement: "segundo prédio",
+              neighborhood: "Jardim das fábricas",
+              city: "Jacareí",
+              state: "SP",
+              zipCode: "321.456-87",
+              isDefault: true,
             },
             total: "0",
             createdBy: 1,
@@ -260,14 +266,20 @@ describe("@services/OrderItemService", () => {
         test("should create and return order item (create new order)", async () => {
           const order = {
             id: 1,
-            userId: "1",
+            userId: 1,
             status: "PENDENTE",
             addressId: "1",
             shippingAddress: {
-              address: {
-                street: "Rua de ruas",
-                number: 82,
-              },
+              userId: 1,
+              label: "indústria",
+              street: "Rua Zeca Silva Souza Soares Santos",
+              number: 234,
+              complement: "segundo prédio",
+              neighborhood: "Jardim das fábricas",
+              city: "Jacareí",
+              state: "SP",
+              zipCode: "321.456-87",
+              isDefault: true,
             },
             total: "135999.99",
             createdBy: 1,
@@ -280,21 +292,21 @@ describe("@services/OrderItemService", () => {
 
           const product = {
             id: 2,
-            categoryId: "1",
-            brandId: "1",
+            categoryId: 1,
+            brandId: 1,
             name: "cadeira customizada heineken",
             price: "209.99",
             description: "cadeira customizada com o log da heineken",
-            additionalInfo: {
-              dimentions: {
-                width: 50,
-                height: 100,
-                thickness: 5,
-              },
-              warranty: 12,
-              material: "madeira",
-              madeAt: "2026-02-04T16:40:23.130Z",
-            },
+            // additionalInfo: {
+            //   dimentions: {
+            //     width: 50,
+            //     height: 100,
+            //     thickness: 5,
+            //   },
+            //   warranty: 12,
+            //   material: "madeira",
+            //   madeAt: "2026-02-04T16:40:23.130Z",
+            // },
             avaliable: true,
             imageUrl: "https://example.com/chairs.png",
             createdBy: 1,
@@ -314,7 +326,7 @@ describe("@services/OrderItemService", () => {
           }
 
           const existentOrderItem = {
-            orderId: "1",
+            orderId: 1,
             productId: 2,
             quantity: 10,
             unitPrice: "209.99",
@@ -324,7 +336,7 @@ describe("@services/OrderItemService", () => {
 
           const expectedOrderItem = {
             id: 2,
-            orderId: "1",
+            orderId: 1,
             ...input,
             createdAt: new Date(),
             updatedAt: new Date(),

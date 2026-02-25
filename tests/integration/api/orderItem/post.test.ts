@@ -17,7 +17,7 @@ describe("POST /api/order-items", () => {
         name: "Mesa",
         slug: "mesa",
         iconUrl: "https://example.com/table.png",
-        createdBy: 1,
+        // createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
@@ -26,31 +26,29 @@ describe("POST /api/order-items", () => {
         logoUrl: "https://example.com/heineken.png",
       })
 
-      await request(app)
-        .post("/api/products")
-        .send({
-          categoryId: "1",
-          brandId: "1",
-          name: "cadeira customizada heineken",
-          price: "209.99",
-          description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
-          avaliable: true,
-          imageUrl: "https://example.com/chairs.png",
-          createdBy: 1,
-        })
+      await request(app).post("/api/products").send({
+        categoryId: "1",
+        brandId: "1",
+        name: "cadeira customizada heineken",
+        price: "209.99",
+        description: "cadeira customizada com o log da heineken",
+        // additionalInfo: {
+        //   dimentions: {
+        //     width: 50,
+        //     height: 100,
+        //     thickness: 5,
+        //   },
+        //   warranty: 12,
+        //   material: "madeira",
+        //   madeAt: "2026-02-04T16:40:23.130Z",
+        // },
+        avaliable: true,
+        imageUrl: "https://example.com/chairs.png",
+        // createdBy: 1,
+      })
 
       const payload = {
-        productId: 1,
+        productId: "1",
         quantity: 2,
         unitPrice: "120.89",
       }
@@ -62,7 +60,10 @@ describe("POST /api/order-items", () => {
 
       expect(response.body).toMatchObject({
         status: "success",
-        data: payload,
+        data: {
+          ...payload,
+          productId: 1,
+        },
       })
     })
 
@@ -72,7 +73,7 @@ describe("POST /api/order-items", () => {
           name: "Mesa",
           slug: "mesa",
           iconUrl: "https://example.com/table.png",
-          createdBy: 1,
+          // createdBy: 1,
         })
 
         await request(app).post("/api/brands").send({
@@ -81,63 +82,59 @@ describe("POST /api/order-items", () => {
           logoUrl: "https://example.com/heineken.png",
         })
 
-        await request(app)
-          .post("/api/products")
-          .send({
-            categoryId: "1",
-            brandId: "1",
-            name: "cadeira customizada heineken",
-            price: "200.99",
-            description: "cadeira customizada com o log da heineken",
-            additionalInfo: {
-              dimentions: {
-                width: 50,
-                height: 100,
-                thickness: 5,
-              },
-              warranty: 12,
-              material: "madeira",
-              madeAt: "2026-02-04T16:40:23.130Z",
-            },
-            avaliable: true,
-            imageUrl: "https://example.com/chairs.png",
-            createdBy: 1,
-          })
+        await request(app).post("/api/products").send({
+          categoryId: "1",
+          brandId: "1",
+          name: "cadeira customizada heineken",
+          price: "200.99",
+          description: "cadeira customizada com o log da heineken",
+          // additionalInfo: {
+          //   dimentions: {
+          //     width: 50,
+          //     height: 100,
+          //     thickness: 5,
+          //   },
+          //   warranty: 12,
+          //   material: "madeira",
+          //   madeAt: "2026-02-04T16:40:23.130Z",
+          // },
+          avaliable: true,
+          imageUrl: "https://example.com/chairs.png",
+          // createdBy: 1,
+        })
 
-        await request(app)
-          .post("/api/products")
-          .send({
-            categoryId: "1",
-            brandId: "1",
-            name: "mesa customizada heineken",
-            price: "1209.01",
-            description: "mesa customizada com o log da heineken",
-            additionalInfo: {
-              dimentions: {
-                width: 120,
-                height: 100,
-                thickness: 5,
-              },
-              warranty: 12,
-              material: "madeira",
-              madeAt: "2026-02-04T16:40:23.130Z",
-            },
-            avaliable: true,
-            imageUrl: "https://example.com/chairs.png",
-            createdBy: 1,
-          })
+        await request(app).post("/api/products").send({
+          categoryId: "1",
+          brandId: "1",
+          name: "mesa customizada heineken",
+          price: "1209.01",
+          description: "mesa customizada com o log da heineken",
+          // additionalInfo: {
+          //   dimentions: {
+          //     width: 120,
+          //     height: 100,
+          //     thickness: 5,
+          //   },
+          //   warranty: 12,
+          //   material: "madeira",
+          //   madeAt: "2026-02-04T16:40:23.130Z",
+          // },
+          avaliable: true,
+          imageUrl: "https://example.com/chairs.png",
+          // createdBy: 1,
+        })
 
         await request(app)
           .post("/api/order-items")
           .send({
-            productId: 1,
+            productId: "1",
             quantity: 2,
             unitPrice: "200.99",
           })
           .expect(201)
 
         const payload = {
-          productId: 1,
+          productId: "1",
           quantity: 2,
           unitPrice: "1209.01",
         }
@@ -149,7 +146,10 @@ describe("POST /api/order-items", () => {
 
         expect(response.body).toMatchObject({
           status: "success",
-          data: payload,
+          data: {
+            ...payload,
+            productId: 1,
+          },
         })
       })
     })

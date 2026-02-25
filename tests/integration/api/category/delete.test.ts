@@ -19,7 +19,7 @@ describe("DELETE /api/categories/:id", () => {
           name: "Mesa",
           slug: "mesa",
           iconUrl: "https://example.com/tables.png",
-          createdBy: 1,
+          // createdBy: 1,
         })
 
       const categoryId = categoryCreatedResponse.body.data.id

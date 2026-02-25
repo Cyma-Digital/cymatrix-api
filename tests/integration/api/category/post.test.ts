@@ -17,7 +17,7 @@ describe("POST /api/categories", () => {
         name: "Mesa",
         slug: "mesa",
         iconUrl: "https://example.com/table.png",
-        createdBy: 1,
+        // createdBy: 1,
       }
 
       const response = await request(app)

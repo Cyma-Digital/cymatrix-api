@@ -17,7 +17,7 @@ describe("PATCH /api/products/:id", () => {
         name: "Mesa",
         slug: "mesa",
         iconUrl: "https://example.com/table.png",
-        createdBy: 1,
+        // createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
@@ -34,22 +34,22 @@ describe("PATCH /api/products/:id", () => {
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
+          // additionalInfo: {
+          //   dimentions: {
+          //     width: 50,
+          //     height: 100,
+          //     thickness: 5,
+          //   },
+          //   warranty: 12,
+          //   material: "madeira",
+          //   madeAt: "2026-02-04T16:40:23.130Z",
+          // },
           avaliable: true,
           imageUrl: "https://example.com/chairs.png",
-          createdBy: 1,
+          // createdBy: 1,
         })
 
-      const productId = productCreatedResponse.body.data.id
+      const { id } = productCreatedResponse.body.data
 
       const payload = {
         name: "cadeira heineken",
@@ -57,7 +57,7 @@ describe("PATCH /api/products/:id", () => {
       }
 
       const response = await request(app)
-        .patch(`/api/products/${productId}`)
+        .patch(`/api/products/${id}`)
         .send(payload)
 
       expect(response.status).toBe(200)
@@ -76,7 +76,7 @@ describe("PATCH /api/products/:id", () => {
         name: "Mesa",
         slug: "mesa",
         iconUrl: "https://example.com/table.png",
-        createdBy: 1,
+        // createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
@@ -93,31 +93,31 @@ describe("PATCH /api/products/:id", () => {
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
+          // additionalInfo: {
+          //   dimentions: {
+          //     width: 50,
+          //     height: 100,
+          //     thickness: 5,
+          //   },
+          //   warranty: 12,
+          //   material: "madeira",
+          //   madeAt: "2026-02-04T16:40:23.130Z",
+          // },
           avaliable: true,
           imageUrl: "https://example.com/chairs.png",
-          createdBy: 1,
+          // createdBy: 1,
         })
 
-      const productId = productCreatedResponse.body.data.id
+      const { id } = productCreatedResponse.body.data
 
       const payload = {
-        categoryId: 2,
+        categoryId: "2",
         name: "cadeira heineken",
-        price: "599,99",
+        price: "599.99",
       }
 
       const response = await request(app)
-        .patch(`/api/products/${productId}`)
+        .patch(`/api/products/${id}`)
         .send(payload)
 
       expect(response.status).toBe(404)
@@ -132,7 +132,7 @@ describe("PATCH /api/products/:id", () => {
         name: "Mesa",
         slug: "mesa",
         iconUrl: "https://example.com/table.png",
-        createdBy: 1,
+        // createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
@@ -149,27 +149,27 @@ describe("PATCH /api/products/:id", () => {
           name: "cadeira customizada heineken",
           price: "209.99",
           description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
+          // additionalInfo: {
+          //   dimentions: {
+          //     width: 50,
+          //     height: 100,
+          //     thickness: 5,
+          //   },
+          //   warranty: 12,
+          //   material: "madeira",
+          //   madeAt: "2026-02-04T16:40:23.130Z",
+          // },
           avaliable: true,
           imageUrl: "https://example.com/chairs.png",
-          createdBy: 1,
+          // createdBy: 1,
         })
 
       const productId = productCreatedResponse.body.data.id
 
       const payload = {
-        brandId: 2,
+        brandId: "2",
         name: "cadeira heineken",
-        price: "599,99",
+        price: "599.99",
       }
 
       const response = await request(app)

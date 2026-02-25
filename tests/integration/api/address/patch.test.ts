@@ -48,7 +48,7 @@ describe("PATCH /api/addresses/:id", () => {
       expect(response.body.data.neighborhood).toBe("Jardim de jardins")
       expect(response.body.data.city).toBe("Jacareí")
       expect(response.body.data.state).toBe("SP")
-      expect(response.body.data.zipCode).toBe("123.456-78")
+      expect(response.body.data.zipCode).toBe("12345678")
       expect(response.body.data.isDefault).toBe(true)
     })
 

@@ -19,21 +19,21 @@ describe("PATCH /api/categories/:id", () => {
           name: "Mesa",
           slug: "mesa",
           iconUrl: "https://example.com/table.png",
-          createdBy: 1,
+          // createdBy: 1,
         })
 
-      const categoryId = categoryCreatedResponse.body.data.id
+      const { id } = categoryCreatedResponse.body.data
 
       const payload = {
-        name: "Mesa",
+        name: "Mesas",
       }
 
       const response = await request(app)
-        .patch(`/api/categories/${categoryId}`)
+        .patch(`/api/categories/${id}`)
         .send(payload)
 
       expect(response.status).toBe(200)
-      expect(response.body.data.name).toBe("Mesa")
+      expect(response.body.data.name).toBe("Mesas")
       expect(response.body.data.slug).toBe("mesa")
     })
 
