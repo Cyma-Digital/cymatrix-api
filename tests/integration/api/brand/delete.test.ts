@@ -16,7 +16,7 @@ describe("DELETE /api/brands/:id", () => {
       const brandCreatedResponse = await request(app).post("/api/brands").send({
         name: "Heineken",
         slug: "heineken",
-        logoUrl: "medias/hnk.png",
+        logoUrl: "https://example.com/heineken.png",
       })
 
       const brandId = brandCreatedResponse.body.data.id

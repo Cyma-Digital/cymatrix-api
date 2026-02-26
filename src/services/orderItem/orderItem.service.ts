@@ -6,8 +6,12 @@ import orderRepository, {
 import productRepository from "@/repositories/product/product.repository"
 import orderItemRepository, {
   OrderItemUpdatedData,
-  CreateOrderItemData,
 } from "@/repositories/orderItem/orderItem.repository"
+import {
+  CreateOrderItemServiceSchemaInput,
+  UpdateOrderItemPartialServiceInput,
+  UpdateOrderItemServiceInput,
+} from "@/schemas/orderItem/orderItem.schemas"
 
 export class OrderItemService {
   constructor(
@@ -16,7 +20,7 @@ export class OrderItemService {
     private productRepo = productRepository,
   ) {}
 
-  async create(data: CreateOrderItemData, userId: number) {
+  async create(data: CreateOrderItemServiceSchemaInput, userId: number) {
     const product = await this.productRepo.getById(data.productId)
 
     if (!product) {
@@ -97,7 +101,10 @@ export class OrderItemService {
     return orderItem
   }
 
-  async updatePartial(orderItemId: number, data: OrderItemUpdatedData) {
+  async updatePartial(
+    orderItemId: number,
+    data: UpdateOrderItemPartialServiceInput,
+  ) {
     const orderItem = await this.repository.getById(orderItemId)
 
     if (!orderItem) {

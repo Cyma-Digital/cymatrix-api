@@ -1,5 +1,12 @@
+import {
+  addressIdSchema,
+  CreateAddressDto,
+  createAddressSchema,
+  UpdateAddressDto,
+  updateAddressPartialSchema,
+  updateAddressSchema,
+} from "@/schemas/address/address.schemas"
 import addressService from "@/services/address/address.service"
-import { validateEmptyBody, validateIdParam } from "@utils/http"
 import { Request, Response, NextFunction } from "express"
 
 export async function create(
@@ -8,34 +15,13 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const {
-      userId,
-      label,
-      street,
-      number,
-      complement,
-      neighborhood,
-      city,
-      state,
-      zipCode,
-      isDefault,
-      createdBy,
-      updatedBy,
-    } = req.body
+    // const data = req.body as CreateAddressDto
+    const data = createAddressSchema.parse(req.body)
 
     const idUser = 1
 
     const address = await addressService.create({
-      userId: idUser,
-      label,
-      street,
-      number,
-      complement,
-      neighborhood,
-      city,
-      state,
-      zipCode,
-      isDefault,
+      ...data,
       createdBy: idUser,
       updatedBy: idUser,
     })
@@ -64,7 +50,7 @@ export async function list(req: Request, res: Response, next: NextFunction) {
 
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
-    const id = validateIdParam(req)
+    const { id } = addressIdSchema.parse(req.params)
 
     const address = await addressService.getById(id)
 
@@ -80,10 +66,15 @@ export async function updatePartial(
   next: NextFunction,
 ) {
   try {
-    const id = validateIdParam(req)
-    const data = validateEmptyBody(req)
+    const { id } = addressIdSchema.parse(req.params)
+    // const data = req.body as UpdateAddressDto
+    const data = updateAddressPartialSchema.parse(req.body)
+    const userId = 1
 
-    const address = await addressService.updatePartial(id, data)
+    const address = await addressService.updatePartial(id, {
+      ...data,
+      updatedBy: userId,
+    })
 
     return res.status(200).send({ status: "success", data: address })
   } catch (error) {
@@ -97,7 +88,7 @@ export async function deleteAddress(
   next: NextFunction,
 ) {
   try {
-    const id = validateIdParam(req)
+    const { id } = addressIdSchema.parse(req.params)
     const userId = 1
 
     await addressService.delete(id, userId)

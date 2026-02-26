@@ -18,8 +18,8 @@ describe("DELETE /api/categories/:id", () => {
         .send({
           name: "Mesa",
           slug: "mesa",
-          iconUrl: "medias/table-icon.png",
-          createdBy: 1,
+          iconUrl: "https://example.com/tables.png",
+          // createdBy: 1,
         })
 
       const categoryId = categoryCreatedResponse.body.data.id

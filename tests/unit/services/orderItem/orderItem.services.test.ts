@@ -1,9 +1,9 @@
 import { OrderItemService } from "@/services/orderItem/orderItem.service"
 import { HttpError } from "@/errors/httpError"
-import type {
-  CreateOrderItemData,
-  OrderItemUpdatedData,
-} from "@/repositories/orderItem/orderItem.repository"
+import {
+  CreateOrderItemServiceSchemaInput,
+  UpdateOrderItemPartialServiceInput,
+} from "@/schemas/orderItem/orderItem.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -55,12 +55,17 @@ describe("@services/OrderItemService", () => {
               id: 1,
               userId: 1,
               status: "PENDENTE",
-              addressId: 1,
+              addressId: "1",
               shippingAddress: {
-                address: {
-                  street: "Rua de ruas",
-                  number: 82,
-                },
+                userId: 1,
+                label: "loja",
+                street: "Rua Zé Silva Souza Soares Santos",
+                number: 2,
+                neighborhood: "Jardim de cactos",
+                city: "Jacareí",
+                state: "SP",
+                zipCode: "987.654-32",
+                isDefault: true,
               },
               total: "135999.99",
               createdBy: 1,
@@ -78,18 +83,18 @@ describe("@services/OrderItemService", () => {
               name: "cadeira customizada heineken",
               price: "209.99",
               description: "cadeira customizada com o log da heineken",
-              additionalInfo: {
-                dimentions: {
-                  width: 50,
-                  height: 100,
-                  thickness: 5,
-                },
-                warranty: 12,
-                material: "madeira",
-                madeAt: "2026-02-04T16:40:23.130Z",
-              },
+              // additionalInfo: {
+              //   dimentions: {
+              //     width: 50,
+              //     height: 100,
+              //     thickness: 5,
+              //   },
+              //   warranty: 12,
+              //   material: "madeira",
+              //   madeAt: "2026-02-04T16:40:23.130Z",
+              // },
               avaliable: true,
-              imageUrl: "medias/chair.png",
+              imageUrl: "https://example.com/chairs.png",
               createdBy: 1,
               updatedBy: 1,
               createdAt: new Date(),
@@ -112,7 +117,7 @@ describe("@services/OrderItemService", () => {
               deletedBy: null,
             }
 
-            const input: CreateOrderItemData = {
+            const input: CreateOrderItemServiceSchemaInput = {
               orderId: 1,
               productId: 2,
               quantity: 10,
@@ -169,18 +174,18 @@ describe("@services/OrderItemService", () => {
             name: "cadeira customizada heineken",
             price: "209.99",
             description: "cadeira customizada com o log da heineken",
-            additionalInfo: {
-              dimentions: {
-                width: 50,
-                height: 100,
-                thickness: 5,
-              },
-              warranty: 12,
-              material: "madeira",
-              madeAt: "2026-02-04T16:40:23.130Z",
-            },
+            // additionalInfo: {
+            //   dimentions: {
+            //     width: 50,
+            //     height: 100,
+            //     thickness: 5,
+            //   },
+            //   warranty: 12,
+            //   material: "madeira",
+            //   madeAt: "2026-02-04T16:40:23.130Z",
+            // },
             avaliable: true,
-            imageUrl: "medias/chair.png",
+            imageUrl: "https://example.com/chairs.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -189,7 +194,7 @@ describe("@services/OrderItemService", () => {
             deletedBy: null,
           }
 
-          const input: CreateOrderItemData = {
+          const input: CreateOrderItemServiceSchemaInput = {
             productId: 1,
             quantity: 10,
             unitPrice: "209.99",
@@ -212,10 +217,16 @@ describe("@services/OrderItemService", () => {
             status: "PENDENTE",
             addressId: 1,
             shippingAddress: {
-              address: {
-                street: "Rua de ruas",
-                number: 82,
-              },
+              userId: 1,
+              label: "indústria",
+              street: "Rua Zeca Silva Souza Soares Santos",
+              number: 234,
+              complement: "segundo prédio",
+              neighborhood: "Jardim das fábricas",
+              city: "Jacareí",
+              state: "SP",
+              zipCode: "321.456-87",
+              isDefault: true,
             },
             total: "0",
             createdBy: 1,
@@ -260,10 +271,16 @@ describe("@services/OrderItemService", () => {
             status: "PENDENTE",
             addressId: 1,
             shippingAddress: {
-              address: {
-                street: "Rua de ruas",
-                number: 82,
-              },
+              userId: 1,
+              label: "indústria",
+              street: "Rua Zeca Silva Souza Soares Santos",
+              number: 234,
+              complement: "segundo prédio",
+              neighborhood: "Jardim das fábricas",
+              city: "Jacareí",
+              state: "SP",
+              zipCode: "321.456-87",
+              isDefault: true,
             },
             total: "135999.99",
             createdBy: 1,
@@ -281,18 +298,18 @@ describe("@services/OrderItemService", () => {
             name: "cadeira customizada heineken",
             price: "209.99",
             description: "cadeira customizada com o log da heineken",
-            additionalInfo: {
-              dimentions: {
-                width: 50,
-                height: 100,
-                thickness: 5,
-              },
-              warranty: 12,
-              material: "madeira",
-              madeAt: "2026-02-04T16:40:23.130Z",
-            },
+            // additionalInfo: {
+            //   dimentions: {
+            //     width: 50,
+            //     height: 100,
+            //     thickness: 5,
+            //   },
+            //   warranty: 12,
+            //   material: "madeira",
+            //   madeAt: "2026-02-04T16:40:23.130Z",
+            // },
             avaliable: true,
-            imageUrl: "medias/chair.png",
+            imageUrl: "https://example.com/chairs.png",
             createdBy: 1,
             updatedBy: 1,
             createdAt: new Date(),
@@ -301,7 +318,7 @@ describe("@services/OrderItemService", () => {
             deletedBy: null,
           }
 
-          const input: CreateOrderItemData = {
+          const input: CreateOrderItemServiceSchemaInput = {
             productId: 1,
             quantity: 10,
             unitPrice: "209.99",
@@ -362,7 +379,7 @@ describe("@services/OrderItemService", () => {
 
     describe("Error cases", () => {
       test("should throw 404 when product not found", async () => {
-        const input: CreateOrderItemData = {
+        const input: CreateOrderItemServiceSchemaInput = {
           orderId: 1,
           productId: 1,
           quantity: 10,
@@ -506,9 +523,10 @@ describe("@services/OrderItemService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderItemUpdatedData = {
+        const updateData: UpdateOrderItemPartialServiceInput = {
           quantity: 2,
           unitPrice: "889.99",
+          updatedBy: 1,
         }
 
         const updatedOrderItem = {
@@ -546,8 +564,9 @@ describe("@services/OrderItemService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderItemUpdatedData = {
+        const updateData: UpdateOrderItemPartialServiceInput = {
           orderId: 2,
+          updatedBy: 1,
         }
 
         mockRepository.getById.mockResolvedValue(existingOrderItem)
@@ -576,8 +595,9 @@ describe("@services/OrderItemService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderItemUpdatedData = {
+        const updateData: UpdateOrderItemPartialServiceInput = {
           productId: 2,
+          updatedBy: 1,
         }
 
         mockRepository.getById.mockResolvedValue(existingOrderItem)

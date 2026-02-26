@@ -4,6 +4,10 @@ import type {
   CreateAddressData,
   AddressUpdatedData,
 } from "@/repositories/address/address.repository"
+import {
+  CreateAddressServiceSchemaInput,
+  UpdateAddressPartialServiceInput,
+} from "@/schemas/address/address.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -24,7 +28,7 @@ describe("@services/AddressService", () => {
   describe("create()", () => {
     describe("Success cases", () => {
       test("Should create and return address", async () => {
-        const input: CreateAddressData = {
+        const input: CreateAddressServiceSchemaInput = {
           userId: 1,
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
@@ -235,7 +239,7 @@ describe("@services/AddressService", () => {
           deletedBy: null,
         }
 
-        const updateData: AddressUpdatedData = {
+        const updateData: UpdateAddressPartialServiceInput = {
           street: "Rua Paulo de Paula",
           number: 28,
           updatedBy: 1,

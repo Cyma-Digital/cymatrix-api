@@ -1,13 +1,14 @@
 import { HttpError } from "@/errors/httpError"
-import brandRepository, {
-  BrandUpdatedData,
-  CreateBrandData,
-} from "@/repositories/brand/brand.repository"
+import brandRepository from "@/repositories/brand/brand.repository"
+import {
+  CreateBrandServiceSchemaInput,
+  UpdateBrandPartialServiceInput,
+} from "@/schemas/brand/brand.schemas"
 
 export class BrandService {
   constructor(private repository = brandRepository) {}
 
-  async create(data: CreateBrandData) {
+  async create(data: CreateBrandServiceSchemaInput) {
     return await this.repository.create(data)
   }
 
@@ -24,7 +25,7 @@ export class BrandService {
     return brand
   }
 
-  async updatePartial(brandId: number, data: BrandUpdatedData) {
+  async updatePartial(brandId: number, data: UpdateBrandPartialServiceInput) {
     const brand = await this.repository.getById(brandId)
 
     if (!brand) {

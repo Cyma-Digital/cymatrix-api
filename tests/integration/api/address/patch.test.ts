@@ -16,7 +16,7 @@ describe("PATCH /api/addresses/:id", () => {
       const addressCreatedResponse = await request(app)
         .post("/api/addresses")
         .send({
-          userId: 1,
+          userId: "1",
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
           number: 1,
@@ -48,13 +48,13 @@ describe("PATCH /api/addresses/:id", () => {
       expect(response.body.data.neighborhood).toBe("Jardim de jardins")
       expect(response.body.data.city).toBe("Jacareí")
       expect(response.body.data.state).toBe("SP")
-      expect(response.body.data.zipCode).toBe("123.456-78")
+      expect(response.body.data.zipCode).toBe("12345678")
       expect(response.body.data.isDefault).toBe(true)
     })
 
     test("Should return 404 (not found)", async () => {
       await request(app).patch("/api/addresses").send({
-        userId: 1,
+        userId: "1",
         label: "comércio",
         street: "Rua João Silva Souza Soares Santos",
         number: 1,

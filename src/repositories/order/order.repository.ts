@@ -5,7 +5,7 @@ export interface CreateOrderData {
   userId: number
   status: "APROVADO" | "ENVIADO" | "CANCELADO" | "PENDENTE"
   addressId?: number
-  shippingAddress: any
+  shippingAddress?: any
   total: string
   createdBy: number
   updatedBy: number

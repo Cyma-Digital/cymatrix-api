@@ -1,9 +1,9 @@
 import { ProductService } from "@/services/product/product.service"
 import { HttpError } from "@/errors/httpError"
-import type {
-  CreateProductData,
-  ProductUpdatedData,
-} from "@/repositories/product/product.repository"
+import {
+  CreateProductServiceSchemaInput,
+  UpdateProductPartialServiceInput,
+} from "@/schemas/product/product.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -48,7 +48,7 @@ describe("@services/ProductService", () => {
           id: 1,
           name: "Mesas",
           slug: "mesas",
-          iconUrl: "medias/table-icon.png",
+          iconUrl: "https://example.com/table.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -61,7 +61,7 @@ describe("@services/ProductService", () => {
           id: 1,
           name: "Heineken",
           slug: "heineken",
-          logoUrl: "medias/hnk.png",
+          logoUrl: "https://example.com/heineken.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -70,7 +70,7 @@ describe("@services/ProductService", () => {
           deletedBy: null,
         }
 
-        const input: CreateProductData = {
+        const input: CreateProductServiceSchemaInput = {
           categoryId: 1,
           brandId: 1,
           name: "cadeira customizada heineken",
@@ -87,7 +87,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
           updatedBy: 1,
         }
@@ -152,7 +152,7 @@ describe("@services/ProductService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: true,
-            imageUrl: "medias/chair.png",
+            imageUrl: "https://example.com/chairs.png",
             createdBy: 1,
             updatedBy: 1,
           },
@@ -173,7 +173,7 @@ describe("@services/ProductService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: true,
-            imageUrl: "medias/table.png",
+            imageUrl: "https://example.com/table.png",
             createdBy: 1,
             updatedBy: 1,
           },
@@ -192,7 +192,7 @@ describe("@services/ProductService", () => {
               madeAt: "2026-02-04T16:40:23.130Z",
             },
             avaliable: false,
-            imageUrl: "medias/fridge.png",
+            imageUrl: "https://example.com/fridge.png",
             createdBy: 1,
             updatedBy: 1,
           },
@@ -259,7 +259,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -309,7 +309,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),
@@ -318,7 +318,7 @@ describe("@services/ProductService", () => {
           deletedBy: null,
         }
 
-        const updateData: ProductUpdatedData = {
+        const updateData: UpdateProductPartialServiceInput = {
           name: "cadeira heineken",
           avaliable: false,
           updatedBy: 1,
@@ -365,7 +365,7 @@ describe("@services/ProductService", () => {
             madeAt: "2026-02-04T16:40:23.130Z",
           },
           avaliable: true,
-          imageUrl: "medias/chair.png",
+          imageUrl: "https://example.com/chairs.png",
           createdBy: 1,
           updatedBy: 1,
           createdAt: new Date(),

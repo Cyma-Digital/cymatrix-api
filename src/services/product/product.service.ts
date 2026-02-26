@@ -1,10 +1,12 @@
 import { HttpError } from "@/errors/httpError"
 import brandRepository from "@/repositories/brand/brand.repository"
 import categoryRepository from "@/repositories/category/category.repository"
-import productRepository, {
-  ProductUpdatedData,
-  CreateProductData,
-} from "@/repositories/product/product.repository"
+import productRepository from "@/repositories/product/product.repository"
+import {
+  CreateProductServiceSchemaInput,
+  UpdateProductPartialServiceInput,
+  UpdateProductServiceInput,
+} from "@/schemas/product/product.schemas"
 
 export class ProductService {
   constructor(
@@ -13,7 +15,7 @@ export class ProductService {
     private categoryRepo = categoryRepository,
   ) {}
 
-  async create(data: CreateProductData) {
+  async create(data: CreateProductServiceSchemaInput) {
     const brand = await this.brandRepo.getById(data.brandId)
 
     if (!brand) {
@@ -42,7 +44,10 @@ export class ProductService {
     return product
   }
 
-  async updatePartial(productId: number, data: ProductUpdatedData) {
+  async updatePartial(
+    productId: number,
+    data: UpdateProductPartialServiceInput,
+  ) {
     const product = await this.repository.getById(productId)
 
     if (!product) {

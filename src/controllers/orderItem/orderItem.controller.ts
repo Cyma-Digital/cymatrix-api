@@ -1,3 +1,10 @@
+import {
+  CreateOrderItemDto,
+  createOrderItemSchema,
+  orderItemIdSchema,
+  UpdateOrderItemDto,
+  updateOrderItemPartialSchema,
+} from "@/schemas/orderItem/orderItem.schemas"
 import orderItemService from "@/services/orderItem/orderItem.service"
 import { validateEmptyBody, validateIdParam } from "@utils/http"
 import { Request, Response, NextFunction } from "express"
@@ -8,17 +15,13 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const { orderId, productId, quantity, unitPrice, createdBy, updatedBy } =
-      req.body
-
+    // const data = req.body as CreateOrderItemDto
+    const data = createOrderItemSchema.parse(req.body)
     const userId = 1
 
     const orderItem = await orderItemService.create(
       {
-        orderId,
-        productId,
-        quantity,
-        unitPrice,
+        ...data,
         createdBy: userId,
         updatedBy: userId,
       },
@@ -49,7 +52,7 @@ export async function list(req: Request, res: Response, next: NextFunction) {
 
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
-    const id = validateIdParam(req)
+    const { id } = orderItemIdSchema.parse(req.params)
 
     const orderItem = await orderItemService.getById(id)
 
@@ -65,10 +68,15 @@ export async function updatePartial(
   next: NextFunction,
 ) {
   try {
-    const id = validateIdParam(req)
-    const data = validateEmptyBody(req)
+    const { id } = orderItemIdSchema.parse(req.params)
+    // const data = req.body as UpdateOrderItemDto
+    const data = updateOrderItemPartialSchema.parse(req.body)
+    const userId = 1
 
-    const orderItem = await orderItemService.updatePartial(id, data)
+    const orderItem = await orderItemService.updatePartial(id, {
+      ...data,
+      updatedBy: userId,
+    })
 
     return res.status(200).send({ status: "success", data: orderItem })
   } catch (error) {
@@ -82,7 +90,7 @@ export async function deleteOrderItem(
   next: NextFunction,
 ) {
   try {
-    const id = validateIdParam(req)
+    const { id } = orderItemIdSchema.parse(req.params)
     const userId = 1
 
     await orderItemService.delete(id, userId)

@@ -16,8 +16,8 @@ describe("POST /api/categories", () => {
       const payload = {
         name: "Mesa",
         slug: "mesa",
-        iconUrl: "medias/table-icon.png",
-        createdBy: 1,
+        iconUrl: "https://example.com/table.png",
+        // createdBy: 1,
       }
 
       const response = await request(app)

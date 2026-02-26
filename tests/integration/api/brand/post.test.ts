@@ -16,7 +16,7 @@ describe("POST /api/brands", () => {
       const payload = {
         name: "Heineken",
         slug: "heineken",
-        logoUrl: "medias/hnk.png",
+        logoUrl: "https://example.com/heineken.png",
       }
 
       const response = await request(app)

@@ -16,7 +16,7 @@ describe("DELETE /api/addresses/:id", () => {
       const addressCreatedResponse = await request(app)
         .post("/api/addresses")
         .send({
-          userId: 1,
+          userId: "1",
           label: "comércio",
           street: "Rua João Silva Souza Soares Santos",
           number: 1,

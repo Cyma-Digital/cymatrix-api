@@ -1,22 +1,15 @@
 import { HttpError } from "@/errors/httpError"
-import orderRepository, {
-  OrderUpdatedData,
-  CreateOrderData,
-} from "@/repositories/order/order.repository"
+import orderRepository from "@/repositories/order/order.repository"
+import {
+  CreateOrderServiceSchemaInput,
+  UpdateOrderPartialServiceInput,
+  UpdateOrderServiceInput,
+} from "@/schemas/order/order.schemas"
 
 export class OrderService {
-  constructor(
-    private repository = orderRepository,
-    // private addressRepo = addressRepository,
-  ) {}
+  constructor(private repository = orderRepository) {}
 
-  async create(data: CreateOrderData) {
-    // const address = await this.addressRepo.getById(data.addressId!)
-
-    // if (!address) {
-    //   throw new HttpError(404, "Address not found")
-    // }
-
+  async create(data: CreateOrderServiceSchemaInput) {
     return await this.repository.create(data)
   }
 
@@ -42,7 +35,7 @@ export class OrderService {
     return order
   }
 
-  async updatePartial(orderId: number, data: OrderUpdatedData) {
+  async updatePartial(orderId: number, data: UpdateOrderPartialServiceInput) {
     const order = await this.repository.getById(orderId)
 
     if (!order) {

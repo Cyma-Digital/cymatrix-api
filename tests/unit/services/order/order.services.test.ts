@@ -1,9 +1,9 @@
 import { OrderService } from "@/services/order/order.service"
 import { HttpError } from "@/errors/httpError"
-import type {
-  CreateOrderData,
-  OrderUpdatedData,
-} from "@/repositories/order/order.repository"
+import {
+  CreateOrderServiceSchemaInput,
+  UpdateOrderPartialServiceInput,
+} from "@/schemas/order/order.schemas"
 
 const mockRepository = {
   create: vi.fn(),
@@ -28,15 +28,21 @@ describe("@services/OrderService", () => {
   describe("create()", () => {
     describe("Success cases", () => {
       test("should create and return order", async () => {
-        const input: CreateOrderData = {
+        const input: CreateOrderServiceSchemaInput = {
           userId: 1,
           status: "PENDENTE",
           addressId: 1,
           shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
+            userId: 1,
+            label: "comércio",
+            street: "Rua João Silva Souza Soares Santos",
+            number: 1,
+            complement: "terceiro andar",
+            neighborhood: "Jardim de jardins",
+            city: "Jacareí",
+            state: "SP",
+            zipCode: "123.456-78",
+            isDefault: true,
           },
           total: "200",
           createdBy: 1,
@@ -84,10 +90,15 @@ describe("@services/OrderService", () => {
             status: "PENDENTE",
             addressId: 1,
             shippingAddress: {
-              address: {
-                street: "Rua de ruas",
-                number: 82,
-              },
+              userId: 1,
+              label: "loja",
+              street: "Rua Zé Silva Souza Soares Santos",
+              number: 2,
+              neighborhood: "Jardim de cactos",
+              city: "Jacareí",
+              state: "SP",
+              zipCode: "987.654-32",
+              isDefault: true,
             },
             total: "135999.99",
             createdBy: 1,
@@ -96,12 +107,17 @@ describe("@services/OrderService", () => {
           {
             userId: 1,
             status: "ENVIADO",
-            addressId: 1,
+            addressId: "1",
             shippingAddress: {
-              address: {
-                street: "Rua de ruas",
-                number: 82,
-              },
+              userId: 1,
+              label: "loja",
+              street: "Rua Zé Silva Souza Soares Santos",
+              number: 2,
+              neighborhood: "Jardim de cactos",
+              city: "Jacareí",
+              state: "SP",
+              zipCode: "987.654-32",
+              isDefault: true,
             },
             total: "150000.99",
             createdBy: 1,
@@ -112,10 +128,15 @@ describe("@services/OrderService", () => {
             status: "CANCELADO",
             addressId: 1,
             shippingAddress: {
-              address: {
-                street: "Rua de ruas",
-                number: 82,
-              },
+              userId: 1,
+              label: "loja",
+              street: "Rua Zé Silva Souza Soares Santos",
+              number: 2,
+              neighborhood: "Jardim de cactos",
+              city: "Jacareí",
+              state: "SP",
+              zipCode: "987.654-32",
+              isDefault: true,
             },
             total: "8599.99",
             createdBy: 1,
@@ -172,10 +193,15 @@ describe("@services/OrderService", () => {
           status: "PENDENTE",
           addressId: 1,
           shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
+            userId: 1,
+            label: "loja",
+            street: "Rua Zé Silva Souza Soares Santos",
+            number: 2,
+            neighborhood: "Jardim de cactos",
+            city: "Jacareí",
+            state: "SP",
+            zipCode: "987.654-32",
+            isDefault: true,
           },
           total: "135999.99",
           createdBy: 1,
@@ -211,10 +237,15 @@ describe("@services/OrderService", () => {
           status: "PENDENTE",
           addressId: 1,
           shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
+            userId: 1,
+            label: "loja",
+            street: "Rua Zé Silva Souza Soares Santos",
+            number: 2,
+            neighborhood: "Jardim de cactos",
+            city: "Jacareí",
+            state: "SP",
+            zipCode: "987.654-32",
+            isDefault: true,
           },
           total: "409.99",
           createdBy: 1,
@@ -232,7 +263,7 @@ describe("@services/OrderService", () => {
               orderId: 1,
               productId: 1,
               quantity: 1,
-              unitPrice: "200",
+              unitPrice: "200.00",
             },
           ],
         }
@@ -269,10 +300,15 @@ describe("@services/OrderService", () => {
           status: "PENDENTE",
           addressId: 1,
           shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
+            userId: 1,
+            label: "loja",
+            street: "Rua Zé Silva Souza Soares Santos",
+            number: 2,
+            neighborhood: "Jardim de cactos",
+            city: "Jacareí",
+            state: "SP",
+            zipCode: "987.654-32",
+            isDefault: true,
           },
           total: "135999.99",
           createdBy: 1,
@@ -283,8 +319,9 @@ describe("@services/OrderService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderUpdatedData = {
+        const updateData: UpdateOrderPartialServiceInput = {
           total: "150000.00",
+          updatedBy: 1,
         }
 
         const updatedOrder = {
@@ -312,10 +349,15 @@ describe("@services/OrderService", () => {
           status: "APROVADO",
           addressId: 1,
           shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
+            userId: 1,
+            label: "loja",
+            street: "Rua Zé Silva Souza Soares Santos",
+            number: 2,
+            neighborhood: "Jardim de cactos",
+            city: "Jacareí",
+            state: "SP",
+            zipCode: "987.654-32",
+            isDefault: true,
           },
           total: "135999.99",
           createdBy: 1,
@@ -326,8 +368,9 @@ describe("@services/OrderService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderUpdatedData = {
+        const updateData: UpdateOrderPartialServiceInput = {
           status: "CANCELADO",
+          updatedBy: 1,
         }
 
         const updatedOrder = {
@@ -360,10 +403,15 @@ describe("@services/OrderService", () => {
           status: "ENVIADO",
           addressId: 1,
           shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
+            userId: 1,
+            label: "loja",
+            street: "Rua Zé Silva Souza Soares Santos",
+            number: 2,
+            neighborhood: "Jardim de cactos",
+            city: "Jacareí",
+            state: "SP",
+            zipCode: "987.654-32",
+            isDefault: true,
           },
           total: "135999.99",
           createdBy: 1,
@@ -374,8 +422,9 @@ describe("@services/OrderService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderUpdatedData = {
+        const updateData: UpdateOrderPartialServiceInput = {
           status: "CANCELADO",
+          updatedBy: 1,
         }
 
         const updatedOrder = {
@@ -410,10 +459,15 @@ describe("@services/OrderService", () => {
           status: "CANCELADO",
           addressId: 1,
           shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
+            userId: 1,
+            label: "loja",
+            street: "Rua Zé Silva Souza Soares Santos",
+            number: 2,
+            neighborhood: "Jardim de cactos",
+            city: "Jacareí",
+            state: "SP",
+            zipCode: "987.654-32",
+            isDefault: true,
           },
           total: "135999.99",
           createdBy: 1,
@@ -424,9 +478,10 @@ describe("@services/OrderService", () => {
           deletedBy: null,
         }
 
-        const updateData: OrderUpdatedData = {
+        const updateData: UpdateOrderPartialServiceInput = {
           status: "PENDENTE",
-          total: "10",
+          total: "10.00",
+          updatedBy: 1,
         }
 
         mockRepository.getById.mockResolvedValue(existingOrder)
@@ -453,10 +508,15 @@ describe("@services/OrderService", () => {
           status: "CANCELADO",
           addressId: 1,
           shippingAddress: {
-            address: {
-              street: "Rua de ruas",
-              number: 82,
-            },
+            userId: 1,
+            label: "loja",
+            street: "Rua Zé Silva Souza Soares Santos",
+            number: 2,
+            neighborhood: "Jardim de cactos",
+            city: "Jacareí",
+            state: "SP",
+            zipCode: "987.654-32",
+            isDefault: true,
           },
           total: "135999.99",
           createdBy: 1,

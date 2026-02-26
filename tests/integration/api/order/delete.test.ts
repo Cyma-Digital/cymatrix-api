@@ -16,43 +16,41 @@ describe("DELETE /api/orders/:id", () => {
       await request(app).post("/api/categories").send({
         name: "Mesa",
         slug: "mesa",
-        iconUrl: "medias/table-icon.png",
-        createdBy: 1,
+        iconUrl: "https://example.com/table.png",
+        // createdBy: 1,
       })
 
       await request(app).post("/api/brands").send({
         name: "Heineken",
         slug: "heineken",
-        logoUrl: "medias/hnk.png",
+        logoUrl: "https://example.com/heineken.png",
       })
 
-      await request(app)
-        .post("/api/products")
-        .send({
-          categoryId: 1,
-          brandId: 1,
-          name: "cadeira customizada heineken",
-          price: "200.99",
-          description: "cadeira customizada com o log da heineken",
-          additionalInfo: {
-            dimentions: {
-              width: 50,
-              height: 100,
-              thickness: 5,
-            },
-            warranty: 12,
-            material: "madeira",
-            madeAt: "2026-02-04T16:40:23.130Z",
-          },
-          avaliable: true,
-          imageUrl: "medias/chair.png",
-          createdBy: 1,
-        })
+      await request(app).post("/api/products").send({
+        categoryId: "1",
+        brandId: "1",
+        name: "cadeira customizada heineken",
+        price: "200.99",
+        description: "cadeira customizada com o log da heineken",
+        // additionalInfo: {
+        //   dimentions: {
+        //     width: 50,
+        //     height: 100,
+        //     thickness: 5,
+        //   },
+        //   warranty: 12,
+        //   material: "madeira",
+        //   madeAt: "2026-02-04T16:40:23.130Z",
+        // },
+        avaliable: true,
+        imageUrl: "https://example.com/chairs.png",
+        // createdBy: 1,
+      })
 
       const orderCreatedResponse = await request(app)
         .post("/api/order-items")
         .send({
-          productId: 1,
+          productId: "1",
           quantity: 2,
           unitPrice: "1209.01",
         })
