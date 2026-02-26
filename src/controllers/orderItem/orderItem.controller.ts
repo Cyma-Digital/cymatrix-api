@@ -1,4 +1,4 @@
-import productService from "@/services/product/product.service"
+import orderItemService from "@/services/orderItem/orderItem.service"
 import { validateEmptyBody, validateIdParam } from "@utils/http"
 import { Request, Response, NextFunction } from "express"
 
@@ -8,35 +8,26 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const {
-      categoryId,
-      brandId,
-      name,
-      price,
-      description,
-      additionalInfo,
-      avaliable,
-      imageUrl,
-    } = req.body
+    const { orderId, productId, quantity, unitPrice, createdBy, updatedBy } =
+      req.body
 
     const userId = 1
 
-    const product = await productService.create({
-      categoryId,
-      brandId,
-      name,
-      price,
-      description,
-      additionalInfo,
-      avaliable,
-      imageUrl,
-      createdBy: userId,
-      updatedBy: userId,
-    })
+    const orderItem = await orderItemService.create(
+      {
+        orderId,
+        productId,
+        quantity,
+        unitPrice,
+        createdBy: userId,
+        updatedBy: userId,
+      },
+      userId,
+    )
 
     return res.status(201).json({
       status: "success",
-      data: product,
+      data: orderItem,
     })
   } catch (error) {
     next(error)
@@ -45,11 +36,11 @@ export async function create(
 
 export async function list(req: Request, res: Response, next: NextFunction) {
   try {
-    const products = await productService.listAll()
+    const orderItems = await orderItemService.listAll()
 
     return res.status(200).json({
       status: "success",
-      data: products,
+      data: orderItems,
     })
   } catch (error) {
     next(error)
@@ -60,9 +51,9 @@ export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
     const id = validateIdParam(req)
 
-    const product = await productService.getById(id)
+    const orderItem = await orderItemService.getById(id)
 
-    return res.status(200).send({ status: "success", data: product })
+    return res.status(200).send({ status: "success", data: orderItem })
   } catch (error) {
     next(error)
   }
@@ -77,15 +68,15 @@ export async function updatePartial(
     const id = validateIdParam(req)
     const data = validateEmptyBody(req)
 
-    const product = await productService.updatePartial(id, data)
+    const orderItem = await orderItemService.updatePartial(id, data)
 
-    return res.status(200).send({ status: "success", data: product })
+    return res.status(200).send({ status: "success", data: orderItem })
   } catch (error) {
     next(error)
   }
 }
 
-export async function deleteProduct(
+export async function deleteOrderItem(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -94,7 +85,7 @@ export async function deleteProduct(
     const id = validateIdParam(req)
     const userId = 1
 
-    await productService.delete(id, userId)
+    await orderItemService.delete(id, userId)
 
     return res.status(204).send()
   } catch (error) {

@@ -1,0 +1,202 @@
+import request from "supertest"
+import app from "../../../../src/app"
+import { orchestrator } from "tests/helpers/orchestrator"
+
+beforeEach(async () => {
+  await orchestrator.setup()
+})
+
+afterAll(async () => {
+  await orchestrator.tearDown()
+})
+
+describe("PATCH /api/order-items/:id", () => {
+  describe("Anonymous user", () => {
+    test("Should update an order item and return 200", async () => {
+      await request(app).post("/api/categories").send({
+        name: "Mesa",
+        slug: "mesa",
+        iconUrl: "medias/table-icon.png",
+        createdBy: 1,
+      })
+
+      await request(app).post("/api/brands").send({
+        name: "Heineken",
+        slug: "heineken",
+        logoUrl: "medias/hnk.png",
+      })
+
+      await request(app)
+        .post("/api/products")
+        .send({
+          categoryId: 1,
+          brandId: 1,
+          name: "cadeira customizada heineken",
+          price: "209.99",
+          description: "cadeira customizada com o log da heineken",
+          additionalInfo: {
+            dimentions: {
+              width: 50,
+              height: 100,
+              thickness: 5,
+            },
+            warranty: 12,
+            material: "madeira",
+            madeAt: "2026-02-04T16:40:23.130Z",
+          },
+          avaliable: true,
+          imageUrl: "medias/chair.png",
+          createdBy: 1,
+        })
+
+      const orderItemCreatedResponse = await request(app)
+        .post("/api/order-items")
+        .send({
+          productId: 1,
+          quantity: 10,
+          unitPrice: "209.99",
+        })
+
+      const { id } = orderItemCreatedResponse.body.data
+
+      const payload = {
+        quantity: 12,
+        unitPrice: "229.99",
+      }
+
+      const response = await request(app)
+        .patch(`/api/order-items/${id}`)
+        .send(payload)
+
+      expect(response.status).toBe(200)
+      expect(response.body.data.quantity).toBe(12)
+      expect(response.body.data.unitPrice).toBe("229.99")
+    })
+
+    test("Should return 404 (order not found)", async () => {
+      await request(app).post("/api/categories").send({
+        name: "Mesa",
+        slug: "mesa",
+        iconUrl: "medias/table-icon.png",
+        createdBy: 1,
+      })
+
+      await request(app).post("/api/brands").send({
+        name: "Heineken",
+        slug: "heineken",
+        logoUrl: "medias/hnk.png",
+      })
+
+      await request(app)
+        .post("/api/products")
+        .send({
+          categoryId: 1,
+          brandId: 1,
+          name: "cadeira customizada heineken",
+          price: "209.99",
+          description: "cadeira customizada com o log da heineken",
+          additionalInfo: {
+            dimentions: {
+              width: 50,
+              height: 100,
+              thickness: 5,
+            },
+            warranty: 12,
+            material: "madeira",
+            madeAt: "2026-02-04T16:40:23.130Z",
+          },
+          avaliable: true,
+          imageUrl: "medias/chair.png",
+          createdBy: 1,
+        })
+
+      const orderItemCreatedResponse = await request(app)
+        .post("/api/order-items")
+        .send({
+          productId: 1,
+          quantity: 10,
+          unitPrice: "209.99",
+        })
+
+      const { id } = orderItemCreatedResponse.body.data
+
+      const payload = {
+        orderId: 2,
+        quantity: 1,
+      }
+
+      const response = await request(app)
+        .patch(`/api/order-items/${id}`)
+        .send(payload)
+
+      expect(response.status).toBe(404)
+      expect(response.body.status).toBe("error")
+      expect(response.body.message).toBeDefined()
+      expect(response.body.message).toBe("Order not found")
+      expect(response.body.data).toBeUndefined()
+    })
+
+    test("Should return 404 (product not found)", async () => {
+      await request(app).post("/api/categories").send({
+        name: "Mesa",
+        slug: "mesa",
+        iconUrl: "medias/table-icon.png",
+        createdBy: 1,
+      })
+
+      await request(app).post("/api/brands").send({
+        name: "Heineken",
+        slug: "heineken",
+        logoUrl: "medias/hnk.png",
+      })
+
+      await request(app)
+        .post("/api/products")
+        .send({
+          categoryId: 1,
+          brandId: 1,
+          name: "cadeira customizada heineken",
+          price: "209.99",
+          description: "cadeira customizada com o log da heineken",
+          additionalInfo: {
+            dimentions: {
+              width: 50,
+              height: 100,
+              thickness: 5,
+            },
+            warranty: 12,
+            material: "madeira",
+            madeAt: "2026-02-04T16:40:23.130Z",
+          },
+          avaliable: true,
+          imageUrl: "medias/chair.png",
+          createdBy: 1,
+        })
+
+      const orderItemCreatedResponse = await request(app)
+        .post("/api/order-items")
+        .send({
+          productId: 1,
+          quantity: 10,
+          unitPrice: "209.99",
+        })
+
+      const { id } = orderItemCreatedResponse.body.data
+
+      const payload = {
+        productId: 2,
+        quantity: 1,
+      }
+
+      const response = await request(app)
+        .patch(`/api/order-items/${id}`)
+        .send(payload)
+
+      expect(response.status).toBe(404)
+      expect(response.body.status).toBe("error")
+      expect(response.body.message).toBeDefined()
+      expect(response.body.message).toBe("Product not found")
+      expect(response.body.data).toBeUndefined()
+    })
+  })
+})

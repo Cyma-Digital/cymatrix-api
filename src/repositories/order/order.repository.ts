@@ -4,7 +4,7 @@ import { Order } from "@/generated/prisma/client"
 export interface CreateOrderData {
   userId: number
   status: "APROVADO" | "ENVIADO" | "CANCELADO" | "PENDENTE"
-  addressId: number
+  addressId?: number
   shippingAddress: any
   total: string
   createdBy: number
@@ -33,10 +33,48 @@ export class OrderRepository {
     return result
   }
 
+  async getPendentOrderStatus(userId: number) {
+    const result = prisma.order.findFirst({
+      where: {
+        id: userId,
+        deletedAt: null,
+        deletedBy: null,
+        status: "PENDENTE",
+      },
+    })
+    return result
+  }
+
   async getById(orderId: number) {
     const result = prisma.order.findUnique({
       where: {
         id: orderId,
+        deletedAt: null,
+        deletedBy: null,
+      },
+    })
+    return result
+  }
+
+  async getOrderWithOrderItems(orderId: number) {
+    const result = prisma.order.findUnique({
+      where: {
+        id: orderId,
+        deletedAt: null,
+        deletedBy: null,
+      },
+      include: {
+        orderItems: true,
+      },
+    })
+
+    return result
+  }
+
+  async getByUserId(userId: number) {
+    const result = prisma.order.findUnique({
+      where: {
+        id: userId,
         deletedAt: null,
         deletedBy: null,
       },

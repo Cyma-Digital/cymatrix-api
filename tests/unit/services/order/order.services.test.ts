@@ -8,17 +8,12 @@ import type {
 const mockRepository = {
   create: vi.fn(),
   listAll: vi.fn(),
+  getPendentOrderStatus: vi.fn(),
   getById: vi.fn(),
+  getOrderWithOrderItems: vi.fn(),
+  getByUserId: vi.fn(),
   update: vi.fn(),
   updateStatus: vi.fn(),
-  softDelete: vi.fn(),
-}
-
-const mockAddressRepository = {
-  create: vi.fn(),
-  listAll: vi.fn(),
-  getById: vi.fn(),
-  update: vi.fn(),
   softDelete: vi.fn(),
 }
 
@@ -27,25 +22,12 @@ describe("@services/OrderService", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    orderService = new OrderService(mockRepository, mockAddressRepository)
+    orderService = new OrderService(mockRepository)
   })
 
   describe("create()", () => {
     describe("Success cases", () => {
       test("should create and return order", async () => {
-        const address = {
-          userId: 1,
-          label: "comércio",
-          street: "Rua João Silva Souza Soares Santos",
-          number: 1,
-          complement: "terceiro andar",
-          neighborhood: "Jardim de jardins",
-          city: "Jacareí",
-          state: "SP",
-          zipCode: "123.456-78",
-          isDefault: true,
-        }
-
         const input: CreateOrderData = {
           userId: 1,
           status: "PENDENTE",
@@ -56,7 +38,7 @@ describe("@services/OrderService", () => {
               number: 82,
             },
           },
-          total: "135999.99",
+          total: "200",
           createdBy: 1,
           updatedBy: 1,
         }
@@ -71,8 +53,6 @@ describe("@services/OrderService", () => {
         }
 
         mockRepository.create.mockResolvedValue(expectedOrder)
-
-        mockAddressRepository.getById.mockResolvedValue(address)
 
         const result = await orderService.create(input)
 
@@ -91,8 +71,6 @@ describe("@services/OrderService", () => {
 
         expect(mockRepository.update).not.toHaveBeenCalled()
         expect(mockRepository.softDelete).not.toHaveBeenCalled()
-
-        expect(mockAddressRepository.getById).toHaveBeenCalled()
       })
     })
   })
@@ -224,6 +202,64 @@ describe("@services/OrderService", () => {
     })
   })
 
+  describe("getOrderWithOrderItems()", () => {
+    describe("Success cases", () => {
+      test("should return order with order items when exists", async () => {
+        const order = {
+          id: 1,
+          userId: 1,
+          status: "PENDENTE",
+          addressId: 1,
+          shippingAddress: {
+            address: {
+              street: "Rua de ruas",
+              number: 82,
+            },
+          },
+          total: "409.99",
+          createdBy: 1,
+          updatedBy: 1,
+          orderItems: [
+            {
+              id: 1,
+              orderId: 1,
+              productId: 1,
+              quantity: 2,
+              unitPrice: "209.99",
+            },
+            {
+              id: 1,
+              orderId: 1,
+              productId: 1,
+              quantity: 1,
+              unitPrice: "200",
+            },
+          ],
+        }
+
+        mockRepository.getOrderWithOrderItems.mockResolvedValue(order)
+
+        const result = await orderService.getOrderWithOrderItems(order.id)
+
+        expect(result).toBeDefined()
+        expect(result).toEqual(order)
+        expect(result).toMatchObject(order)
+        expect(Array.isArray(result)).toBe(false)
+        expect(Array.isArray(result.orderItems)).toBe(true)
+
+        expect(mockRepository.getOrderWithOrderItems).toHaveBeenCalled()
+        expect(mockRepository.getOrderWithOrderItems).toHaveBeenCalledWith(
+          order.id,
+        )
+        expect(mockRepository.getOrderWithOrderItems).toHaveBeenCalledTimes(1)
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+    })
+  })
+
   describe("updatePartial()", () => {
     describe("Success case", () => {
       test("should update and return order", async () => {
@@ -292,7 +328,6 @@ describe("@services/OrderService", () => {
 
         const updateData: OrderUpdatedData = {
           status: "CANCELADO",
-          // total: "1",
         }
 
         const updatedOrder = {
@@ -392,11 +427,6 @@ describe("@services/OrderService", () => {
         const updateData: OrderUpdatedData = {
           status: "PENDENTE",
           total: "10",
-        }
-
-        const updatedOrder = {
-          ...existingOrder,
-          ...updateData,
         }
 
         mockRepository.getById.mockResolvedValue(existingOrder)

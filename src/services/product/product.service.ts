@@ -42,7 +42,7 @@ export class ProductService {
     return product
   }
 
-  async updateParcial(productId: number, data: ProductUpdatedData) {
+  async updatePartial(productId: number, data: ProductUpdatedData) {
     const product = await this.repository.getById(productId)
 
     if (!product) {

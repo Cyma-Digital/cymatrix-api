@@ -10,9 +10,9 @@ afterAll(async () => {
   await orchestrator.tearDown()
 })
 
-describe("DELETE /api/orders/:id", () => {
+describe("DELETE /api/order-items/:id", () => {
   describe("Anonymous user", () => {
-    test("Should delete an order by id", async () => {
+    test("Should delete order item by id", async () => {
       await request(app).post("/api/categories").send({
         name: "Mesa",
         slug: "mesa",
@@ -32,7 +32,7 @@ describe("DELETE /api/orders/:id", () => {
           categoryId: 1,
           brandId: 1,
           name: "cadeira customizada heineken",
-          price: "200.99",
+          price: "209.99",
           description: "cadeira customizada com o log da heineken",
           additionalInfo: {
             dimentions: {
@@ -49,20 +49,20 @@ describe("DELETE /api/orders/:id", () => {
           createdBy: 1,
         })
 
-      const orderCreatedResponse = await request(app)
+      const orderItemCreatedResponse = await request(app)
         .post("/api/order-items")
         .send({
           productId: 1,
-          quantity: 2,
-          unitPrice: "1209.01",
+          quantity: 10,
+          unitPrice: "209.99",
         })
 
-      const { id } = orderCreatedResponse.body.data
+      const { id } = orderItemCreatedResponse.body.data
 
-      const response = await request(app).delete(`/api/orders/${id}`)
+      const response = await request(app).delete(`/api/order-items/${id}`)
       expect(response.status).toBe(204)
 
-      const checkResponse = await request(app).get(`/api/orders/${id}`)
+      const checkResponse = await request(app).get(`/api/order-items/${id}`)
 
       expect(checkResponse.status).toBe(404)
       expect(checkResponse.body.status).toBe("error")

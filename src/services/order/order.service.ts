@@ -1,5 +1,4 @@
 import { HttpError } from "@/errors/httpError"
-import addressRepository from "@/repositories/address/address.repository"
 import orderRepository, {
   OrderUpdatedData,
   CreateOrderData,
@@ -8,15 +7,15 @@ import orderRepository, {
 export class OrderService {
   constructor(
     private repository = orderRepository,
-    private addressRepo = addressRepository,
+    // private addressRepo = addressRepository,
   ) {}
 
   async create(data: CreateOrderData) {
-    const address = await this.addressRepo.getById(data.addressId)
+    // const address = await this.addressRepo.getById(data.addressId!)
 
-    if (!address) {
-      throw new HttpError(404, "Address not found")
-    }
+    // if (!address) {
+    //   throw new HttpError(404, "Address not found")
+    // }
 
     return await this.repository.create(data)
   }
@@ -27,6 +26,15 @@ export class OrderService {
 
   async getById(orderId: number) {
     const order = await this.repository.getById(orderId)
+
+    if (!order) {
+      throw new HttpError(404, "Not found")
+    }
+    return order
+  }
+
+  async getOrderWithOrderItems(orderId: number) {
+    const order = await this.repository.getOrderWithOrderItems(orderId)
 
     if (!order) {
       throw new HttpError(404, "Not found")
