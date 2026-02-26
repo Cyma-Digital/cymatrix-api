@@ -5,6 +5,7 @@ import user from "@/routes/user/user.routes"
 import category from "@/routes/category/category.routes"
 import product from "@/routes/product/product.routes"
 import address from "@/routes/address/address.routes"
+import order from "@/routes/order/order.routes"
 
 const router = Router()
 
@@ -14,5 +15,6 @@ router.use("/users", user)
 router.use("/categories", category)
 router.use("/products", product)
 router.use("/addresses", address)
+router.use("/orders", order)
 
 export default router

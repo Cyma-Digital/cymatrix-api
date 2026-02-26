@@ -1,0 +1,467 @@
+import { OrderService } from "@/services/order/order.service"
+import { HttpError } from "@/errors/httpError"
+import type {
+  CreateOrderData,
+  OrderUpdatedData,
+} from "@/repositories/order/order.repository"
+
+const mockRepository = {
+  create: vi.fn(),
+  listAll: vi.fn(),
+  getById: vi.fn(),
+  update: vi.fn(),
+  updateStatus: vi.fn(),
+  softDelete: vi.fn(),
+}
+
+const mockAddressRepository = {
+  create: vi.fn(),
+  listAll: vi.fn(),
+  getById: vi.fn(),
+  update: vi.fn(),
+  softDelete: vi.fn(),
+}
+
+describe("@services/OrderService", () => {
+  let orderService: OrderService
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    orderService = new OrderService(mockRepository, mockAddressRepository)
+  })
+
+  describe("create()", () => {
+    describe("Success cases", () => {
+      test("should create and return order", async () => {
+        const address = {
+          userId: 1,
+          label: "comércio",
+          street: "Rua João Silva Souza Soares Santos",
+          number: 1,
+          complement: "terceiro andar",
+          neighborhood: "Jardim de jardins",
+          city: "Jacareí",
+          state: "SP",
+          zipCode: "123.456-78",
+          isDefault: true,
+        }
+
+        const input: CreateOrderData = {
+          userId: 1,
+          status: "PENDENTE",
+          addressId: 1,
+          shippingAddress: {
+            address: {
+              street: "Rua de ruas",
+              number: 82,
+            },
+          },
+          total: "135999.99",
+          createdBy: 1,
+          updatedBy: 1,
+        }
+
+        const expectedOrder = {
+          id: 1,
+          ...input,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
+        mockRepository.create.mockResolvedValue(expectedOrder)
+
+        mockAddressRepository.getById.mockResolvedValue(address)
+
+        const result = await orderService.create(input)
+
+        expect(result).toBeDefined()
+        expect(result.id).toBeDefined()
+        expect(result).toMatchObject(input)
+        expect(result).toEqual(expectedOrder)
+        expect(result.id).toBeTypeOf("number")
+        expect(result.addressId).toBeTypeOf("number")
+        expect(result.total).toBeTypeOf("string")
+        expect(result.createdAt).toBeInstanceOf(Date)
+
+        expect(mockRepository.create).toHaveBeenCalled()
+        expect(mockRepository.create).toHaveBeenCalledWith(input)
+        expect(mockRepository.create).toHaveBeenCalledTimes(1)
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+
+        expect(mockAddressRepository.getById).toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe("listAll()", () => {
+    describe("Success cases", () => {
+      test("should return all orders", async () => {
+        const orders = [
+          {
+            userId: 1,
+            status: "PENDENTE",
+            addressId: 1,
+            shippingAddress: {
+              address: {
+                street: "Rua de ruas",
+                number: 82,
+              },
+            },
+            total: "135999.99",
+            createdBy: 1,
+            updatedBy: 1,
+          },
+          {
+            userId: 1,
+            status: "ENVIADO",
+            addressId: 1,
+            shippingAddress: {
+              address: {
+                street: "Rua de ruas",
+                number: 82,
+              },
+            },
+            total: "150000.99",
+            createdBy: 1,
+            updatedBy: 1,
+          },
+          {
+            userId: 1,
+            status: "CANCELADO",
+            addressId: 1,
+            shippingAddress: {
+              address: {
+                street: "Rua de ruas",
+                number: 82,
+              },
+            },
+            total: "8599.99",
+            createdBy: 1,
+            updatedBy: 1,
+          },
+        ]
+
+        mockRepository.listAll.mockResolvedValue(orders)
+
+        const result = await orderService.listAll()
+
+        expect(result).toBeDefined()
+        expect(result).toHaveLength(3)
+        expect(result).toMatchObject(orders)
+        expect(Array.isArray(result)).toBe(true)
+
+        expect(mockRepository.listAll).toHaveBeenCalled()
+        expect(mockRepository.listAll).toHaveBeenCalledWith()
+        expect(mockRepository.listAll).toHaveBeenCalledTimes(1)
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+
+      test("should return empty array when no orders", async () => {
+        mockRepository.listAll.mockResolvedValue([])
+
+        const result = await orderService.listAll()
+
+        expect(result).toBeDefined()
+        expect(result).toEqual([])
+        expect(result).toHaveLength(0)
+        expect(result).toMatchObject([])
+        expect(Array.isArray(result)).toBe(true)
+
+        expect(mockRepository.listAll).toHaveBeenCalled()
+        expect(mockRepository.listAll).toHaveBeenCalledWith()
+        expect(mockRepository.listAll).toHaveBeenCalledTimes(1)
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe("getById()", () => {
+    describe("Success cases", () => {
+      test("should return order when exists", async () => {
+        const order = {
+          id: 1,
+          userId: 1,
+          status: "PENDENTE",
+          addressId: 1,
+          shippingAddress: {
+            address: {
+              street: "Rua de ruas",
+              number: 82,
+            },
+          },
+          total: "135999.99",
+          createdBy: 1,
+          updatedBy: 1,
+        }
+
+        mockRepository.getById.mockResolvedValue(order)
+
+        const result = await orderService.getById(order.id)
+
+        expect(result).toBeDefined()
+        expect(result).toEqual(order)
+        expect(result).toMatchObject(order)
+        expect(Array.isArray(result)).toBe(false)
+
+        expect(mockRepository.getById).toHaveBeenCalled()
+        expect(mockRepository.getById).toHaveBeenCalledWith(order.id)
+        expect(mockRepository.getById).toHaveBeenCalledTimes(1)
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe("updatePartial()", () => {
+    describe("Success case", () => {
+      test("should update and return order", async () => {
+        const existingOrder = {
+          id: 1,
+          userId: 1,
+          status: "PENDENTE",
+          addressId: 1,
+          shippingAddress: {
+            address: {
+              street: "Rua de ruas",
+              number: 82,
+            },
+          },
+          total: "135999.99",
+          createdBy: 1,
+          updatedBy: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
+        const updateData: OrderUpdatedData = {
+          total: "150000.00",
+        }
+
+        const updatedOrder = {
+          ...existingOrder,
+          ...updateData,
+        }
+
+        mockRepository.getById.mockResolvedValue(existingOrder)
+        mockRepository.update.mockResolvedValue(updatedOrder)
+
+        const result = await orderService.updatePartial(1, updateData)
+
+        expect(result).toEqual(updatedOrder)
+        expect(mockRepository.getById).toHaveBeenCalledWith(1)
+        expect(mockRepository.update).toHaveBeenCalledWith(1, updateData)
+
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+
+      test("should update order status and return order (approved status case)", async () => {
+        const existingOrder = {
+          id: 1,
+          userId: 1,
+          status: "APROVADO",
+          addressId: 1,
+          shippingAddress: {
+            address: {
+              street: "Rua de ruas",
+              number: 82,
+            },
+          },
+          total: "135999.99",
+          createdBy: 1,
+          updatedBy: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
+        const updateData: OrderUpdatedData = {
+          status: "CANCELADO",
+          // total: "1",
+        }
+
+        const updatedOrder = {
+          ...existingOrder,
+          ...updateData,
+        }
+
+        mockRepository.getById.mockResolvedValue(existingOrder)
+        mockRepository.updateStatus.mockResolvedValue(updatedOrder)
+
+        const result = await orderService.updatePartial(1, updateData)
+
+        expect(result).toEqual(updatedOrder)
+
+        expect(mockRepository.getById).toHaveBeenCalledWith(1)
+        expect(mockRepository.updateStatus).toHaveBeenCalledWith(
+          1,
+          updateData.status,
+        )
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+
+      test("should update order status and return order (sent status case)", async () => {
+        const existingOrder = {
+          id: 1,
+          userId: 1,
+          status: "ENVIADO",
+          addressId: 1,
+          shippingAddress: {
+            address: {
+              street: "Rua de ruas",
+              number: 82,
+            },
+          },
+          total: "135999.99",
+          createdBy: 1,
+          updatedBy: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
+        const updateData: OrderUpdatedData = {
+          status: "CANCELADO",
+        }
+
+        const updatedOrder = {
+          ...existingOrder,
+          ...updateData,
+        }
+
+        mockRepository.getById.mockResolvedValue(existingOrder)
+        mockRepository.updateStatus.mockResolvedValue(updatedOrder)
+
+        const result = await orderService.updatePartial(1, updateData)
+
+        expect(result).toEqual(updatedOrder)
+
+        expect(mockRepository.getById).toHaveBeenCalledWith(1)
+        expect(mockRepository.updateStatus).toHaveBeenCalledWith(
+          1,
+          updateData.status,
+        )
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+    })
+
+    describe("Error cases", () => {
+      test("should throw 403 when order status is cancelled", async () => {
+        const existingOrder = {
+          id: 1,
+          userId: 1,
+          status: "CANCELADO",
+          addressId: 1,
+          shippingAddress: {
+            address: {
+              street: "Rua de ruas",
+              number: 82,
+            },
+          },
+          total: "135999.99",
+          createdBy: 1,
+          updatedBy: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
+        const updateData: OrderUpdatedData = {
+          status: "PENDENTE",
+          total: "10",
+        }
+
+        const updatedOrder = {
+          ...existingOrder,
+          ...updateData,
+        }
+
+        mockRepository.getById.mockResolvedValue(existingOrder)
+
+        await expect(orderService.updatePartial(1, updateData)).rejects.toThrow(
+          HttpError,
+        )
+        await expect(orderService.updatePartial(1, updateData)).rejects.toThrow(
+          "Not allowed change order after cancelled",
+        )
+
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.updateStatus).not.toHaveBeenCalled()
+      })
+    })
+  })
+
+  describe("delete()", () => {
+    describe("Success cases", () => {
+      test("should soft delete order", async () => {
+        const order = {
+          id: 1,
+          userId: 1,
+          status: "CANCELADO",
+          addressId: 1,
+          shippingAddress: {
+            address: {
+              street: "Rua de ruas",
+              number: 82,
+            },
+          },
+          total: "135999.99",
+          createdBy: 1,
+          updatedBy: 1,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+          deletedBy: null,
+        }
+
+        mockRepository.getById.mockResolvedValue(order)
+        mockRepository.softDelete.mockResolvedValue(undefined)
+
+        const result = await orderService.delete(1, 1)
+
+        expect(result).toBeUndefined()
+        expect(mockRepository.getById).toHaveBeenCalledWith(1)
+        expect(mockRepository.softDelete).toBeCalledWith(1, 1)
+        expect(mockRepository.softDelete).toBeCalledTimes(1)
+
+        expect(mockRepository.create).not.toHaveBeenCalled()
+        expect(mockRepository.update).not.toHaveBeenCalled()
+        expect(mockRepository.updateStatus).not.toHaveBeenCalled()
+      })
+    })
+
+    describe("Error cases", () => {
+      test("should throw 404 when order not found", async () => {
+        mockRepository.getById.mockResolvedValue(null)
+
+        await expect(orderService.delete(999, 1)).rejects.toThrow(HttpError)
+        await expect(orderService.delete(999, 1)).rejects.toThrow("Not found")
+
+        expect(mockRepository.softDelete).not.toHaveBeenCalled()
+      })
+    })
+  })
+})
