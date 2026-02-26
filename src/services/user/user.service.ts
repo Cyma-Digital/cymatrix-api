@@ -57,6 +57,21 @@ export class UserService {
 
     return await this.repository.update(userId, data)
   }
+
+  async delete(userId: number, deletedBy: number) {
+    const user = await this.repository.getById(userId)
+
+    if (!user) {
+      throw new HttpError(404, "User not found")
+    }
+
+    try {
+      await this.repository.softDelete(userId, deletedBy)
+    } catch (error) {
+      console.log(error)
+      throw new HttpError(500, "Failed to delete user")
+    }
+  }
 }
 
 export default new UserService()

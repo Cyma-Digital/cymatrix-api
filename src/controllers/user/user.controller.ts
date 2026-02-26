@@ -5,6 +5,7 @@ import {
   UpdateUserDto,
   userIdSchema,
 } from "@/schemas/user/user.schemas"
+import { validateIdParam } from "@/utils/http"
 
 export async function create(
   req: Request,
@@ -72,6 +73,24 @@ export async function update(req: Request, res: Response, next: NextFunction) {
       status: "success",
       data: user,
     })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function deleteUser(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = validateIdParam(req)
+
+    const userId = 1
+
+    await userService.delete(id, userId)
+
+    return res.status(204).send()
   } catch (error) {
     next(error)
   }

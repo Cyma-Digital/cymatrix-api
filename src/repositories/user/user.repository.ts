@@ -77,6 +77,18 @@ export class UserRepository {
       },
     })
   }
+
+  async softDelete(userId: number, deletedBy: number) {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        deletedAt: new Date(),
+        deletedBy,
+      },
+    })
+  }
 }
 
 export default new UserRepository()

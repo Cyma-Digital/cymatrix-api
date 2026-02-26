@@ -18,5 +18,6 @@ router.put(
   validateBody(updateUserSchema),
   userController.update,
 )
+router.delete("/:id", validateParams(userIdSchema), userController.deleteUser)
 
 export default router
