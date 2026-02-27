@@ -1,8 +1,6 @@
 import {
-  CreateProductDto,
   createProductSchema,
   productIdSchema,
-  UpdateProductDto,
   updateProductPartialSchema,
 } from "@/schemas/product/product.schemas"
 import productService from "@/services/product/product.service"

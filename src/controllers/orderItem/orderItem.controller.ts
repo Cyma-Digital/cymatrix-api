@@ -1,12 +1,9 @@
 import {
-  CreateOrderItemDto,
   createOrderItemSchema,
   orderItemIdSchema,
-  UpdateOrderItemDto,
   updateOrderItemPartialSchema,
 } from "@/schemas/orderItem/orderItem.schemas"
 import orderItemService from "@/services/orderItem/orderItem.service"
-import { validateEmptyBody, validateIdParam } from "@utils/http"
 import { Request, Response, NextFunction } from "express"
 
 export async function create(

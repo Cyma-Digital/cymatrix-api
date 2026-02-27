@@ -1,9 +1,5 @@
 import { AddressService } from "@/services/address/address.service"
 import { HttpError } from "@/errors/httpError"
-import type {
-  CreateAddressData,
-  AddressUpdatedData,
-} from "@/repositories/address/address.repository"
 import {
   CreateAddressServiceSchemaInput,
   UpdateAddressPartialServiceInput,

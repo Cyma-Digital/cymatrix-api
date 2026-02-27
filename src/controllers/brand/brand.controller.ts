@@ -1,8 +1,6 @@
 import brandService from "@/services/brand/brand.service"
 import { Request, Response, NextFunction } from "express"
 import {
-  CreateBrandDto,
-  UpdateBrandDto,
   brandIdSchema,
   createBrandSchema,
   updateBrandPartialSchema,

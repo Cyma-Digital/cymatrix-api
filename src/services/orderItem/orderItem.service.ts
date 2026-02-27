@@ -10,7 +10,6 @@ import orderItemRepository, {
 import {
   CreateOrderItemServiceSchemaInput,
   UpdateOrderItemPartialServiceInput,
-  UpdateOrderItemServiceInput,
 } from "@/schemas/orderItem/orderItem.schemas"
 
 export class OrderItemService {

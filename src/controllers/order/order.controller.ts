@@ -1,8 +1,6 @@
 import {
-  CreateOrderDto,
   createOrderSchema,
   orderIdSchema,
-  UpdateOrderDto,
   updateOrderPartialSchema,
 } from "@/schemas/order/order.schemas"
 import orderService from "@/services/order/order.service"

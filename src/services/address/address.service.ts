@@ -3,7 +3,6 @@ import addressRepository from "@/repositories/address/address.repository"
 import {
   CreateAddressServiceSchemaInput,
   UpdateAddressPartialServiceInput,
-  UpdateAddressServiceInput,
 } from "@/schemas/address/address.schemas"
 
 export class AddressService {

@@ -3,7 +3,6 @@ import orderRepository from "@/repositories/order/order.repository"
 import {
   CreateOrderServiceSchemaInput,
   UpdateOrderPartialServiceInput,
-  UpdateOrderServiceInput,
 } from "@/schemas/order/order.schemas"
 
 export class OrderService {

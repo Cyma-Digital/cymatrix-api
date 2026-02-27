@@ -1,10 +1,7 @@
 import {
   addressIdSchema,
-  CreateAddressDto,
   createAddressSchema,
-  UpdateAddressDto,
   updateAddressPartialSchema,
-  updateAddressSchema,
 } from "@/schemas/address/address.schemas"
 import addressService from "@/services/address/address.service"
 import { Request, Response, NextFunction } from "express"

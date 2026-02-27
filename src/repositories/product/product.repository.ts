@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma"
-import { Product } from "@/generated/prisma/client"
+import { Product, Prisma } from "@/generated/prisma/client"
 
 export interface CreateProductData {
   categoryId: number
@@ -7,7 +7,7 @@ export interface CreateProductData {
   name: string
   price: string
   description: string
-  additionalInfo: any
+  additionalInfo?: Prisma.InputJsonValue
   avaliable: boolean
   imageUrl: string
   createdBy: number

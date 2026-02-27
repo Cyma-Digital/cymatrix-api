@@ -1,8 +1,6 @@
 import {
   categoryIdSchema,
-  CreateCategoryDto,
   createCategorySchema,
-  UpdateCategoryDto,
   updateCategoryPartialSchema,
 } from "@/schemas/category/category.schemas"
 import categoryService from "@/services/category/category.service"

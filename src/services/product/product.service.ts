@@ -5,7 +5,6 @@ import productRepository from "@/repositories/product/product.repository"
 import {
   CreateProductServiceSchemaInput,
   UpdateProductPartialServiceInput,
-  UpdateProductServiceInput,
 } from "@/schemas/product/product.schemas"
 
 export class ProductService {
