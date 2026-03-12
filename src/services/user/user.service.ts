@@ -1,5 +1,5 @@
 import { HttpError } from "@/errors/httpError"
-import bcrypt from "bcrypt"
+import argon2 from "@/lib/argon2"
 import UserRepository from "@/repositories/user/user.repository"
 import {
   CreateUserServiceSchemaInput,
@@ -20,7 +20,7 @@ export class UserService {
       throw new HttpError(400, "Password is required")
     }
 
-    const passwordHash = await bcrypt.hash(data.password, 10)
+    const passwordHash = await argon2.hash(data.password)
 
     const { password: _, ...dataWithoutPlainTextPassword } = data
 

@@ -1,5 +1,5 @@
 import prisma from "../../src/lib/prisma"
-import { hash } from "bcrypt"
+import argon2 from "../../src/lib/argon2"
 import { execSync } from "child_process"
 
 class Orchestrator {
@@ -33,7 +33,7 @@ class Orchestrator {
   }
 
   private async createUserForTest(): Promise<void> {
-    const hashedPassword = await hash("admin123", 10)
+    const hashedPassword = await argon2.hash("admin123")
 
     await prisma.user.create({
       data: {
