@@ -8,6 +8,7 @@ on:
 
 env:
   DATABASE_URL: postgres://catalog_user:catalog_password@localhost:5432/catalog?schema=local
+  POSTGRES_SCHEMA: local
 
 jobs:
   lint:
