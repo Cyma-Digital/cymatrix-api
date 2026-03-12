@@ -1,11 +1,11 @@
 import prisma from "@/lib/prisma"
-import { Order, Prisma } from "@/generated/prisma/client"
+import { Order } from "@/generated/prisma/client"
 
 export interface CreateOrderData {
   userId: number
   status: "APROVADO" | "ENVIADO" | "CANCELADO" | "PENDENTE"
   addressId?: number
-  shippingAddress?: Prisma.InputJsonValue
+  shippingAddress?: any
   total: string
   createdBy: number
   updatedBy: number

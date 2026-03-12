@@ -29,6 +29,7 @@ export default defineConfig([
           destructuredArrayIgnorePattern: "^_",
         },
       ],
+      "@typescript-eslint/no-explicit-any": "off"
     },
   },
 ])
