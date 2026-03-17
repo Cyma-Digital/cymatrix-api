@@ -14,13 +14,11 @@ export interface CreateUserData {
   updatedBy: number
 }
 
-export interface UpdateUserData {
-  firstName: string
-  lastName: string
-  email: string
-  phone?: string | null
-  role: UserRole
-  updatedBy: number
+export type UpdateUserData = Partial<
+  Omit<CreateUserData, "createdBy" | "passwordHash">
+> & {
+  updatedBy?: number // Opcional para atualizações de sistema (ex: lastLogin)
+  lastLogin?: Date | null // Adicionar campo lastLogin
 }
 
 export class UserRepository {
@@ -29,11 +27,16 @@ export class UserRepository {
     deletedBy: null,
   }
 
+  private withoutPasswordHashFilter = {
+    omit: { passwordHash: true },
+  }
+
   async create(data: CreateUserData) {
     const result = await prisma.user.create({
       data: {
         ...data,
       },
+      ...this.withoutPasswordHashFilter,
     })
 
     return result
@@ -55,6 +58,7 @@ export class UserRepository {
         id: userId,
         ...this.softDeleteFilter,
       },
+      ...this.withoutPasswordHashFilter,
     })
   }
 
@@ -63,6 +67,7 @@ export class UserRepository {
       where: {
         ...this.softDeleteFilter,
       },
+      ...this.withoutPasswordHashFilter,
     })
 
     return result
@@ -75,6 +80,7 @@ export class UserRepository {
         ...data,
         updatedAt: new Date(),
       },
+      ...this.withoutPasswordHashFilter,
     })
   }
 

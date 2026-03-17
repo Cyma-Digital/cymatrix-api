@@ -7,6 +7,7 @@ import product from "@/routes/product/product.routes"
 import address from "@/routes/address/address.routes"
 import order from "@/routes/order/order.routes"
 import orderItem from "@/routes/orderItem/orderItem.routes"
+import auth from "@/routes/auth/auth.routes"
 
 const router = Router()
 
@@ -18,5 +19,6 @@ router.use("/products", product)
 router.use("/addresses", address)
 router.use("/orders", order)
 router.use("/order-items", orderItem)
+router.use("/auth", auth)
 
 export default router
