@@ -81,9 +81,10 @@ model User {
   ordersDeleted Order[] @relation("OrderDeletedBy")
   orders        Order[] @relation("OrderUserId")
 
-  orderItemsCreated OrderItem[] @relation("OrderItemCreatedBy")
-  orderItemsUpdated OrderItem[] @relation("OrderItemUpdatedBy")
-  orderItemsDeleted OrderItem[] @relation("OrderItemDeletedBy")
+  orderItemsCreated OrderItem[]    @relation("OrderItemCreatedBy")
+  orderItemsUpdated OrderItem[]    @relation("OrderItemUpdatedBy")
+  orderItemsDeleted OrderItem[]    @relation("OrderItemDeletedBy")
+  refreshTokens     RefreshToken[]
 
   @@map("user")
 }
@@ -242,4 +243,16 @@ model OrderItem {
   deleter User? @relation("OrderItemDeletedBy", fields: [deletedBy], references: [id])
 
   @@map("order_item")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int      @map("user_id")
+  expiresAt DateTime @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_token")
 }
