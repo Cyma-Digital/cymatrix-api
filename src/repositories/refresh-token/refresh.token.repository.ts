@@ -23,6 +23,22 @@ export class RefreshTokenRespository {
       },
     })
   }
+
+  async findByToken(token: string): Promise<RefreshToken | null> {
+    return await prisma.refreshToken.findUnique({
+      where: {
+        token,
+      },
+    })
+  }
+
+  async deleteByToken(token: string): Promise<void> {
+    await prisma.refreshToken.delete({
+      where: {
+        token,
+      },
+    })
+  }
 }
 
 export default new RefreshTokenRespository()

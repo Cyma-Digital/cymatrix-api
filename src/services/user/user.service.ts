@@ -30,16 +30,24 @@ export class UserService {
     })
   }
 
+  async currentUser(userId: number) {
+    const user = await this.repository.getById(userId)
+
+    if (!user) throw new HttpError(404, "User not found")
+
+    return user
+  }
+
   async listAll() {
     return await this.repository.listAll()
   }
 
   async getById(userId: number) {
-    const task = await this.repository.getById(userId)
+    const user = await this.repository.getById(userId)
 
-    if (!task) throw new HttpError(404, "User not found")
+    if (!user) throw new HttpError(404, "User not found")
 
-    return task
+    return user
   }
 
   async update(userId: number, data: updateUserServiceInput) {

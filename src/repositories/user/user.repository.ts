@@ -53,7 +53,7 @@ export class UserRepository {
   }
 
   async getById(userId: number) {
-    return await prisma.user.findUnique({
+    return await prisma.user.findFirst({
       where: {
         id: userId,
         ...this.softDeleteFilter,

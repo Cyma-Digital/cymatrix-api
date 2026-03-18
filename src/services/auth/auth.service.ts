@@ -7,6 +7,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
   TokenPayload,
+  verifyRefreshToken,
 } from "@/utils/jwt"
 
 export class AuthService {
@@ -63,6 +64,45 @@ export class AuthService {
         email: user.email,
         role: user.role,
       },
+    }
+  }
+
+  async refresh(refreshToken: string) {
+    let decodedToken: TokenPayload
+
+    try {
+      decodedToken = verifyRefreshToken(refreshToken)
+    } catch {
+      throw new HttpError(401, "Invalid refresh token")
+    }
+
+    const storedStoken = await refreshTokenRespository.findByToken(refreshToken)
+
+    if (!storedStoken) throw new HttpError(401, "Refresh token not found")
+
+    if (storedStoken.expiresAt < new Date()) {
+      await this.refreshTokenRepository.deleteByToken(refreshToken)
+      throw new HttpError(401, "Refresh token expired")
+    }
+
+    const payload: TokenPayload = {
+      userdId: decodedToken.userdId,
+      email: decodedToken.email,
+      role: decodedToken.role,
+    }
+
+    const newAcessToken = generateAccessToken(payload)
+
+    return {
+      accessToken: newAcessToken,
+    }
+  }
+
+  async logout(refreshToken: string): Promise<void> {
+    try {
+      await this.refreshTokenRepository.deleteByToken(refreshToken)
+    } catch {
+      return
     }
   }
 }
