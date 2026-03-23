@@ -26,6 +26,7 @@
     "runner:orchestrator:setup": "npx tsx tests/helpers/orchestrator.runner.ts",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "generate:users": "tsx scripts/generate.user.payloads.ts"
   },
   "keywords": [],
@@ -58,6 +59,7 @@
     "@types/node": "^25.0.9",
     "@types/pg": "^8.16.0",
     "@types/supertest": "^6.0.3",
+    "@vitest/coverage-v8": "^4.1.0",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^9.39.2",

@@ -21,7 +21,7 @@ export async function login(
     })
 
     return res.status(200).json({
-      success: true,
+      status: "success",
       data: {
         access: result.accessToken,
         user: result.user,
