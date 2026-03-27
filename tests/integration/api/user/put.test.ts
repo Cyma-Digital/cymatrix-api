@@ -19,16 +19,13 @@ describe("PUT /api/users/:id", () => {
           lastName: "User",
           email: "original@email.com",
           phone: "(11) 99999-9999",
-          document: "123.456.789-00",
-          documentType: "CPF",
           password: "Test@123",
-          role: "CLIENT",
+          role: "INSTALLATION",
         }
 
         const createResponse = await request(app)
           .post("/api/users")
           .send(payload)
-
         const { id } = createResponse.body.data
 
         const updatePayload = {
@@ -36,9 +33,7 @@ describe("PUT /api/users/:id", () => {
           lastName: "User updated",
           email: "original.updated@email.com",
           phone: "(12) 0000-1111",
-          document: "933.446.781-10",
-          documentType: "CPF",
-          role: "CLIENT",
+          role: "PRODUCTION",
         }
 
         const response = await request(app)
@@ -47,33 +42,27 @@ describe("PUT /api/users/:id", () => {
 
         expect(response.status).toBe(200)
         expect(response.body.data).toBeDefined()
-
         expect(response.body.data).toMatchObject({
           id: id,
           firstName: updatePayload.firstName,
           lastName: updatePayload.lastName,
           email: updatePayload.email,
           phone: updatePayload.phone,
-          document: updatePayload.document,
-          documentType: updatePayload.documentType,
           role: updatePayload.role,
         })
-
         expect(response.body.data.password).toBeUndefined()
         expect(response.body.data.passwordHash).toBeUndefined()
       })
     })
 
     describe("Error cases", () => {
-      test("should return 400 whe ID format is invalid", async () => {
+      test("should return 400 when ID format is invalid", async () => {
         const updatePayload = {
           firstName: "Test",
           lastName: "User",
           email: "test@email.com",
           phone: null,
-          document: "123.456.789-00",
-          documentType: "CPF",
-          role: "CLIENT",
+          role: "STAFF",
         }
 
         const response = await request(app)
@@ -86,15 +75,13 @@ describe("PUT /api/users/:id", () => {
         expect(response.body.details.fieldErrors.id).toBeDefined()
       })
 
-      test("should return 400 whe ID format is not a number", async () => {
+      test("should return 400 when ID format is not a number", async () => {
         const updatePayload = {
           firstName: "Test",
           lastName: "User",
           email: "test@email.com",
           phone: null,
-          document: "123.456.789-00",
-          documentType: "CPF",
-          role: "CLIENT",
+          role: "STAFF",
         }
 
         const response = await request(app)
@@ -112,10 +99,7 @@ describe("PUT /api/users/:id", () => {
           firstName: "Test",
           lastName: "User",
           email: "test@email.com",
-          phone: null,
-          document: "123.456.789-00",
-          documentType: "CPF",
-          role: "CLIENT",
+          role: "STAFF",
         }
 
         const response = await request(app)

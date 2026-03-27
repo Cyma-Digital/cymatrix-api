@@ -1,13 +1,11 @@
 import prisma from "@/lib/prisma"
-import { DocumentType, UserRole } from "@/schemas/base.schemas"
+import { UserRole } from "@/schemas/base.schemas"
 
 export interface CreateUserData {
   firstName: string
   lastName: string
   email: string
   phone?: string | null
-  document: string
-  documentType: DocumentType
   passwordHash: string
   role: UserRole
   createdBy: number

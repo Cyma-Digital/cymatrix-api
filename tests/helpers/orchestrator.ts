@@ -41,8 +41,6 @@ class Orchestrator {
         lastName: "User",
         email: "admin@test.com",
         phone: "11999999999",
-        document: "12345678900",
-        documentType: "CPF",
         passwordHash: hashedPassword,
         role: "ADMIN",
       },

@@ -1,7 +1,7 @@
-name: catolog
+name: abdou-portal
 services:
   database:
-    container_name: catolog-dev-postgres
+    container_name: abdou-portal-dev-postgres
     image: postgres:17-alpine
     env_file:
       - ../.env

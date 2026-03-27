@@ -1,124 +1,152 @@
 {
   "admin": {
-    "firstName": "Matheus",
-    "lastName": "Xavier",
-    "email": "matheus_xavier20@live.com",
-    "phone": "(68) 2323-4789",
-    "document": "233.242.434-24",
-    "documentType": "CPF",
+    "firstName": "Ígor",
+    "lastName": "Santos",
+    "email": "igor_santos@yahoo.com",
+    "phone": "(69) 5856-4659",
     "password": "Test@123",
-    "role": "ADMIN"
+    "role": "ADMIN",
+    "createdBy": 1,
+    "updatedBy": 1
   },
   "staff": [
     {
-      "firstName": "Karla",
-      "lastName": "Moraes",
-      "email": "karla_moraes49@hotmail.com",
-      "phone": "+55 (63) 2044-3171",
-      "document": "784.028.042-09",
-      "documentType": "CPF",
+      "firstName": "Marli",
+      "lastName": "Santos",
+      "email": "marli.santos0@gmail.com",
+      "phone": "(28) 73262-5118",
       "password": "Test@123",
-      "role": "STAFF"
+      "role": "STAFF",
+      "createdBy": 1,
+      "updatedBy": 1
     },
     {
-      "firstName": "Sophia",
+      "firstName": "Aline",
       "lastName": "Costa",
-      "email": "sophia_costa43@bol.com.br",
-      "phone": "(79) 6513-2274",
-      "document": "316.333.746-53",
-      "documentType": "CPF",
+      "email": "aline_costa@live.com",
+      "phone": "(68) 64341-0096",
       "password": "Test@123",
-      "role": "STAFF"
-    },
-    {
-      "firstName": "Kléber",
-      "lastName": "Oliveira",
-      "email": "kleber_oliveira@bol.com.br",
-      "phone": "(56) 85340-5709",
-      "document": "405.142.636-01",
-      "documentType": "CPF",
-      "password": "Test@123",
-      "role": "STAFF"
+      "role": "STAFF",
+      "createdBy": 1,
+      "updatedBy": 1
     }
   ],
-  "clientCPF": [
+  "finance": [
     {
-      "firstName": "Natália",
-      "lastName": "Franco",
-      "email": "natalia.franco@hotmail.com",
-      "phone": "(89) 03464-2359",
-      "document": "300.061.546-62",
-      "documentType": "CPF",
-      "password": "Test@123",
-      "role": "CLIENT"
-    },
-    {
-      "firstName": "Rafael",
-      "lastName": "Nogueira",
-      "email": "rafael.nogueira@bol.com.br",
-      "document": "527.161.158-26",
-      "documentType": "CPF",
-      "password": "Test@123",
-      "role": "CLIENT"
-    },
-    {
-      "firstName": "Rafaela",
-      "lastName": "Santos",
-      "email": "rafaela_santos@hotmail.com",
-      "phone": "(66) 1998-8336",
-      "document": "614.701.031-09",
-      "documentType": "CPF",
-      "password": "Test@123",
-      "role": "CLIENT"
-    },
-    {
-      "firstName": "Fabrícia",
-      "lastName": "Santos",
-      "email": "fabricia_santos93@yahoo.com",
-      "phone": "(34) 08114-0720",
-      "document": "382.800.860-72",
-      "documentType": "CPF",
-      "password": "Test@123",
-      "role": "CLIENT"
-    },
-    {
-      "firstName": "Isis",
-      "lastName": "Moraes",
-      "email": "isis_moraes85@bol.com.br",
-      "document": "186.771.704-21",
-      "documentType": "CPF",
-      "password": "Test@123",
-      "role": "CLIENT"
-    }
-  ],
-  "clientCNPJ": [
-    {
-      "firstName": "Calebe",
+      "firstName": "Isabelly",
       "lastName": "Carvalho",
-      "email": "calebe_carvalho23@live.com",
-      "phone": "(18) 86140-3669",
-      "document": "13.086.612/8320-80",
-      "documentType": "CNPJ",
+      "email": "isabelly.carvalho13@bol.com.br",
       "password": "Test@123",
-      "role": "CLIENT"
+      "role": "FINANCE",
+      "createdBy": 1,
+      "updatedBy": 1
     },
     {
-      "firstName": "Maitê",
-      "lastName": "Reis",
-      "email": "maite_reis@yahoo.com",
-      "document": "43.418.003/5055-13",
-      "documentType": "CNPJ",
+      "firstName": "Marli",
+      "lastName": "Silva",
+      "email": "marli_silva87@bol.com.br",
+      "phone": "(40) 4254-0442",
       "password": "Test@123",
-      "role": "CLIENT"
+      "role": "FINANCE",
+      "createdBy": 1,
+      "updatedBy": 1
+    }
+  ],
+  "production": [
+    {
+      "firstName": "Nataniel",
+      "lastName": "Macedo",
+      "email": "nataniel_macedo@hotmail.com",
+      "phone": "(93) 68475-2472",
+      "password": "Test@123",
+      "role": "PRODUCTION",
+      "createdBy": 1,
+      "updatedBy": 1
     },
     {
-      "firstName": "Yasmin",
-      "lastName": "Oliveira",
-      "email": "yasmin.oliveira8@bol.com.br",
-      "document": "45.773.448/2825-72",
-      "documentType": "CNPJ",
+      "firstName": "Sara",
+      "lastName": "Santos",
+      "email": "sara.santos30@live.com",
+      "phone": "(83) 0764-4389",
       "password": "Test@123",
-      "role": "CLIENT"
+      "role": "PRODUCTION",
+      "createdBy": 1,
+      "updatedBy": 1
+    }
+  ],
+  "installation": [
+    {
+      "firstName": "João Lucas",
+      "lastName": "Souza",
+      "email": "joaolucas.souza22@yahoo.com",
+      "phone": "(77) 39878-6731",
+      "password": "Test@123",
+      "role": "INSTALLATION",
+      "createdBy": 1,
+      "updatedBy": 1
+    },
+    {
+      "firstName": "Ofélia",
+      "lastName": "Carvalho",
+      "email": "ofelia_carvalho@bol.com.br",
+      "phone": "(35) 90966-6582",
+      "password": "Test@123",
+      "role": "INSTALLATION",
+      "createdBy": 1,
+      "updatedBy": 1
+    },
+    {
+      "firstName": "Valentina",
+      "lastName": "Braga",
+      "email": "valentina.braga@yahoo.com",
+      "password": "Test@123",
+      "role": "INSTALLATION",
+      "createdBy": 1,
+      "updatedBy": 1
+    }
+  ],
+  "logistics": [
+    {
+      "firstName": "Morgana",
+      "lastName": "Moraes",
+      "email": "morgana_moraes35@gmail.com",
+      "phone": "(42) 5540-4706",
+      "password": "Test@123",
+      "role": "LOGISTICS",
+      "createdBy": 1,
+      "updatedBy": 1
+    },
+    {
+      "firstName": "Gustavo",
+      "lastName": "Souza",
+      "email": "gustavo_souza96@live.com",
+      "phone": "(50) 10328-6238",
+      "password": "Test@123",
+      "role": "LOGISTICS",
+      "createdBy": 1,
+      "updatedBy": 1
+    }
+  ],
+  "programming": [
+    {
+      "firstName": "Sara",
+      "lastName": "Melo",
+      "email": "sara_melo@gmail.com",
+      "phone": "(38) 3439-9978",
+      "password": "Test@123",
+      "role": "PROGRAMMING",
+      "createdBy": 1,
+      "updatedBy": 1
+    },
+    {
+      "firstName": "Aline",
+      "lastName": "Santos",
+      "email": "aline_santos@yahoo.com",
+      "phone": "(04) 79021-1217",
+      "password": "Test@123",
+      "role": "PROGRAMMING",
+      "createdBy": 1,
+      "updatedBy": 1
     }
   ]
 }

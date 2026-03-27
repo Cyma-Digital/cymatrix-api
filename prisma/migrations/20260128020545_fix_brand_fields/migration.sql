@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "brand" ALTER COLUMN "created_at" DROP NOT NULL,
-ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;

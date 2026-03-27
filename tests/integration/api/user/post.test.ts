@@ -19,8 +19,6 @@ describe("POST /api/users", () => {
           lastName: "Santos",
           email: "alessandro_santos@gmail.com",
           phone: "(15) 7614-8559",
-          document: "137.602.222-26",
-          documentType: "CPF",
           password: "Test@123",
           role: "ADMIN",
         }
@@ -28,9 +26,7 @@ describe("POST /api/users", () => {
         const response = await request(app).post("/api/users").send(payload)
 
         expect(response.status).toBe(201)
-        expect(response.body.status).toBeDefined()
         expect(response.body.status).toBe("success")
-        expect(response.body.data).toBeDefined()
         expect(response.body.data).toMatchObject({
           id: expect.any(Number),
           firstName: "Alessandro",
@@ -48,8 +44,6 @@ describe("POST /api/users", () => {
           lastName: "Martins",
           email: "emanuelly.martins29@bol.com.br",
           phone: "(97) 83440-8270",
-          document: "845.756.335-18",
-          documentType: "CPF",
           password: "Test@123",
           role: "STAFF",
         }
@@ -57,9 +51,7 @@ describe("POST /api/users", () => {
         const response = await request(app).post("/api/users").send(payload)
 
         expect(response.status).toBe(201)
-        expect(response.body.status).toBeDefined()
         expect(response.body.status).toBe("success")
-        expect(response.body.data).toBeDefined()
         expect(response.body.data).toMatchObject({
           id: expect.any(Number),
           firstName: "Emanuelly",
@@ -71,32 +63,93 @@ describe("POST /api/users", () => {
         expect(response.body.data.passwordHash).toBeUndefined()
       })
 
-      test("should create CLIENT user", async () => {
+      test("should create FINANCE user", async () => {
         const payload = {
           firstName: "Fábio",
           lastName: "Nogueira",
           email: "fabio_nogueira63@hotmail.com",
-          document: "142.386.427-16",
-          documentType: "CPF",
           password: "Test@123",
-          role: "CLIENT",
+          role: "FINANCE",
         }
 
         const response = await request(app).post("/api/users").send(payload)
 
         expect(response.status).toBe(201)
-        expect(response.body.status).toBeDefined()
         expect(response.body.status).toBe("success")
-        expect(response.body.data).toBeDefined()
         expect(response.body.data).toMatchObject({
           id: expect.any(Number),
           firstName: "Fábio",
           lastName: "Nogueira",
           email: "fabio_nogueira63@hotmail.com",
         })
-        expect(response.body.data.role).toBe("CLIENT")
+        expect(response.body.data.role).toBe("FINANCE")
         expect(response.body.data.password).toBeUndefined()
         expect(response.body.data.passwordHash).toBeUndefined()
+      })
+
+      test("should create PRODUCTION user", async () => {
+        const payload = {
+          firstName: "Carla",
+          lastName: "Oliveira",
+          email: "carla.oliveira@gmail.com",
+          password: "Test@123",
+          role: "PRODUCTION",
+        }
+
+        const response = await request(app).post("/api/users").send(payload)
+
+        expect(response.status).toBe(201)
+        expect(response.body.status).toBe("success")
+        expect(response.body.data.role).toBe("PRODUCTION")
+      })
+
+      test("should create INSTALLATION user", async () => {
+        const payload = {
+          firstName: "Rafael",
+          lastName: "Silva",
+          email: "rafael.silva@gmail.com",
+          phone: "(11) 99876-5432",
+          password: "Test@123",
+          role: "INSTALLATION",
+        }
+
+        const response = await request(app).post("/api/users").send(payload)
+
+        expect(response.status).toBe(201)
+        expect(response.body.status).toBe("success")
+        expect(response.body.data.role).toBe("INSTALLATION")
+      })
+
+      test("should create LOGISTICS user", async () => {
+        const payload = {
+          firstName: "Juliana",
+          lastName: "Costa",
+          email: "juliana.costa@gmail.com",
+          password: "Test@123",
+          role: "LOGISTICS",
+        }
+
+        const response = await request(app).post("/api/users").send(payload)
+
+        expect(response.status).toBe(201)
+        expect(response.body.status).toBe("success")
+        expect(response.body.data.role).toBe("LOGISTICS")
+      })
+
+      test("should create PROGRAMMING user", async () => {
+        const payload = {
+          firstName: "Lucas",
+          lastName: "Pereira",
+          email: "lucas.pereira@gmail.com",
+          password: "Test@123",
+          role: "PROGRAMMING",
+        }
+
+        const response = await request(app).post("/api/users").send(payload)
+
+        expect(response.status).toBe(201)
+        expect(response.body.status).toBe("success")
+        expect(response.body.data.role).toBe("PROGRAMMING")
       })
     })
   })

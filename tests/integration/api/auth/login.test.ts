@@ -20,8 +20,6 @@ describe("POST /api/auth/login", () => {
           lastName: "User",
           email: "admin@mail.com",
           phone: "(12) 9999-9999",
-          document: "123.456.789-10",
-          documentType: "CPF",
           password: "admin@password",
           role: "ADMIN",
         }

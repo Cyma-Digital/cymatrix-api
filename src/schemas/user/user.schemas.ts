@@ -23,8 +23,6 @@ export const createUserSchama = z.strictObject({
   lastName: z.string().min(1, "Last name is required"),
   email: emailSchema,
   phone: phoneSchema,
-  document: documentSchema,
-  documentType: DocumentTypeEnum,
   password: passwordSchema,
   role: UserRoleEnum,
 })
@@ -38,8 +36,6 @@ export const updateUserSchema = z.strictObject({
   lastName: z.string().min(1, "Last name is required"),
   email: emailSchema,
   phone: phoneSchema,
-  document: documentSchema,
-  documentType: DocumentTypeEnum,
   role: UserRoleEnum,
 })
 

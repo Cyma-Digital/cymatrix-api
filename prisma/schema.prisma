@@ -13,28 +13,16 @@ datasource db {
   provider = "postgresql"
 }
 
-enum DocumentType {
-  CPF
-  CNPJ
-
-  @@map("document_type")
-}
-
 enum UserRole {
-  STAFF
   ADMIN
-  CLIENT
+  STAFF
+  FINANCE
+  PRODUCTION
+  INSTALLATION
+  LOGISTICS
+  PROGRAMMING
 
   @@map("user_role")
-}
-
-enum OrderStatus {
-  APROVADO
-  ENVIADO
-  CANCELADO
-  PENDENTE
-
-  @@map("order_status")
 }
 
 model User {
@@ -43,9 +31,6 @@ model User {
   lastName  String  @map("last_name") @db.VarChar(100)
   email     String  @unique @db.VarChar(255)
   phone     String? @db.VarChar(20)
-
-  document     String       @unique @db.VarChar(18)
-  documentType DocumentType @map("document_type")
 
   passwordHash String   @map("password_hash") @db.VarChar(255)
   role         UserRole @default(STAFF)
@@ -59,190 +44,9 @@ model User {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
-  brandsCreated Brand[] @relation("BrandCreatedBy")
-  brandsUpdated Brand[] @relation("BrandUpdatedBy")
-  brandsDeleted Brand[] @relation("BrandDeletedBy")
-
-  categoriesCreated Category[] @relation("CategoryCreatedBy")
-  categoriesUpdated Category[] @relation("CategoryUpdatedBy")
-  categoriesDeleted Category[] @relation("CategoryDeletedBy")
-
-  productsCreated Product[] @relation("ProductCreatedBy")
-  productsUpdated Product[] @relation("ProductUpdatedBy")
-  productsDeleted Product[] @relation("ProductDeletedBy")
-
-  addressesCreated Address[] @relation("AddressCreatedBy")
-  addressesUpdated Address[] @relation("AddressUpdatedBy")
-  addressesDeleted Address[] @relation("AddressDeletedBy")
-  addresses        Address[] @relation("AddressUserId")
-
-  ordersCreated Order[] @relation("OrderCreatedBy")
-  ordersUpdated Order[] @relation("OrderUpdatedBy")
-  ordersDeleted Order[] @relation("OrderDeletedBy")
-  orders        Order[] @relation("OrderUserId")
-
-  orderItemsCreated OrderItem[]    @relation("OrderItemCreatedBy")
-  orderItemsUpdated OrderItem[]    @relation("OrderItemUpdatedBy")
-  orderItemsDeleted OrderItem[]    @relation("OrderItemDeletedBy")
-  refreshTokens     RefreshToken[]
+  refreshTokens RefreshToken[]
 
   @@map("user")
-}
-
-model Brand {
-  id      Int    @id @default(autoincrement())
-  name    String @db.VarChar(100)
-  slug    String @unique @db.VarChar(50)
-  logoUrl String @map("logo_url") @db.VarChar(255)
-
-  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  createdBy Int       @map("created_by")
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
-  updatedBy Int       @map("updated_by")
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
-  deletedBy Int?      @map("deleted_by")
-
-  creator User? @relation("BrandCreatedBy", fields: [createdBy], references: [id])
-  updater User? @relation("BrandUpdatedBy", fields: [updatedBy], references: [id])
-  deleter User? @relation("BrandDeletedBy", fields: [deletedBy], references: [id])
-
-  products Product[] @relation("ProductBrandId")
-
-  @@map("brand")
-}
-
-model Category {
-  id      Int    @id @default(autoincrement())
-  name    String @db.VarChar(100)
-  slug    String @unique @db.VarChar(50)
-  iconUrl String @map("icon_url") @db.VarChar(255)
-
-  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  createdBy Int       @map("created_by")
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
-  updatedBy Int       @map("updated_by")
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
-  deletedBy Int?      @map("deleted_by")
-
-  creator User? @relation("CategoryCreatedBy", fields: [createdBy], references: [id])
-  updater User? @relation("CategoryUpdatedBy", fields: [updatedBy], references: [id])
-  deleter User? @relation("CategoryDeletedBy", fields: [deletedBy], references: [id])
-
-  productsCategory Product[] @relation("ProductCategoryId")
-
-  @@map("category")
-}
-
-model Product {
-  id             Int     @id @default(autoincrement())
-  categoryId     Int     @map("category_id")
-  brandId        Int     @map("brand_id")
-  name           String  @db.VarChar(100)
-  price          Decimal @db.Decimal(12, 2)
-  description    String  @db.Text
-  additionalInfo Json?
-  avaliable      Boolean @db.Boolean
-  imageUrl       String  @map("image_url") @db.VarChar(255)
-
-  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  createdBy Int       @map("created_by")
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
-  updatedBy Int       @map("updated_by")
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
-  deletedBy Int?      @map("deleted_by")
-
-  category Category @relation("ProductCategoryId", fields: [categoryId], references: [id])
-  brand    Brand    @relation("ProductBrandId", fields: [brandId], references: [id])
-
-  creator User? @relation("ProductCreatedBy", fields: [createdBy], references: [id])
-  updater User? @relation("ProductUpdatedBy", fields: [updatedBy], references: [id])
-  deleter User? @relation("ProductDeletedBy", fields: [deletedBy], references: [id])
-
-  orderItems OrderItem[] @relation("OrderItemProductId")
-
-  @@map("product")
-}
-
-model Address {
-  id           Int     @id @default(autoincrement())
-  userId       Int     @map("user_id")
-  label        String  @db.VarChar(50)
-  street       String  @db.VarChar(150)
-  number       Int
-  complement   String? @db.VarChar(100)
-  neighborhood String  @db.VarChar(100)
-  city         String  @db.VarChar(100)
-  state        String  @db.VarChar(50)
-  zipCode      String  @db.VarChar(20)
-  isDefault    Boolean @db.Boolean
-
-  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  createdBy Int       @map("created_by")
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
-  updatedBy Int       @map("updated_by")
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
-  deletedBy Int?      @map("deleted_by")
-
-  user User @relation("AddressUserId", fields: [userId], references: [id])
-
-  creator User? @relation("AddressCreatedBy", fields: [createdBy], references: [id])
-  updater User? @relation("AddressUpdatedBy", fields: [updatedBy], references: [id])
-  deleter User? @relation("AddressDeletedBy", fields: [deletedBy], references: [id])
-
-  orders Order[] @relation("OrderAddressId")
-
-  @@map("address")
-}
-
-model Order {
-  id              Int         @id @default(autoincrement())
-  userId          Int         @map("user_id")
-  status          OrderStatus @default(PENDENTE)
-  addressId       Int?        @map("address_id")
-  shippingAddress Json?
-  total           Decimal     @db.Decimal(12, 2)
-
-  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  createdBy Int       @map("created_by")
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
-  updatedBy Int       @map("updated_by")
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
-  deletedBy Int?      @map("deleted_by")
-
-  user    User     @relation("OrderUserId", fields: [userId], references: [id])
-  address Address? @relation("OrderAddressId", fields: [addressId], references: [id])
-
-  creator User? @relation("OrderCreatedBy", fields: [createdBy], references: [id])
-  updater User? @relation("OrderUpdatedBy", fields: [updatedBy], references: [id])
-  deleter User? @relation("OrderDeletedBy", fields: [deletedBy], references: [id])
-
-  orderItems OrderItem[] @relation("OrderItemOrderId")
-
-  @@map("order")
-}
-
-model OrderItem {
-  id        Int     @id @default(autoincrement())
-  orderId   Int?    @map("order_id")
-  productId Int     @map("product_id")
-  quantity  Int     @db.Integer
-  unitPrice Decimal @db.Decimal(12, 2)
-
-  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  createdBy Int       @map("created_by")
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
-  updatedBy Int       @map("updated_by")
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
-  deletedBy Int?      @map("deleted_by")
-
-  order   Order?  @relation("OrderItemOrderId", fields: [orderId], references: [id])
-  product Product @relation("OrderItemProductId", fields: [productId], references: [id])
-
-  creator User? @relation("OrderItemCreatedBy", fields: [createdBy], references: [id])
-  updater User? @relation("OrderItemUpdatedBy", fields: [updatedBy], references: [id])
-  deleter User? @relation("OrderItemDeletedBy", fields: [deletedBy], references: [id])
-
-  @@map("order_item")
 }
 
 model RefreshToken {

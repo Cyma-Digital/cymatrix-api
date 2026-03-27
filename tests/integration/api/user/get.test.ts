@@ -19,51 +19,41 @@ describe("GET /api/users", () => {
           lastName: "Santos",
           email: "alessandro_santos@gmail.com",
           phone: "(15) 7614-8559",
-          document: "137.602.222-26",
-          documentType: "CPF",
           password: "Test@123",
           role: "ADMIN",
         })
-
         await request(app).post("/api/users").send({
           firstName: "Emanuelly",
           lastName: "Martins",
           email: "emanuelly.martins29@bol.com.br",
           phone: "(97) 83440-8270",
-          document: "845.756.335-18",
-          documentType: "CPF",
           password: "Test@123",
           role: "STAFF",
         })
-
         await request(app).post("/api/users").send({
           firstName: "Fábio",
           lastName: "Nogueira",
           email: "fabio_nogueira63@hotmail.com",
-          document: "142.386.427-16",
-          documentType: "CPF",
           password: "Test@123",
-          role: "CLIENT",
+          role: "FINANCE",
         })
 
         const response = await request(app).get("/api/users")
 
         expect(response.status).toBe(200)
-        expect(response.body.status).toBeDefined()
         expect(response.body.status).toBe("success")
         expect(response.body.data).toBeDefined()
         expect(response.body).toMatchObject({
           status: "success",
           data: expect.any(Array),
         })
-
         expect(response.body.data).toHaveLength(4)
       })
     })
   })
 })
 
-describe("GET/ api/users/:id", () => {
+describe("GET /api/users/:id", () => {
   describe("Anonymous user", () => {
     describe("Success cases", () => {
       test("should return user by id", async () => {
@@ -72,14 +62,11 @@ describe("GET/ api/users/:id", () => {
           lastName: "Santos",
           email: "alessandro_santos@gmail.com",
           phone: "(15) 7614-8559",
-          document: "137.602.222-26",
-          documentType: "CPF",
           password: "Test@123",
           role: "ADMIN",
         })
 
         const user = userCreatedResponse.body.data
-
         const response = await request(app).get(`/api/users/${user.id}`)
 
         expect(response.status).toBe(200)
@@ -90,7 +77,6 @@ describe("GET/ api/users/:id", () => {
           lastName: "Santos",
           email: "alessandro_santos@gmail.com",
           phone: "(15) 7614-8559",
-          document: "137.602.222-26",
         })
       })
     })
