@@ -1,5 +1,5 @@
 {
-  "name": "catalog-api",
+  "name": "abdou-portal-api",
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",
@@ -26,6 +26,7 @@
     "runner:orchestrator:setup": "npx tsx tests/helpers/orchestrator.runner.ts",
     "test": "vitest run",
     "test:watch": "vitest",
+    "prepare": "husky",
     "test:coverage": "vitest run --coverage",
     "generate:users": "tsx scripts/generate.user.payloads.ts"
   },
