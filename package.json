@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
-    "build": "prisma generate && tsup",
+    "build": "prisma generate &&  prisma migrate deploy && tsup",
     "commitlint": "commitlint",
     "commit": "cz",
     "commit:all": "git add -A && cz",
