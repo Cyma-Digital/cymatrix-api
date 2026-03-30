@@ -2,7 +2,7 @@ import jwt, { SignOptions } from "jsonwebtoken"
 import { jwtConfig } from "@config/jwt"
 
 export interface TokenPayload {
-  userdId: number
+  userId: number
   email: string
   role: string
 }

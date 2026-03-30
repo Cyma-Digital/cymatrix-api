@@ -35,7 +35,7 @@ export class AuthService {
     await this.refreshTokenRepository.deleteExpired()
 
     const payload: TokenPayload = {
-      userdId: user.id,
+      userId: user.id,
       email: user.email,
       role: user.role,
     }
@@ -86,7 +86,7 @@ export class AuthService {
     }
 
     const payload: TokenPayload = {
-      userdId: decodedToken.userdId,
+      userId: decodedToken.userId,
       email: decodedToken.email,
       role: decodedToken.role,
     }
