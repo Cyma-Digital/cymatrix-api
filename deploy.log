@@ -5,3 +5,4 @@
 [*] Mar 30 2026 16:53:56  "Fix deploy database name"
 [*] Mar 30 2026 17:41:48  "Fix ssl"
 [*] Mar 31 2026 10:01:22  "Fix ssl database connection"
+[*] Mar 31 2026 14:25:54  "Protect routes with authenticate middleware"
