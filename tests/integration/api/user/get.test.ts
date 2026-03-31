@@ -1,6 +1,7 @@
 import request from "supertest"
 import app from "@/app"
 import { orchestrator } from "tests/helpers/orchestrator"
+import { loginAndGetToken } from "tests/helpers/auth"
 
 beforeEach(async () => {
   await orchestrator.setup()
@@ -12,9 +13,22 @@ afterAll(async () => {
 
 describe("GET /api/users", () => {
   describe("Anonymous user", () => {
-    describe("Success cases", () => {
-      test("should list all users", async () => {
-        await request(app).post("/api/users").send({
+    test("should return 401 without authentication", async () => {
+      const response = await request(app).get("/api/users")
+
+      expect(response.status).toBe(401)
+      expect(response.body.status).toBe("error")
+    })
+  })
+
+  describe("Authenticated user", () => {
+    test("should list all users", async () => {
+      const token = await loginAndGetToken()
+
+      await request(app)
+        .post("/api/users")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
           firstName: "Alessandro",
           lastName: "Santos",
           email: "alessandro_santos@gmail.com",
@@ -22,7 +36,10 @@ describe("GET /api/users", () => {
           password: "Test@123",
           role: "ADMIN",
         })
-        await request(app).post("/api/users").send({
+      await request(app)
+        .post("/api/users")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
           firstName: "Emanuelly",
           lastName: "Martins",
           email: "emanuelly.martins29@bol.com.br",
@@ -30,7 +47,10 @@ describe("GET /api/users", () => {
           password: "Test@123",
           role: "STAFF",
         })
-        await request(app).post("/api/users").send({
+      await request(app)
+        .post("/api/users")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
           firstName: "Fábio",
           lastName: "Nogueira",
           email: "fabio_nogueira63@hotmail.com",
@@ -38,26 +58,39 @@ describe("GET /api/users", () => {
           role: "FINANCE",
         })
 
-        const response = await request(app).get("/api/users")
+      const response = await request(app)
+        .get("/api/users")
+        .set("Authorization", `Bearer ${token}`)
 
-        expect(response.status).toBe(200)
-        expect(response.body.status).toBe("success")
-        expect(response.body.data).toBeDefined()
-        expect(response.body).toMatchObject({
-          status: "success",
-          data: expect.any(Array),
-        })
-        expect(response.body.data).toHaveLength(4)
+      expect(response.status).toBe(200)
+      expect(response.body.status).toBe("success")
+      expect(response.body).toMatchObject({
+        status: "success",
+        data: expect.any(Array),
       })
+      expect(response.body.data).toHaveLength(4)
     })
   })
 })
 
 describe("GET /api/users/:id", () => {
   describe("Anonymous user", () => {
-    describe("Success cases", () => {
-      test("should return user by id", async () => {
-        const userCreatedResponse = await request(app).post("/api/users").send({
+    test("should return 401 without authentication", async () => {
+      const response = await request(app).get("/api/users/1")
+
+      expect(response.status).toBe(401)
+      expect(response.body.status).toBe("error")
+    })
+  })
+
+  describe("Authenticated user", () => {
+    test("should return user by id", async () => {
+      const token = await loginAndGetToken()
+
+      const userCreatedResponse = await request(app)
+        .post("/api/users")
+        .set("Authorization", `Bearer ${token}`)
+        .send({
           firstName: "Alessandro",
           lastName: "Santos",
           email: "alessandro_santos@gmail.com",
@@ -66,18 +99,20 @@ describe("GET /api/users/:id", () => {
           role: "ADMIN",
         })
 
-        const user = userCreatedResponse.body.data
-        const response = await request(app).get(`/api/users/${user.id}`)
+      const user = userCreatedResponse.body.data
 
-        expect(response.status).toBe(200)
-        expect(response.body.data).toBeDefined()
-        expect(response.body.data).toMatchObject({
-          id: user.id,
-          firstName: "Alessandro",
-          lastName: "Santos",
-          email: "alessandro_santos@gmail.com",
-          phone: "(15) 7614-8559",
-        })
+      const response = await request(app)
+        .get(`/api/users/${user.id}`)
+        .set("Authorization", `Bearer ${token}`)
+
+      expect(response.status).toBe(200)
+      expect(response.body.data).toBeDefined()
+      expect(response.body.data).toMatchObject({
+        id: user.id,
+        firstName: "Alessandro",
+        lastName: "Santos",
+        email: "alessandro_santos@gmail.com",
+        phone: "(15) 7614-8559",
       })
     })
   })

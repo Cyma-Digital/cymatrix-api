@@ -1,6 +1,7 @@
 import request from "supertest"
 import app from "@/app"
 import { orchestrator } from "tests/helpers/orchestrator"
+import { loginAndGetToken } from "tests/helpers/auth"
 
 beforeEach(async () => {
   await orchestrator.setup()
@@ -12,20 +13,32 @@ afterAll(async () => {
 
 describe("PUT /api/users/:id", () => {
   describe("Anonymous user", () => {
+    test("should return 401 without authentication", async () => {
+      const response = await request(app)
+        .put("/api/users/1")
+        .send({ firstName: "Test" })
+
+      expect(response.status).toBe(401)
+      expect(response.body.status).toBe("error")
+    })
+  })
+
+  describe("Authenticated user", () => {
     describe("Success cases", () => {
       test("should update a user", async () => {
-        const payload = {
-          firstName: "Original",
-          lastName: "User",
-          email: "original@email.com",
-          phone: "(11) 99999-9999",
-          password: "Test@123",
-          role: "INSTALLATION",
-        }
+        const token = await loginAndGetToken()
 
         const createResponse = await request(app)
           .post("/api/users")
-          .send(payload)
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            firstName: "Original",
+            lastName: "User",
+            email: "original@email.com",
+            phone: "(11) 99999-9999",
+            password: "Test@123",
+            role: "INSTALLATION",
+          })
         const { id } = createResponse.body.data
 
         const updatePayload = {
@@ -38,6 +51,7 @@ describe("PUT /api/users/:id", () => {
 
         const response = await request(app)
           .put(`/api/users/${id}`)
+          .set("Authorization", `Bearer ${token}`)
           .send(updatePayload)
 
         expect(response.status).toBe(200)
@@ -57,17 +71,17 @@ describe("PUT /api/users/:id", () => {
 
     describe("Error cases", () => {
       test("should return 400 when ID format is invalid", async () => {
-        const updatePayload = {
-          firstName: "Test",
-          lastName: "User",
-          email: "test@email.com",
-          phone: null,
-          role: "STAFF",
-        }
+        const token = await loginAndGetToken()
 
         const response = await request(app)
           .put("/api/users/invalid-id")
-          .send(updatePayload)
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            firstName: "Test",
+            lastName: "User",
+            email: "test@email.com",
+            role: "STAFF",
+          })
 
         expect(response.status).toBe(400)
         expect(response.body.status).toBe("error")
@@ -76,17 +90,17 @@ describe("PUT /api/users/:id", () => {
       })
 
       test("should return 400 when ID format is not a number", async () => {
-        const updatePayload = {
-          firstName: "Test",
-          lastName: "User",
-          email: "test@email.com",
-          phone: null,
-          role: "STAFF",
-        }
+        const token = await loginAndGetToken()
 
         const response = await request(app)
           .put("/api/users/123abc")
-          .send(updatePayload)
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            firstName: "Test",
+            lastName: "User",
+            email: "test@email.com",
+            role: "STAFF",
+          })
 
         expect(response.status).toBe(400)
         expect(response.body.status).toBe("error")
@@ -95,16 +109,17 @@ describe("PUT /api/users/:id", () => {
       })
 
       test("should return 404 when user ID does not exist", async () => {
-        const updatePayload = {
-          firstName: "Test",
-          lastName: "User",
-          email: "test@email.com",
-          role: "STAFF",
-        }
+        const token = await loginAndGetToken()
 
         const response = await request(app)
           .put("/api/users/99999")
-          .send(updatePayload)
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            firstName: "Test",
+            lastName: "User",
+            email: "test@email.com",
+            role: "STAFF",
+          })
 
         expect(response.status).toBe(404)
         expect(response.body.status).toBe("error")

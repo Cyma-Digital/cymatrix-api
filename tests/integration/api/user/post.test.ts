@@ -1,6 +1,7 @@
 import request from "supertest"
 import app from "@/app"
 import { orchestrator } from "tests/helpers/orchestrator"
+import { loginAndGetToken } from "tests/helpers/auth"
 
 beforeEach(async () => {
   await orchestrator.setup()
@@ -12,8 +13,26 @@ afterAll(async () => {
 
 describe("POST /api/users", () => {
   describe("Anonymous user", () => {
+    test("should return 401 without authentication", async () => {
+      const payload = {
+        firstName: "Alessandro",
+        lastName: "Santos",
+        email: "alessandro_santos@gmail.com",
+        password: "Test@123",
+        role: "ADMIN",
+      }
+
+      const response = await request(app).post("/api/users").send(payload)
+
+      expect(response.status).toBe(401)
+      expect(response.body.status).toBe("error")
+    })
+  })
+
+  describe("Authenticated user", () => {
     describe("Success cases", () => {
       test("should create ADMIN user", async () => {
+        const token = await loginAndGetToken()
         const payload = {
           firstName: "Alessandro",
           lastName: "Santos",
@@ -23,7 +42,10 @@ describe("POST /api/users", () => {
           role: "ADMIN",
         }
 
-        const response = await request(app).post("/api/users").send(payload)
+        const response = await request(app)
+          .post("/api/users")
+          .set("Authorization", `Bearer ${token}`)
+          .send(payload)
 
         expect(response.status).toBe(201)
         expect(response.body.status).toBe("success")
@@ -39,6 +61,7 @@ describe("POST /api/users", () => {
       })
 
       test("should create STAFF user", async () => {
+        const token = await loginAndGetToken()
         const payload = {
           firstName: "Emanuelly",
           lastName: "Martins",
@@ -48,7 +71,10 @@ describe("POST /api/users", () => {
           role: "STAFF",
         }
 
-        const response = await request(app).post("/api/users").send(payload)
+        const response = await request(app)
+          .post("/api/users")
+          .set("Authorization", `Bearer ${token}`)
+          .send(payload)
 
         expect(response.status).toBe(201)
         expect(response.body.status).toBe("success")
@@ -64,6 +90,7 @@ describe("POST /api/users", () => {
       })
 
       test("should create FINANCE user", async () => {
+        const token = await loginAndGetToken()
         const payload = {
           firstName: "Fábio",
           lastName: "Nogueira",
@@ -72,7 +99,10 @@ describe("POST /api/users", () => {
           role: "FINANCE",
         }
 
-        const response = await request(app).post("/api/users").send(payload)
+        const response = await request(app)
+          .post("/api/users")
+          .set("Authorization", `Bearer ${token}`)
+          .send(payload)
 
         expect(response.status).toBe(201)
         expect(response.body.status).toBe("success")
@@ -88,15 +118,18 @@ describe("POST /api/users", () => {
       })
 
       test("should create PRODUCTION user", async () => {
-        const payload = {
-          firstName: "Carla",
-          lastName: "Oliveira",
-          email: "carla.oliveira@gmail.com",
-          password: "Test@123",
-          role: "PRODUCTION",
-        }
+        const token = await loginAndGetToken()
 
-        const response = await request(app).post("/api/users").send(payload)
+        const response = await request(app)
+          .post("/api/users")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            firstName: "Carla",
+            lastName: "Oliveira",
+            email: "carla.oliveira@gmail.com",
+            password: "Test@123",
+            role: "PRODUCTION",
+          })
 
         expect(response.status).toBe(201)
         expect(response.body.status).toBe("success")
@@ -104,16 +137,19 @@ describe("POST /api/users", () => {
       })
 
       test("should create INSTALLATION user", async () => {
-        const payload = {
-          firstName: "Rafael",
-          lastName: "Silva",
-          email: "rafael.silva@gmail.com",
-          phone: "(11) 99876-5432",
-          password: "Test@123",
-          role: "INSTALLATION",
-        }
+        const token = await loginAndGetToken()
 
-        const response = await request(app).post("/api/users").send(payload)
+        const response = await request(app)
+          .post("/api/users")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            firstName: "Rafael",
+            lastName: "Silva",
+            email: "rafael.silva@gmail.com",
+            phone: "(11) 99876-5432",
+            password: "Test@123",
+            role: "INSTALLATION",
+          })
 
         expect(response.status).toBe(201)
         expect(response.body.status).toBe("success")
@@ -121,15 +157,18 @@ describe("POST /api/users", () => {
       })
 
       test("should create LOGISTICS user", async () => {
-        const payload = {
-          firstName: "Juliana",
-          lastName: "Costa",
-          email: "juliana.costa@gmail.com",
-          password: "Test@123",
-          role: "LOGISTICS",
-        }
+        const token = await loginAndGetToken()
 
-        const response = await request(app).post("/api/users").send(payload)
+        const response = await request(app)
+          .post("/api/users")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            firstName: "Juliana",
+            lastName: "Costa",
+            email: "juliana.costa@gmail.com",
+            password: "Test@123",
+            role: "LOGISTICS",
+          })
 
         expect(response.status).toBe(201)
         expect(response.body.status).toBe("success")
@@ -137,15 +176,18 @@ describe("POST /api/users", () => {
       })
 
       test("should create PROGRAMMING user", async () => {
-        const payload = {
-          firstName: "Lucas",
-          lastName: "Pereira",
-          email: "lucas.pereira@gmail.com",
-          password: "Test@123",
-          role: "PROGRAMMING",
-        }
+        const token = await loginAndGetToken()
 
-        const response = await request(app).post("/api/users").send(payload)
+        const response = await request(app)
+          .post("/api/users")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            firstName: "Lucas",
+            lastName: "Pereira",
+            email: "lucas.pereira@gmail.com",
+            password: "Test@123",
+            role: "PROGRAMMING",
+          })
 
         expect(response.status).toBe(201)
         expect(response.body.status).toBe("success")

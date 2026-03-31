@@ -18,17 +18,12 @@ describe("POST /api/auth/login", () => {
         const payload = {
           firstName: "Admin",
           lastName: "User",
-          email: "admin@mail.com",
-          phone: "(12) 9999-9999",
-          password: "admin@password",
+          email: "admin@test.com",
           role: "ADMIN",
         }
-
-        await request(app).post("/api/users").send(payload)
-
         const response = await request(app).post("/api/auth/login").send({
-          email: payload.email,
-          password: payload.password,
+          email: "admin@test.com",
+          password: "admin123",
         })
 
         const refreshCookie = getCookie(response, "refreshToken")
@@ -52,6 +47,62 @@ describe("POST /api/auth/login", () => {
         expect(refreshCookie).toBeDefined()
         expect(refreshCookie.toLowerCase()).toContain("httponly")
         expect(refreshCookie.toLowerCase()).toContain("samesite=strict")
+      })
+    })
+
+    describe("Error cases", () => {
+      test("should return 401 with wrong password", async () => {
+        const response = await request(app).post("/api/auth/login").send({
+          email: "admin@test.com",
+          password: "wrongpassword",
+        })
+
+        expect(response.status).toBe(401)
+        expect(response.body.status).toBe("error")
+        expect(response.body.message).toBe("Invalid credentials")
+      })
+
+      test("should return 401 with non-existent email", async () => {
+        const response = await request(app).post("/api/auth/login").send({
+          email: "nonexistent@test.com",
+          password: "admin123",
+        })
+
+        expect(response.status).toBe(401)
+        expect(response.body.status).toBe("error")
+        expect(response.body.message).toBe("Invalid credentials")
+      })
+
+      test("should return same error message for wrong email and wrong password", async () => {
+        const wrongEmail = await request(app).post("/api/auth/login").send({
+          email: "nonexistent@test.com",
+          password: "admin123",
+        })
+
+        const wrongPassword = await request(app).post("/api/auth/login").send({
+          email: "admin@test.com",
+          password: "wrongpassword",
+        })
+
+        expect(wrongEmail.body.message).toBe(wrongPassword.body.message)
+      })
+
+      test("should return 400 with missing email", async () => {
+        const response = await request(app).post("/api/auth/login").send({
+          password: "admin123",
+        })
+
+        expect(response.status).toBe(400)
+        expect(response.body.status).toBe("error")
+      })
+
+      test("should return 400 with missing password", async () => {
+        const response = await request(app).post("/api/auth/login").send({
+          email: "admin@test.com",
+        })
+
+        expect(response.status).toBe(400)
+        expect(response.body.status).toBe("error")
       })
     })
   })

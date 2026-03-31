@@ -6,8 +6,11 @@ import {
   updateUserSchema,
   userIdSchema,
 } from "@/schemas/user/user.schemas"
+import { authenticate } from "@/middlewares/auth.middleware"
 
 const router = Router()
+
+router.use(authenticate)
 
 router.post("/", validateBody(createUserSchama), userController.create)
 router.get("/", userController.list)
