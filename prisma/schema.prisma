@@ -16,11 +16,7 @@ datasource db {
 enum UserRole {
   ADMIN
   STAFF
-  FINANCE
-  PRODUCTION
-  INSTALLATION
-  LOGISTICS
-  PROGRAMMING
+  CLIENT
 
   @@map("user_role")
 }

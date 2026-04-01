@@ -1,15 +1,14 @@
 import prisma from "@/lib/prisma"
-import bcrypt from "bcrypt"
+import argon2 from "@/lib/argon2"
 
 async function main() {
-  const hashedPassword = await bcrypt.hash("admin123", 10)
+  const hashedPassword = await argon2.hash("admin123")
 
   const adminUser = await prisma.user.create({
     data: {
       firstName: "Admin",
-      lastName: "System",
-      email: "admin@catalog.com",
-      phone: "11999999999",
+      lastName: "User",
+      email: "admin@mail.com",
       passwordHash: hashedPassword,
       role: "ADMIN",
       createdBy: null,

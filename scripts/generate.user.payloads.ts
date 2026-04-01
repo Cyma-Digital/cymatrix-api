@@ -2,14 +2,7 @@
 import { faker } from "@faker-js/faker/locale/pt_BR"
 import * as fs from "fs"
 
-type UserRole =
-  | "ADMIN"
-  | "STAFF"
-  | "FINANCE"
-  | "PRODUCTION"
-  | "INSTALLATION"
-  | "LOGISTICS"
-  | "PROGRAMMING"
+type UserRole = "ADMIN" | "STAFF" | "CLIENT"
 
 /**
  * Gera um payload de usuário
@@ -42,19 +35,7 @@ function generatePayloads() {
   const payloads = {
     admin: generateUserPayload("ADMIN"),
     staff: Array.from({ length: 2 }, () => generateUserPayload("STAFF")),
-    finance: Array.from({ length: 2 }, () => generateUserPayload("FINANCE")),
-    production: Array.from({ length: 2 }, () =>
-      generateUserPayload("PRODUCTION"),
-    ),
-    installation: Array.from({ length: 3 }, () =>
-      generateUserPayload("INSTALLATION"),
-    ),
-    logistics: Array.from({ length: 2 }, () =>
-      generateUserPayload("LOGISTICS"),
-    ),
-    programming: Array.from({ length: 2 }, () =>
-      generateUserPayload("PROGRAMMING"),
-    ),
+    client: Array.from({ length: 2 }, () => generateUserPayload("CLIENT")),
   }
 
   return payloads
@@ -79,36 +60,8 @@ payloads.staff.forEach((user, index) => {
 })
 console.log("\n-----------------------------------------------------------\n")
 
-console.log("🟢 FINANCE (2 exemplos):")
-payloads.finance.forEach((user, index) => {
-  console.log(`\n[${index + 1}]`)
-  console.log(JSON.stringify(user, null, 2))
-})
-console.log("\n-----------------------------------------------------------\n")
-
-console.log("🔵 PRODUCTION (2 exemplos):")
-payloads.production.forEach((user, index) => {
-  console.log(`\n[${index + 1}]`)
-  console.log(JSON.stringify(user, null, 2))
-})
-console.log("\n-----------------------------------------------------------\n")
-
-console.log("🟠 INSTALLATION (3 exemplos):")
-payloads.installation.forEach((user, index) => {
-  console.log(`\n[${index + 1}]`)
-  console.log(JSON.stringify(user, null, 2))
-})
-console.log("\n-----------------------------------------------------------\n")
-
-console.log("🟣 LOGISTICS (2 exemplos):")
-payloads.logistics.forEach((user, index) => {
-  console.log(`\n[${index + 1}]`)
-  console.log(JSON.stringify(user, null, 2))
-})
-console.log("\n-----------------------------------------------------------\n")
-
-console.log("⚪ PROGRAMMING (2 exemplos):")
-payloads.programming.forEach((user, index) => {
+console.log("⚪ CLIENT (2 exemplos):")
+payloads.client.forEach((user, index) => {
   console.log(`\n[${index + 1}]`)
   console.log(JSON.stringify(user, null, 2))
 })

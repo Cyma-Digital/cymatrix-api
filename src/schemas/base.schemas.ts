@@ -7,15 +7,7 @@ export const IdSchema = z
   .pipe(z.number().positive())
 
 export const DocumentTypeEnum = z.enum(["CPF", "CNPJ"])
-export const UserRoleEnum = z.enum([
-  "ADMIN",
-  "STAFF",
-  "FINANCE",
-  "PRODUCTION",
-  "INSTALLATION",
-  "LOGISTICS",
-  "PROGRAMMING",
-])
+export const UserRoleEnum = z.enum(["ADMIN", "STAFF", "CLIENT"])
 
 export const emailSchema = z.email()
 

@@ -1,7 +1,7 @@
-name: abdou-portal
+name: cyma-pixel
 services:
   database:
-    container_name: abdou-portal-dev-postgres
+    container_name: cyma-pixel-dev-postgres
     image: postgres:17-alpine
     env_file:
       - ../.env
