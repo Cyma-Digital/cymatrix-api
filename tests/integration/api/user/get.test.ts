@@ -68,7 +68,7 @@ describe("GET /api/users", () => {
         status: "success",
         data: expect.any(Array),
       })
-      expect(response.body.data).toHaveLength(4)
+      expect(response.body.data).toHaveLength(3)
     })
   })
 })

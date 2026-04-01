@@ -89,14 +89,14 @@ describe("POST /api/users", () => {
         expect(response.body.data.passwordHash).toBeUndefined()
       })
 
-      test("should create FINANCE user", async () => {
+      test("should create CLIENT user", async () => {
         const token = await loginAndGetToken()
         const payload = {
           firstName: "Fábio",
           lastName: "Nogueira",
           email: "fabio_nogueira63@hotmail.com",
           password: "Test@123",
-          role: "FINANCE",
+          role: "CLIENT",
         }
 
         const response = await request(app)
@@ -112,86 +112,9 @@ describe("POST /api/users", () => {
           lastName: "Nogueira",
           email: "fabio_nogueira63@hotmail.com",
         })
-        expect(response.body.data.role).toBe("FINANCE")
+        expect(response.body.data.role).toBe("CLIENT")
         expect(response.body.data.password).toBeUndefined()
         expect(response.body.data.passwordHash).toBeUndefined()
-      })
-
-      test("should create PRODUCTION user", async () => {
-        const token = await loginAndGetToken()
-
-        const response = await request(app)
-          .post("/api/users")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            firstName: "Carla",
-            lastName: "Oliveira",
-            email: "carla.oliveira@gmail.com",
-            password: "Test@123",
-            role: "PRODUCTION",
-          })
-
-        expect(response.status).toBe(201)
-        expect(response.body.status).toBe("success")
-        expect(response.body.data.role).toBe("PRODUCTION")
-      })
-
-      test("should create INSTALLATION user", async () => {
-        const token = await loginAndGetToken()
-
-        const response = await request(app)
-          .post("/api/users")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            firstName: "Rafael",
-            lastName: "Silva",
-            email: "rafael.silva@gmail.com",
-            phone: "(11) 99876-5432",
-            password: "Test@123",
-            role: "INSTALLATION",
-          })
-
-        expect(response.status).toBe(201)
-        expect(response.body.status).toBe("success")
-        expect(response.body.data.role).toBe("INSTALLATION")
-      })
-
-      test("should create LOGISTICS user", async () => {
-        const token = await loginAndGetToken()
-
-        const response = await request(app)
-          .post("/api/users")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            firstName: "Juliana",
-            lastName: "Costa",
-            email: "juliana.costa@gmail.com",
-            password: "Test@123",
-            role: "LOGISTICS",
-          })
-
-        expect(response.status).toBe(201)
-        expect(response.body.status).toBe("success")
-        expect(response.body.data.role).toBe("LOGISTICS")
-      })
-
-      test("should create PROGRAMMING user", async () => {
-        const token = await loginAndGetToken()
-
-        const response = await request(app)
-          .post("/api/users")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            firstName: "Lucas",
-            lastName: "Pereira",
-            email: "lucas.pereira@gmail.com",
-            password: "Test@123",
-            role: "PROGRAMMING",
-          })
-
-        expect(response.status).toBe(201)
-        expect(response.body.status).toBe("success")
-        expect(response.body.data.role).toBe("PROGRAMMING")
       })
     })
   })

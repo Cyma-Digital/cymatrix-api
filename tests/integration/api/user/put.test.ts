@@ -37,7 +37,7 @@ describe("PUT /api/users/:id", () => {
             email: "original@email.com",
             phone: "(11) 99999-9999",
             password: "Test@123",
-            role: "INSTALLATION",
+            role: "STAFF",
           })
         const { id } = createResponse.body.data
 
@@ -46,7 +46,7 @@ describe("PUT /api/users/:id", () => {
           lastName: "User updated",
           email: "original.updated@email.com",
           phone: "(12) 0000-1111",
-          role: "PRODUCTION",
+          role: "CLIENT",
         }
 
         const response = await request(app)
