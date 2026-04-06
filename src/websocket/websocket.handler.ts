@@ -23,6 +23,6 @@ export function handleConnection(ws: WebSocket, req: IncomingMessage) {
 
   // manda uma mensagem de boas vindas pro device
   ws.send(
-    JSON.stringify({ type: "connected", message: "Hello from CymaPixel API" }),
+    JSON.stringify({ type: "connected", message: "Hello from Cymatrix API" }),
   )
 }

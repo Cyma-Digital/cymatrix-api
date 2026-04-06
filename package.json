@@ -1,5 +1,5 @@
 {
-  "name": "cyma-pixel-api",
+  "name": "cymatrix-api",
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",

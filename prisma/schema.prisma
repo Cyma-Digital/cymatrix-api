@@ -21,6 +21,11 @@ enum UserRole {
   @@map("user_role")
 }
 
+enum DeviceStatus {
+  Online
+  Offline
+}
+
 model User {
   id        Int     @id @default(autoincrement())
   firstName String  @map("first_name") @db.VarChar(100)
@@ -41,6 +46,7 @@ model User {
   deletedBy Int?      @map("deleted_by")
 
   refreshTokens RefreshToken[]
+  devices       Device[]
 
   @@map("user")
 }
@@ -55,4 +61,28 @@ model RefreshToken {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("refresh_token")
+}
+
+model Device {
+  id       Int          @id @default(autoincrement())
+  name     String       @db.VarChar(255)
+  code     String       @unique @db.VarChar(255)
+  status   DeviceStatus @default(Offline)
+  lastSeen DateTime?    @map("last_seen") @db.Timestamptz(6)
+
+  address String @db.VarChar(255)
+  city    String @db.VarChar(100)
+  state   String @db.VarChar(2)
+  zipCode String @map("zip_code") @db.VarChar(20)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy Int       @map("created_by")
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedBy Int?      @map("updated_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  deletedBy Int?      @map("deleted_by")
+
+  creator User @relation(fields: [createdBy], references: [id])
+
+  @@map("device")
 }

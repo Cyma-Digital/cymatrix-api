@@ -1,7 +1,7 @@
-name: cyma-pixel
+name: cymatrix-api
 services:
   database:
-    container_name: cyma-pixel-dev-postgres
+    container_name: cymatrix-api-dev-postgres
     image: postgres:17-alpine
     env_file:
       - ../.env
