@@ -47,6 +47,7 @@ model User {
 
   refreshTokens RefreshToken[]
   devices       Device[]
+  templates     Template[]
 
   @@map("user")
 }
@@ -86,4 +87,24 @@ model Device {
   creator User @relation(fields: [createdBy], references: [id])
 
   @@map("device")
+}
+
+model Template {
+  id             Int     @id @default(autoincrement())
+  name           String  @db.VarChar(100)
+  description    String? @db.VarChar(255)
+  preset         Json
+  editableFields Json    @map("editable_fields")
+  active         Boolean @default(true)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy Int       @map("created_by")
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedBy Int?      @map("updated_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  deletedBy Int?      @map("deleted_by")
+
+  creator User @relation(fields: [createdBy], references: [id])
+
+  @@map("template")
 }

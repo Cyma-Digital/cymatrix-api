@@ -26,5 +26,16 @@ export const auditUpdatedFields = z.strictObject({
   updatedBy: z.number().positive(),
 })
 
+export const jsonValue: z.ZodType<any> = z.lazy(() =>
+  z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.null(),
+    z.array(jsonValue),
+    z.record(z.string(), jsonValue),
+  ]),
+)
+
 export type DocumentType = z.infer<typeof DocumentTypeEnum>
 export type UserRole = z.infer<typeof UserRoleEnum>
