@@ -4,12 +4,12 @@ const devices = new Map<string, WebSocket>()
 
 export function registerDevice(deviceId: string, ws: WebSocket) {
   devices.set(deviceId, ws)
-  console.log(`[WS] Device ${deviceId} connected. Total: ${devices.size}`)
+  console.log(`[ws] Device ${deviceId} connected. Total: ${devices.size}`)
 }
 
 export function removeDevice(deviceId: string) {
   devices.delete(deviceId)
-  console.log(`[WS] Device ${deviceId} disconnected. Total: ${devices.size}`)
+  console.log(`[ws] Device ${deviceId} disconnected. Total: ${devices.size}`)
 }
 
 export function pushToDevice(deviceId: string, data: object) {

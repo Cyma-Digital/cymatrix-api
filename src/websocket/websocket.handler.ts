@@ -1,28 +1,57 @@
 import { WebSocket } from "ws"
 import { IncomingMessage } from "http"
 import { registerDevice, removeDevice } from "./websocket.manager"
+import scheduleService from "@/services/schedule/schedule.service"
+import deviceRepository from "@/repositories/device/device.respository"
 
 export function handleConnection(ws: WebSocket, req: IncomingMessage) {
   const url = new URL(req.url!, `http://${req.headers.host}`)
-  const deviceId = url.searchParams.get("device")
+  const deviceCode = url.searchParams.get("device")
 
-  if (!deviceId) {
+  if (!deviceCode) {
     ws.close(1008, "device required")
     return
   }
 
-  registerDevice(deviceId, ws)
+  registerDevice(deviceCode, ws)
+  updateDeviceStatus(deviceCode, "Online")
+  sendCurrentContent(deviceCode, ws)
 
   ws.on("message", (data) => {
-    console.log(`[WS] Message from ${deviceId}: ${data}`)
+    console.log(`[ws] Message from ${deviceCode}: ${data}`)
   })
 
   ws.on("close", () => {
-    removeDevice(deviceId)
+    removeDevice(deviceCode)
+    updateDeviceStatus(deviceCode, "Offline")
   })
+}
 
-  // manda uma mensagem de boas vindas pro device
-  ws.send(
-    JSON.stringify({ type: "connected", message: "Hello from Cymatrix API" }),
-  )
+async function updateDeviceStatus(code: string, status: "Online" | "Offline") {
+  try {
+    const device = await deviceRepository.getByCode(code)
+    if (device) {
+      await deviceRepository.updateStatus(device.id, status)
+    }
+  } catch (error) {
+    console.log(`[ws] Failed to update device status: ${error}`)
+  }
+}
+
+async function sendCurrentContent(code: string, ws: WebSocket) {
+  try {
+    const device = await deviceRepository.getByCode(code)
+    if (!device) return
+
+    const content = await scheduleService.getCurrentContent(device.id)
+
+    ws.send(
+      JSON.stringify({
+        type: "content:current",
+        data: content,
+      }),
+    )
+  } catch (error) {
+    console.log(`[ws] Failed to send current content: ${error}`)
+  }
 }

@@ -45,9 +45,10 @@ model User {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
-  refreshTokens RefreshToken[]
-  devices       Device[]
-  templates     Template[]
+  refreshTokens    RefreshToken[]
+  devices          Device[]
+  templates        Template[]
+  contentSchedules Schedule[]
 
   @@map("user")
 }
@@ -84,7 +85,8 @@ model Device {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
-  creator User @relation(fields: [createdBy], references: [id])
+  creator          User       @relation(fields: [createdBy], references: [id])
+  contentSchedules Schedule[]
 
   @@map("device")
 }
@@ -104,7 +106,35 @@ model Template {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
-  creator User @relation(fields: [createdBy], references: [id])
+  creator          User       @relation(fields: [createdBy], references: [id])
+  contentSchedules Schedule[]
 
   @@map("template")
+}
+
+model Schedule {
+  id           Int  @id @default(autoincrement())
+  deviceId     Int  @map("device_id")
+  templateId   Int  @map("template_id")
+  customFields Json @map("custom_fields") // valores do usuario
+
+  weekdays  Json
+  startTime String?   @map("start_time") @db.VarChar(5)
+  endTime   String?   @map("end_time") @db.VarChar(5)
+  startDate DateTime? @map("start_date") @db.Timestamptz(6)
+  endDate   DateTime? @map("end_date") @db.Timestamptz(6)
+  active    Boolean   @default(true)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy Int       @map("created_by")
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedBy Int?      @map("updated_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  deletedBy Int?      @map("deleted_by")
+
+  device   Device   @relation(fields: [deviceId], references: [id])
+  template Template @relation(fields: [templateId], references: [id])
+  creator  User     @relation(fields: [createdBy], references: [id])
+
+  @@map("schedule")
 }
