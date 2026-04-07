@@ -3,8 +3,9 @@ import { IncomingMessage } from "http"
 import { registerDevice, removeDevice } from "./websocket.manager"
 import scheduleService from "@/services/schedule/schedule.service"
 import deviceRepository from "@/repositories/device/device.respository"
+import deviceService from "@/services/device/device.service"
 
-export function handleConnection(ws: WebSocket, req: IncomingMessage) {
+export async function handleConnection(ws: WebSocket, req: IncomingMessage) {
   const url = new URL(req.url!, `http://${req.headers.host}`)
   const deviceCode = url.searchParams.get("device")
 
@@ -12,6 +13,14 @@ export function handleConnection(ws: WebSocket, req: IncomingMessage) {
     ws.close(1008, "device required")
     return
   }
+
+  const device = await deviceService.findByCode(deviceCode)
+  if (!device) {
+    ws.close(4404, "Device not found")
+    return
+  }
+
+  await deviceService.updateStatus(device.id, "Online")
 
   registerDevice(deviceCode, ws)
   updateDeviceStatus(deviceCode, "Online")

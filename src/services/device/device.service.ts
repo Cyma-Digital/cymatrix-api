@@ -33,6 +33,10 @@ export class DeviceService {
     return device
   }
 
+  async findByCode(code: string) {
+    return this.repository.getByCode(code) // retorna Device | null
+  }
+
   async update(deviceId: number, data: UpdateDeviceServiceInput) {
     const existingDevice = await this.repository.getById(deviceId)
     if (!existingDevice) {
@@ -61,6 +65,10 @@ export class DeviceService {
       console.log(error)
       throw new HttpError(500, "Failed to delete device")
     }
+  }
+
+  async updateStatus(id: number, status: "Online" | "Offline") {
+    return this.repository.updateStatus(id, status)
   }
 }
 
