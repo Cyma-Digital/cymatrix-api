@@ -8,6 +8,7 @@ import {
 } from "@/schemas/schedule/schedule.schemas"
 import { pushToDevice } from "@/websocket/websocket.manager"
 import { Prisma } from "@/generated/prisma/client"
+import { set, cloneDeep } from "lodash-es"
 
 export class ContentScheduleService {
   constructor(
@@ -135,12 +136,28 @@ export class ContentScheduleService {
     })
 
     return activeSchedules.map((schedule) => {
-      const preset = schedule.template.preset as Record<string, unknown>
-      const customFields = schedule.customFields as Record<string, unknown>
+      const basePreset = cloneDeep(
+        schedule.template.preset as Record<string, unknown>,
+      )
+      const customFields = (schedule.customFields ?? {}) as Record<
+        string,
+        unknown
+      >
+      const editableFields = (schedule.template.editableFields ?? []) as Array<{
+        key: string
+        path?: string
+      }>
+
+      for (const field of editableFields) {
+        const value = customFields[field.key]
+        if (value === undefined) continue
+        if (!field.path) continue
+        set(basePreset, field.path, value)
+      }
 
       return {
         id: schedule.id,
-        preset: { ...preset, ...customFields },
+        preset: basePreset,
         template: {
           id: schedule.template.id,
           name: schedule.template.name,
