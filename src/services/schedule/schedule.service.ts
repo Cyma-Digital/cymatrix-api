@@ -6,7 +6,7 @@ import {
   CreateContentScheduleServiceInput,
   UpdateContentScheduleServiceInput,
 } from "@/schemas/schedule/schedule.schemas"
-import { pushToDevice } from "@/websocket/websocket.manager"
+import { pushToDevice, setLastSent } from "@/websocket/websocket.manager"
 import { Prisma } from "@/generated/prisma/client"
 import { set, cloneDeep } from "lodash-es"
 
@@ -168,6 +168,7 @@ export class ContentScheduleService {
 
   async pushCurrentContent(deviceId: number) {
     try {
+      console.log("pushing")
       const device = await this.deviceRepository.getById(deviceId)
       if (!device) return
 
@@ -177,9 +178,16 @@ export class ContentScheduleService {
         type: "content:update",
         data: content,
       })
+      setLastSent(device.code, content)
     } catch (error) {
-      console.log("[WS] Failed to push content:", error)
+      console.log("[ws] Failed to push content:", error)
     }
+  }
+
+  async getCurrentContentByCode(code: string) {
+    const device = await this.deviceRepository.getByCode(code)
+    if (!device) return []
+    return this.getCurrentContent(device.id)
   }
 }
 

@@ -4,6 +4,7 @@ import { registerDevice, removeDevice } from "./websocket.manager"
 import scheduleService from "@/services/schedule/schedule.service"
 import deviceRepository from "@/repositories/device/device.respository"
 import deviceService from "@/services/device/device.service"
+import { setLastSent } from "./websocket.manager"
 
 export async function handleConnection(ws: WebSocket, req: IncomingMessage) {
   const url = new URL(req.url!, `http://${req.headers.host}`)
@@ -60,6 +61,7 @@ async function sendCurrentContent(code: string, ws: WebSocket) {
         data: content,
       }),
     )
+    setLastSent(code, content)
   } catch (error) {
     console.log(`[ws] Failed to send current content: ${error}`)
   }
