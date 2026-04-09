@@ -10,7 +10,7 @@ function extractTokenFromHeader(authHeader: string | undefined): string {
 
   const token = authHeader.replace("Bearer ", "").trim()
 
-  if (!token) new HttpError(401, "Unauthorized")
+  if (!token) throw new HttpError(401, "Unauthorized")
 
   return token
 }
