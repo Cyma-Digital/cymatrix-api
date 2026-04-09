@@ -1,6 +1,6 @@
 import { HttpError } from "@/errors/httpError"
 import { verifyAccessToken } from "@/utils/jwt"
-import { Request, Response, NextFunction } from "express"
+import { NextFunction, Request, Response } from "express"
 
 function extractTokenFromHeader(authHeader: string | undefined): string {
   if (!authHeader) throw new HttpError(401, "Unauthorized")
@@ -10,7 +10,7 @@ function extractTokenFromHeader(authHeader: string | undefined): string {
 
   const token = authHeader.replace("Bearer ", "").trim()
 
-  if (!token) new HttpError(401, "Unauthorized")
+  if (!token) throw new HttpError(401, "Unauthorized")
 
   return token
 }

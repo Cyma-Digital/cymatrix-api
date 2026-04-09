@@ -1,5 +1,6 @@
 import { HttpError } from "@/errors/httpError"
 import { NextFunction, Request, Response } from "express"
+import jwt from "jsonwebtoken"
 
 export function errorHandler(
   error: unknown,
@@ -17,15 +18,25 @@ export function errorHandler(
     })
   }
 
-  if (error instanceof Error) {
-    return res.status(404).json({
+  if (
+    error instanceof jwt.TokenExpiredError ||
+    error instanceof jwt.JsonWebTokenError
+  ) {
+    return res.status(401).json({
       status: "error",
-      messsage: error.message,
+      message: "Unauthorized",
+    })
+  }
+
+  if (error instanceof Error) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
     })
   }
 
   return res.status(500).json({
-    status: "error 1",
+    status: "error",
     message: "Internal server error",
   })
 }
