@@ -37,14 +37,16 @@ export const updateContentScheduleSchema = z.strictObject({
   startTime: z
     .string()
     .regex(/^\d{2}:\d{2}$/, "Format must be HH:mm")
+    .nullable()
     .optional(),
   endTime: z
     .string()
     .regex(/^\d{2}:\d{2}$/, "Format must be HH:mm")
+    .nullable()
     .optional(),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
   active: z.boolean().optional(),
+  startDate: z.iso.datetime().nullable().optional(),
+  endDate: z.iso.datetime().nullable().optional(),
 })
 
 export const updateContentScheduleServiceSchema =

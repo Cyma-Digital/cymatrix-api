@@ -173,7 +173,7 @@ export class ContentScheduleService {
       if (!device) return
 
       const content = await this.getCurrentContent(deviceId)
-
+      console.dir(content, { depth: null })
       pushToDevice(device.code, {
         type: "content:update",
         data: content,
