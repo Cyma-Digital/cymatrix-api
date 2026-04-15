@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import deviceService from "@/services/device/device.service"
 import {
+  AssignOwnerDto,
   CreateDeviceDto,
   UpdateDeviceDto,
   deviceIdSchema,
@@ -82,6 +83,30 @@ export async function deleteDevice(
     const userId = req.user!.userId
     await deviceService.delete(id, userId)
     return res.status(204).send()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function assignOwner(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const { id: deviceId } = req.params
+  const { ownerId } = req.body as AssignOwnerDto
+
+  try {
+    const device = await deviceService.assignOwner(
+      Number(deviceId),
+      ownerId === null ? null : Number(ownerId),
+      req.user.id,
+    )
+
+    return res.status(200).json({
+      status: "success",
+      data: device,
+    })
   } catch (error) {
     next(error)
   }

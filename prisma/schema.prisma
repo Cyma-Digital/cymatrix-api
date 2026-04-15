@@ -46,9 +46,10 @@ model User {
   deletedBy Int?      @map("deleted_by")
 
   refreshTokens    RefreshToken[]
-  devices          Device[]
+  createdDevices   Device[]       @relation("DeviceCreator")
   templates        Template[]
   contentSchedules Schedule[]
+  ownedDevices     Device[]       @relation("DeviceOwner")
 
   @@map("user")
 }
@@ -66,9 +67,10 @@ model RefreshToken {
 }
 
 model Device {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
-  code String @unique @db.VarChar(255)
+  id      Int    @id @default(autoincrement())
+  name    String @db.VarChar(255)
+  code    String @unique @db.VarChar(255)
+  ownerId Int?   @map("owner_id")
 
   status   DeviceStatus @default(Offline)
   lastSeen DateTime?    @map("last_seen") @db.Timestamptz(6)
@@ -85,7 +87,8 @@ model Device {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
-  creator          User       @relation(fields: [createdBy], references: [id])
+  creator          User       @relation("DeviceCreator", fields: [createdBy], references: [id])
+  owner            User?      @relation("DeviceOwner", fields: [ownerId], references: [id])
   contentSchedules Schedule[]
 
   @@map("device")

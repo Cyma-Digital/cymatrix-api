@@ -11,6 +11,7 @@ export const deviceIdSchema = z.object({
 
 export const createDeviceSchema = z.strictObject({
   name: z.string().min(1, "Name is required"),
+  ownerId: z.number().int().positive().nullable().optional(),
   code: z.string().min(1, "Code is required"),
   address: z.string().min(1).optional(),
   city: z.string().min(1).optional(),
@@ -44,9 +45,14 @@ export const updateDevicePartialSchema = z.strictObject({
   zipCode: z.string().min(1).optional(),
 })
 
+export const assignOwnerSchema = z.object({
+  ownerId: z.number().int().positive().nullable(),
+})
+
 export type DeviceId = z.infer<typeof deviceIdSchema>
 export type CreateDeviceDto = z.infer<typeof createDeviceSchema>
 export type CreateDeviceServiceInput = z.infer<typeof createDeviceServiceSchema>
 export type UpdateDeviceDto = z.infer<typeof updateDeviceSchema>
 export type UpdateDeviceServiceInput = z.infer<typeof updateDeviceServiceSchema>
 export type UpdateDevicePartialDto = z.infer<typeof updateDevicePartialSchema>
+export type AssignOwnerDto = z.infer<typeof assignOwnerSchema>

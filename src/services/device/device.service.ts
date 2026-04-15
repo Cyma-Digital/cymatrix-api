@@ -4,6 +4,7 @@ import {
   CreateDeviceServiceInput,
   UpdateDeviceServiceInput,
 } from "@/schemas/device/device.schemas"
+import userRepository from "@/repositories/user/user.repository"
 
 export class DeviceService {
   constructor(private repository = DeviceRepository) {}
@@ -69,6 +70,24 @@ export class DeviceService {
 
   async updateStatus(id: number, status: "Online" | "Offline") {
     return this.repository.updateStatus(id, status)
+  }
+
+  async assignOwner(
+    deviceId: number,
+    ownerId: number | null,
+    updatedBy: number,
+  ) {
+    if (ownerId !== null) {
+      const device = await this.repository.getById(deviceId)
+      if (!device) throw new HttpError(404, "Device not found")
+    }
+
+    if (ownerId !== null) {
+      const owner = await userRepository.getById(ownerId)
+      if (!owner) throw new HttpError(404, "User not found")
+    }
+
+    return this.repository.update(deviceId, { ownerId, updatedBy })
   }
 }
 

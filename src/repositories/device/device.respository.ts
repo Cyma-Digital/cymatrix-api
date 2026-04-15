@@ -8,6 +8,7 @@ export interface CreateDeviceData {
   state?: string | null
   zipCode?: string | null
   createdBy: number
+  ownerId?: number | null
 }
 
 export type UpdateDeviceData = Partial<Omit<CreateDeviceData, "createdBy">> & {

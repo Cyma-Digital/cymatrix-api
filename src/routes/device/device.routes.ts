@@ -5,6 +5,7 @@ import {
   createDeviceSchema,
   updateDeviceSchema,
   deviceIdSchema,
+  assignOwnerSchema,
 } from "@/schemas/device/device.schemas"
 import { authenticate } from "@/middlewares/auth.middleware"
 
@@ -25,6 +26,12 @@ router.delete(
   "/:id",
   validateParams(deviceIdSchema),
   deviceController.deleteDevice,
+)
+router.patch(
+  "/:id/owner",
+  validateParams(deviceIdSchema),
+  validateBody(assignOwnerSchema),
+  deviceController.assignOwner,
 )
 
 export default router
