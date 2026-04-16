@@ -5,7 +5,6 @@ import {
   UpdateUserDto,
   userIdSchema,
 } from "@/schemas/user/user.schemas"
-import { validateIdParam } from "@/utils/http"
 
 export async function create(
   req: Request,
@@ -14,7 +13,7 @@ export async function create(
 ): Promise<Response | undefined> {
   try {
     const data = req.body as CreateUserDto
-    const userId = 1
+    const userId = req.user!.userId
 
     const user = await userService.create({
       ...data,
@@ -62,7 +61,7 @@ export async function update(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = userIdSchema.parse(req.params)
     const data = req.body as UpdateUserDto
-    const userId = 1
+    const userId = req.user!.userId
 
     const user = await userService.update(id, {
       ...data,
@@ -84,9 +83,8 @@ export async function deleteUser(
   next: NextFunction,
 ) {
   try {
-    const id = validateIdParam(req)
-
-    const userId = 1
+    const { id } = userIdSchema.parse(req.params)
+    const userId = req.user!.userId
 
     await userService.delete(id, userId)
 

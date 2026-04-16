@@ -15,8 +15,8 @@ export async function login(
 
     res.cookie("refreshToken", result.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
 
@@ -93,7 +93,11 @@ export async function logout(
       await authService.logout(refreshToken)
     }
 
-    res.clearCookie("refreshToken")
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    })
 
     return res.status(200).json({
       success: true,

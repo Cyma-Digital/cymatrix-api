@@ -46,7 +46,7 @@ describe("POST /api/auth/login", () => {
 
         expect(refreshCookie).toBeDefined()
         expect(refreshCookie.toLowerCase()).toContain("httponly")
-        expect(refreshCookie.toLowerCase()).toContain("samesite=strict")
+        expect(refreshCookie.toLowerCase()).toContain("samesite=none")
       })
     })
 
