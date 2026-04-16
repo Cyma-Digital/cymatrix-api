@@ -52,6 +52,15 @@ export class DeviceRepository {
       where: {
         ...this.softDeleteFilter,
       },
+      include: {
+        owner: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     })
   }
 
