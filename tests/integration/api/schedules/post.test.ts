@@ -93,6 +93,38 @@ describe("POST /api/schedules", () => {
         expect(response.body.data.startTime).toBeNull()
         expect(response.body.data.endTime).toBeNull()
       })
+
+      test("should create content schedule with durationSec", async () => {
+        const response = await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            deviceId,
+            templateId,
+            customFields: { text: "Com duração" },
+            weekdays: [1, 2, 3, 4, 5],
+            durationSec: 30,
+          })
+
+        expect(response.status).toBe(201)
+        expect(response.body.data.durationSec).toBe(30)
+      })
+
+      test("should create content schedule with durationSec as null", async () => {
+        const response = await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            deviceId,
+            templateId,
+            customFields: { text: "Sem duração" },
+            weekdays: [1, 2, 3, 4, 5],
+            durationSec: null,
+          })
+
+        expect(response.status).toBe(201)
+        expect(response.body.data.durationSec).toBeNull()
+      })
     })
 
     describe("Error cases", () => {
@@ -134,6 +166,21 @@ describe("POST /api/schedules", () => {
             deviceId,
             templateId,
             customFields: { text: "Hello" },
+          })
+
+        expect(response.status).toBe(400)
+      })
+
+      test("should return 400 when durationSec is not a positive integer", async () => {
+        const response = await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            deviceId,
+            templateId,
+            customFields: { text: "Hello" },
+            weekdays: [0],
+            durationSec: -5,
           })
 
         expect(response.status).toBe(400)

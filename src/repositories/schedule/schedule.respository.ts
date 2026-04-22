@@ -12,6 +12,7 @@ export interface CreatescheduleData {
   endDate?: Date | null
   active?: boolean
   createdBy: number
+  durationSec?: number | null
 }
 
 export type UpdateScheduleData = Partial<

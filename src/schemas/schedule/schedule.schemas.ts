@@ -25,6 +25,7 @@ export const createContentScheduleSchema = z.strictObject({
   startDate: z.string().datetime().optional(),
   endDate: z.string().datetime().optional(),
   active: z.boolean().optional(),
+  durationSec: z.number().int().positive().nullable().optional(),
 })
 
 export const createContentScheduleServiceSchema =
@@ -47,6 +48,7 @@ export const updateContentScheduleSchema = z.strictObject({
   active: z.boolean().optional(),
   startDate: z.iso.datetime().nullable().optional(),
   endDate: z.iso.datetime().nullable().optional(),
+  durationSec: z.number().int().positive().nullable().optional(),
 })
 
 export const updateContentScheduleServiceSchema =
