@@ -4,7 +4,9 @@ import {
   CreateDeviceServiceInput,
   UpdateDeviceServiceInput,
 } from "@/schemas/device/device.schemas"
+import { Prisma } from "@/generated/prisma/client"
 import userRepository from "@/repositories/user/user.repository"
+import scheduleService from "../schedule/schedule.service"
 
 export class DeviceService {
   constructor(private repository = DeviceRepository) {}
@@ -88,6 +90,25 @@ export class DeviceService {
     }
 
     return this.repository.update(deviceId, { ownerId, updatedBy })
+  }
+
+  async updateOverrides(
+    deviceId: number,
+    deviceOverrides: unknown,
+    updatedBy: number,
+  ) {
+    const device = await this.repository.getById(deviceId)
+    if (!device) throw new HttpError(404, "Device not found")
+
+    const updated = await this.repository.updateOverrides(
+      deviceId,
+      (deviceOverrides ?? Prisma.JsonNull) as Prisma.InputJsonValue,
+      updatedBy,
+    )
+
+    await scheduleService.pushCurrentContent(deviceId)
+
+    return updated
   }
 }
 

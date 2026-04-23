@@ -6,6 +6,7 @@ import {
   updateDeviceSchema,
   deviceIdSchema,
   assignOwnerSchema,
+  updateDeviceOverridesSchema,
 } from "@/schemas/device/device.schemas"
 import { authenticate } from "@/middlewares/auth.middleware"
 
@@ -32,6 +33,13 @@ router.patch(
   validateParams(deviceIdSchema),
   validateBody(assignOwnerSchema),
   deviceController.assignOwner,
+)
+
+router.patch(
+  "/:id/overrides",
+  validateParams(deviceIdSchema),
+  validateBody(updateDeviceOverridesSchema),
+  deviceController.updateOverrides,
 )
 
 export default router

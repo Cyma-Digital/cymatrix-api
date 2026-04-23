@@ -4,6 +4,7 @@ import {
   AssignOwnerDto,
   CreateDeviceDto,
   UpdateDeviceDto,
+  UpdateDeviceOverridesDto,
   deviceIdSchema,
 } from "@/schemas/device/device.schemas"
 import { validateIdParam } from "@/utils/http"
@@ -103,6 +104,29 @@ export async function assignOwner(
       req.user.id,
     )
 
+    return res.status(200).json({
+      status: "success",
+      data: device,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function updateOverrides(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = deviceIdSchema.parse(req.params)
+    const { deviceOverrides } = req.body as UpdateDeviceOverridesDto
+    const userId = req.user!.userId
+    const device = await deviceService.updateOverrides(
+      id,
+      deviceOverrides,
+      userId,
+    )
     return res.status(200).json({
       status: "success",
       data: device,

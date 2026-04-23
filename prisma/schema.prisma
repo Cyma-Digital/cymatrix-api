@@ -75,10 +75,11 @@ model Device {
   status   DeviceStatus @default(Offline)
   lastSeen DateTime?    @map("last_seen") @db.Timestamptz(6)
 
-  address String? @db.VarChar(255)
-  city    String? @db.VarChar(100)
-  state   String? @db.VarChar(2)
-  zipCode String? @map("zip_code") @db.VarChar(20)
+  address         String? @db.VarChar(255)
+  city            String? @db.VarChar(100)
+  state           String? @db.VarChar(2)
+  zipCode         String? @map("zip_code") @db.VarChar(20)
+  deviceOverrides Json?   @map("device_overrides")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   createdBy Int       @map("created_by")

@@ -9,6 +9,18 @@ export const deviceIdSchema = z.object({
     .pipe(z.number().positive()),
 })
 
+export const DeviceOverrideSchema = z.object({
+  path: z.string().optional(),
+  value: z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.array(z.unknown()),
+    z.record(z.string(), z.unknown()),
+  ]),
+  lock: z.boolean(),
+})
+
 export const createDeviceSchema = z.strictObject({
   name: z.string().min(1, "Name is required"),
   ownerId: z.number().int().positive().nullable().optional(),
@@ -17,6 +29,7 @@ export const createDeviceSchema = z.strictObject({
   city: z.string().min(1).optional(),
   state: z.string().length(2, "State must be 2 characters").optional(),
   zipCode: z.string().min(1).optional(),
+  deviceOverrides: DeviceOverrideSchema.optional(),
 })
 
 export const createDeviceServiceSchema = createDeviceSchema.extend(
@@ -30,6 +43,7 @@ export const updateDeviceSchema = z.strictObject({
   city: z.string().min(1).optional(),
   state: z.string().length(2, "State must be 2 characters").optional(),
   zipCode: z.string().min(1).optional(),
+  deviceOverrides: DeviceOverrideSchema.optional(),
 })
 
 export const updateDeviceServiceSchema = updateDeviceSchema.extend(
@@ -49,6 +63,15 @@ export const assignOwnerSchema = z.object({
   ownerId: z.number().int().positive().nullable(),
 })
 
+export const DeviceOverridesSchema = z
+  .record(z.string(), DeviceOverrideSchema)
+  .nullable()
+  .optional()
+
+export const updateDeviceOverridesSchema = z.object({
+  deviceOverrides: z.record(z.string(), DeviceOverrideSchema).nullable(),
+})
+
 export type DeviceId = z.infer<typeof deviceIdSchema>
 export type CreateDeviceDto = z.infer<typeof createDeviceSchema>
 export type CreateDeviceServiceInput = z.infer<typeof createDeviceServiceSchema>
@@ -56,3 +79,6 @@ export type UpdateDeviceDto = z.infer<typeof updateDeviceSchema>
 export type UpdateDeviceServiceInput = z.infer<typeof updateDeviceServiceSchema>
 export type UpdateDevicePartialDto = z.infer<typeof updateDevicePartialSchema>
 export type AssignOwnerDto = z.infer<typeof assignOwnerSchema>
+export type UpdateDeviceOverridesDto = z.infer<
+  typeof updateDeviceOverridesSchema
+>

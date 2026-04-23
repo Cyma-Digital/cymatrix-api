@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma"
-
+import { Prisma } from "@/generated/prisma/client"
 export interface CreateDeviceData {
   name: string
   code: string
@@ -90,6 +90,21 @@ export class DeviceRepository {
       data: {
         deletedAt: new Date(),
         deletedBy,
+      },
+    })
+  }
+
+  async updateOverrides(
+    deviceId: number,
+    deviceOverrides: Prisma.InputJsonValue | typeof Prisma.JsonNull,
+    updatedBy: number,
+  ) {
+    return await prisma.device.update({
+      where: { id: deviceId },
+      data: {
+        deviceOverrides,
+        updatedBy,
+        updatedAt: new Date(),
       },
     })
   }

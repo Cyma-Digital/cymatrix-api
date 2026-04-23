@@ -10,6 +10,12 @@ import { pushToDevice, setLastSent } from "@/websocket/websocket.manager"
 import { Prisma } from "@/generated/prisma/client"
 import { set, cloneDeep } from "lodash-es"
 
+type DeviceOverride = {
+  path?: string
+  value: Prisma.InputJsonValue
+  lock: boolean
+}
+
 export class ContentScheduleService {
   constructor(
     private repository = ContentScheduleRepository,
@@ -106,6 +112,9 @@ export class ContentScheduleService {
   }
 
   async getCurrentContent(deviceId: number) {
+    const device = await this.deviceRepository.getById(deviceId) // 👈 adicionar
+    if (!device) return []
+
     const schedules = await this.repository.getActiveByDevice(deviceId)
 
     const now = new Date()
@@ -153,6 +162,19 @@ export class ContentScheduleService {
         if (value === undefined) continue
         if (!field.path) continue
         set(basePreset, field.path, value)
+      }
+
+      const deviceOverrides = device.deviceOverrides as Record<
+        string,
+        DeviceOverride
+      > | null
+
+      if (deviceOverrides) {
+        for (const [key, override] of Object.entries(deviceOverrides)) {
+          if (!override.lock) continue
+          const targetPath = override.path ?? key
+          set(basePreset, targetPath, override.value)
+        }
       }
 
       return {
