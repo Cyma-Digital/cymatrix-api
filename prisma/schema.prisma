@@ -51,6 +51,7 @@ model User {
   templates        Template[]
   contentSchedules Schedule[]
   ownedDevices     Device[]       @relation("DeviceOwner")
+  userTemplates    UserTemplate[]
 
   @@map("user")
 }
@@ -111,8 +112,9 @@ model Template {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
-  creator          User       @relation(fields: [createdBy], references: [id])
+  creator          User           @relation(fields: [createdBy], references: [id])
   contentSchedules Schedule[]
+  userTemplate     UserTemplate[]
 
   @@map("template")
 }
@@ -143,4 +145,13 @@ model Schedule {
   creator  User     @relation(fields: [createdBy], references: [id])
 
   @@map("schedule")
+}
+
+model UserTemplate {
+  id         Int @id @default(autoincrement())
+  userId     Int @map("user_id")
+  templateId Int @map("template_id")
+
+  user     User     @relation(fields: [userId], references: [id])
+  template Template @relation(fields: [templateId], references: [id])
 }
