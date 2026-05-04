@@ -6,6 +6,7 @@ import {
   CreateContentScheduleServiceInput,
   UpdateContentScheduleServiceInput,
 } from "@/schemas/schedule/schedule.schemas"
+import UserRepository from "@/repositories/user/user.repository"
 import { pushToDevice, setLastSent } from "@/websocket/websocket.manager"
 import { Prisma } from "@/generated/prisma/client"
 import { set, cloneDeep } from "lodash-es"
@@ -21,9 +22,26 @@ export class ContentScheduleService {
     private repository = ContentScheduleRepository,
     private deviceRepository = DeviceRepository,
     private templateRepository = TemplateRepository,
+    private userRepository = UserRepository,
   ) {}
 
+  async isUserReachedScheduleLimit(userId: number) {
+    const scheduleCount = await this.repository.countByUserId(userId)
+    const user = await this.userRepository.getById(userId)
+
+    if (scheduleCount >= user!.schedulesAmount) return true
+
+    console.log("SC:", scheduleCount)
+    console.log("US:", user?.schedulesAmount)
+    return false
+  }
+
   async create(data: CreateContentScheduleServiceInput) {
+    const isUserScheduleLimit = await this.isUserReachedScheduleLimit(
+      data.createdBy,
+    )
+    if (isUserScheduleLimit) throw new HttpError(403, "Schedules limit reached")
+
     const device = await this.deviceRepository.getById(data.deviceId)
     if (!device) throw new HttpError(404, "Device not found")
 

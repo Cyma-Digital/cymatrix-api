@@ -17,6 +17,7 @@ export type UpdateUserData = Partial<
 > & {
   updatedBy?: number // Opcional para atualizações de sistema (ex: lastLogin)
   lastLogin?: Date | null // Adicionar campo lastLogin
+  schedulesAmount: number
 }
 
 export class UserRepository {

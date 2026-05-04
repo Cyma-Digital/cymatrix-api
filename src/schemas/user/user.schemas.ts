@@ -37,6 +37,7 @@ export const updateUserSchema = z.strictObject({
   email: emailSchema,
   phone: phoneSchema,
   role: UserRoleEnum,
+  schedulesAmount: z.number().positive(),
 })
 
 export const updateUserServiceSchema = updateUserSchema.extend(
@@ -51,6 +52,7 @@ export const updateUserPartialSchema = z.strictObject({
   document: documentSchema.optional(),
   documentType: DocumentTypeEnum.optional(),
   role: UserRoleEnum.optional(),
+  schedulesAmount: z.number().positive().optional(),
   updated: z.number().positive().optional(),
 })
 
