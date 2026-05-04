@@ -47,6 +47,7 @@ describe("PUT /api/users/:id", () => {
           email: "original.updated@email.com",
           phone: "(12) 0000-1111",
           role: "CLIENT",
+          schedulesAmount: 10,
         }
 
         const response = await request(app)
@@ -63,6 +64,7 @@ describe("PUT /api/users/:id", () => {
           email: updatePayload.email,
           phone: updatePayload.phone,
           role: updatePayload.role,
+          schedulesAmount: updatePayload.schedulesAmount,
         })
         expect(response.body.data.password).toBeUndefined()
         expect(response.body.data.passwordHash).toBeUndefined()
@@ -119,6 +121,7 @@ describe("PUT /api/users/:id", () => {
             lastName: "User",
             email: "test@email.com",
             role: "STAFF",
+            schedulesAmount: 10,
           })
 
         expect(response.status).toBe(404)
