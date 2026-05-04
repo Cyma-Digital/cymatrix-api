@@ -38,12 +38,13 @@ model User {
 
   lastLogin DateTime? @map("last_login") @db.Timestamptz(6)
 
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  createdBy Int?      @map("created_by")
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
-  updatedBy Int?      @map("updated_by")
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
-  deletedBy Int?      @map("deleted_by")
+  schedulesAmount Int       @default(10) @map("schedules_amount")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy       Int?      @map("created_by")
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedBy       Int?      @map("updated_by")
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz(6)
+  deletedBy       Int?      @map("deleted_by")
 
   refreshTokens    RefreshToken[]
   createdDevices   Device[]       @relation("DeviceCreator")

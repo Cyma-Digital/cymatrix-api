@@ -185,6 +185,62 @@ describe("POST /api/schedules", () => {
 
         expect(response.status).toBe(400)
       })
+
+      test("should return 403 when schedules reached limit", async () => {
+        await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            deviceId,
+            templateId,
+            customFields: { text: "Schedule A" },
+            weekdays: [1],
+          })
+
+        await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            deviceId,
+            templateId,
+            customFields: { text: "Schedule B" },
+            weekdays: [2],
+          })
+
+        await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            deviceId,
+            templateId,
+            customFields: { text: "Schedule C" },
+            weekdays: [3],
+          })
+
+        await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            deviceId,
+            templateId,
+            customFields: { text: "Schedule D" },
+            weekdays: [4],
+          })
+
+        const response = await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            deviceId,
+            templateId,
+            customFields: { text: "Schedule E" },
+            weekdays: [6],
+          })
+
+        expect(response.status).toBe(403)
+        expect(response.body.status).toBe("error")
+        expect(response.body.message).toBe("Schedules limit reached")
+      })
     })
   })
 })

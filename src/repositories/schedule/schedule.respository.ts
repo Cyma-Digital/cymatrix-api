@@ -63,6 +63,14 @@ export class scheduleRepository {
     })
   }
 
+  async countByUserId(userId: number) {
+    return await prisma.schedule.count({
+      where: {
+        createdBy: userId,
+      },
+    })
+  }
+
   async listAll() {
     return await prisma.schedule.findMany({
       where: {

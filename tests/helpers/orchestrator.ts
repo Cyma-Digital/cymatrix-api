@@ -43,6 +43,7 @@ class Orchestrator {
         phone: "11999999999",
         passwordHash: hashedPassword,
         role: "ADMIN",
+        schedulesAmount: 3,
       },
     })
   }
