@@ -5,9 +5,11 @@ import {
   CreateDeviceDto,
   UpdateDeviceDto,
   UpdateDeviceOverridesDto,
+  deviceCodeSchema,
   deviceIdSchema,
 } from "@/schemas/device/device.schemas"
 import { validateIdParam } from "@/utils/http"
+import tempData from "../../../data.json"
 
 export async function create(
   req: Request,
@@ -130,6 +132,26 @@ export async function updateOverrides(
     return res.status(200).json({
       status: "success",
       data: device,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function getDeviceData(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { code } = deviceCodeSchema.parse(req.params)
+
+    await deviceService.getByCode(code)
+
+    return res.status(200).json({
+      status: "success",
+      type: "content:current",
+      data: tempData,
     })
   } catch (error) {
     next(error)

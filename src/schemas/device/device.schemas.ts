@@ -9,6 +9,10 @@ export const deviceIdSchema = z.object({
     .pipe(z.number().positive()),
 })
 
+export const deviceCodeSchema = z.object({
+  code: z.string().min(1, "Code is required"),
+})
+
 export const DeviceOverrideSchema = z.object({
   path: z.string().optional(),
   value: z.union([
@@ -73,6 +77,7 @@ export const updateDeviceOverridesSchema = z.object({
 })
 
 export type DeviceId = z.infer<typeof deviceIdSchema>
+export type DeviceCode = z.infer<typeof deviceCodeSchema>
 export type CreateDeviceDto = z.infer<typeof createDeviceSchema>
 export type CreateDeviceServiceInput = z.infer<typeof createDeviceServiceSchema>
 export type UpdateDeviceDto = z.infer<typeof updateDeviceSchema>
