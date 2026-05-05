@@ -155,5 +155,6 @@ model UserTemplate {
   user     User     @relation(fields: [userId], references: [id])
   template Template @relation(fields: [templateId], references: [id])
 
+  @@unique([userId, templateId])
   @@map("user_template")
 }
