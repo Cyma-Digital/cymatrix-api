@@ -74,6 +74,7 @@ model Device {
   ownerId Int?   @map("owner_id")
 
   status   DeviceStatus @default(Offline)
+  type     String       @default("matrix")
   lastSeen DateTime?    @map("last_seen") @db.Timestamptz(6)
 
   address         String? @db.VarChar(255)

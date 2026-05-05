@@ -6,20 +6,15 @@
     "brightness": 128
   },
   "palette": [
-    { "name": "Red", "rgb": [255, 0, 0] },
     { "name": "Green", "rgb": [0, 255, 0] },
-    { "name": "Blue", "rgb": [0, 0, 255] },
-    { "name": "White", "rgb": [255, 255, 255] },
-    { "name": "Purple", "rgb": [128, 0, 128] },
-    { "name": "Yellow", "rgb": [255, 255, 0] },
-    { "name": "Cyan", "rgb": [0, 255, 255] },
-    { "name": "Orange", "rgb": [255, 128, 0] }
+    { "name": "Warm White", "rgb": [255, 120, 30] },
+    { "name": "Cyan", "rgb": [0, 255, 255] }
   ],
   "shelfs": [
-    { "shelfIndex": 0, "rgb": [255, 0, 0] },
-    { "shelfIndex": 1, "rgb": [0, 255, 0] },
-    { "shelfIndex": 2, "rgb": [0, 0, 255] },
-    { "shelfIndex": 3, "rgb": [255, 128, 0] },
+    { "shelfIndex": 0, "rgb": [0, 255, 0] },
+    { "shelfIndex": 1, "rgb": [255, 120, 30] },
+    { "shelfIndex": 2, "rgb": [255, 120, 30] },
+    { "shelfIndex": 3, "rgb": [0, 255, 255] },
     { "shelfIndex": 5, "rgb": [0, 255, 0] }
   ],
 

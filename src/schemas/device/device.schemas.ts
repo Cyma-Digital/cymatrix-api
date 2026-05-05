@@ -29,6 +29,7 @@ export const createDeviceSchema = z.strictObject({
   name: z.string().min(1, "Name is required"),
   ownerId: z.number().int().positive().nullable().optional(),
   code: z.string().min(1, "Code is required"),
+  type: z.enum(["matrix", "shelf"]).optional(),
   address: z.string().min(1).optional(),
   city: z.string().min(1).optional(),
   state: z.string().length(2, "State must be 2 characters").optional(),
@@ -43,6 +44,7 @@ export const createDeviceServiceSchema = createDeviceSchema.extend(
 export const updateDeviceSchema = z.strictObject({
   name: z.string().min(1, "Name is required"),
   code: z.string().min(1, "Code is required"),
+  type: z.enum(["matrix", "shelf"]).optional(),
   address: z.string().min(1).optional(),
   city: z.string().min(1).optional(),
   state: z.string().length(2, "State must be 2 characters").optional(),

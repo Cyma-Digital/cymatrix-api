@@ -10,6 +10,7 @@ import {
 } from "@/schemas/device/device.schemas"
 import { validateIdParam } from "@/utils/http"
 import tempData from "../../../data.json"
+import scheduleService from "@/services/schedule/schedule.service"
 
 export async function create(
   req: Request,
@@ -146,12 +147,22 @@ export async function getDeviceData(
   try {
     const { code } = deviceCodeSchema.parse(req.params)
 
-    await deviceService.getByCode(code)
+    const device = await deviceService.getByCode(code)
+
+    if (device.type === "shelf") {
+      return res.status(200).json({
+        status: "success",
+        type: "content:current",
+        data: tempData,
+      })
+    }
+
+    const content = await scheduleService.getCurrentContentByCode(code)
 
     return res.status(200).json({
       status: "success",
       type: "content:current",
-      data: tempData,
+      data: content,
     })
   } catch (error) {
     next(error)
