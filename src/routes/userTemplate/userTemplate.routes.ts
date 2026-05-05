@@ -32,7 +32,7 @@ router.get(
   validateParams(userTemplateIdSchema),
   userTemplateController.getByTemplateId,
 )
-router.get(
+router.delete(
   "/:id",
   validateParams(userTemplateIdSchema),
   userTemplateController.deleteUserTemplate,
