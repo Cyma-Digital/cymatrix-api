@@ -12,6 +12,12 @@ export class UserTemplateService {
   ) {}
 
   async create(data: CreateUserTemplateSchema) {
+    const user = await this.userRepository.getById(data.userId)
+    if (!user) throw new HttpError(404, "User not found")
+
+    const template = await this.templateRepository.getById(data.templateId)
+    if (!template) throw new HttpError(404, "Template not found")
+
     return await this.repository.create(data)
   }
 
