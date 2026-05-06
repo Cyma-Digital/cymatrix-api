@@ -9,6 +9,7 @@ import {
   deviceIdSchema,
 } from "@/schemas/device/device.schemas"
 import { validateIdParam } from "@/utils/http"
+import { measureHttpResponse } from "@/utils/usage"
 import tempData from "../../../data.json"
 import scheduleService from "@/services/schedule/schedule.service"
 
@@ -145,11 +146,14 @@ export async function getDeviceData(
   next: NextFunction,
 ) {
   try {
+    measureHttpResponse(req, res, `device=${req.params.code}`)
     const { code } = deviceCodeSchema.parse(req.params)
 
     const device = await deviceService.getByCode(code)
 
     if (device.type === "shelf") {
+      await deviceService.updateDeviceStatus(device.code, "Online")
+
       return res.status(200).json({
         status: "success",
         type: "content:current",
@@ -158,6 +162,7 @@ export async function getDeviceData(
     }
 
     const content = await scheduleService.getCurrentContentByCode(code)
+    await deviceService.updateDeviceStatus(device.code, "Online")
 
     return res.status(200).json({
       status: "success",
