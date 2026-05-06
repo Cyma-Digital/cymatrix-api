@@ -60,13 +60,13 @@ export class UserTemplateService {
   async delete(userTemplateId: number) {
     const userTemplate = await this.repository.getById(userTemplateId)
 
-    if (!userTemplate) throw new HttpError(404, "User templates not found")
+    if (!userTemplate) throw new HttpError(404, "User template not found")
 
     try {
       await this.repository.delete(userTemplateId)
     } catch (error) {
       console.log(error)
-      throw new HttpError(500, "Failed to delete user")
+      throw new HttpError(500, "Failed to delete userTemplate")
     }
   }
 }
