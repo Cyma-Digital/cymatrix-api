@@ -1,15 +1,15 @@
 import { HttpError } from "@/errors/httpError"
-import ContentScheduleRepository from "@/repositories/schedule/schedule.respository"
+import { Prisma } from "@/generated/prisma/client"
 import DeviceRepository from "@/repositories/device/device.respository"
+import ContentScheduleRepository from "@/repositories/schedule/schedule.respository"
 import TemplateRepository from "@/repositories/template/template.repository"
+import UserRepository from "@/repositories/user/user.repository"
 import {
   CreateContentScheduleServiceInput,
   UpdateContentScheduleServiceInput,
 } from "@/schemas/schedule/schedule.schemas"
-import UserRepository from "@/repositories/user/user.repository"
 import { pushToDevice, setLastSent } from "@/websocket/websocket.manager"
-import { Prisma } from "@/generated/prisma/client"
-import { set, cloneDeep } from "lodash-es"
+import { cloneDeep, set } from "lodash-es"
 
 type DeviceOverride = {
   path?: string
@@ -26,21 +26,20 @@ export class ContentScheduleService {
   ) {}
 
   async isUserReachedScheduleLimit(userId: number) {
-    const scheduleCount = await this.repository.countByUserId(userId)
     const user = await this.userRepository.getById(userId)
-
-    if (scheduleCount >= user!.schedulesAmount) return true
-
-    console.log("SC:", scheduleCount)
-    console.log("US:", user?.schedulesAmount)
-    return false
+    if (!user || user.schedulesAmount == null) return false
+    const scheduleCount = await this.repository.countByUserId(userId)
+    return scheduleCount >= user.schedulesAmount
   }
 
   async create(data: CreateContentScheduleServiceInput) {
-    const isUserScheduleLimit = await this.isUserReachedScheduleLimit(
-      data.createdBy,
-    )
-    if (isUserScheduleLimit) throw new HttpError(403, "Schedules limit reached")
+    if (data.active !== false) {
+      const isUserScheduleLimit = await this.isUserReachedScheduleLimit(
+        data.createdBy,
+      )
+      if (isUserScheduleLimit)
+        throw new HttpError(403, "Schedules limit reached")
+    }
 
     const device = await this.deviceRepository.getById(data.deviceId)
     if (!device) throw new HttpError(404, "Device not found")
@@ -81,6 +80,14 @@ export class ContentScheduleService {
   async update(id: number, data: UpdateContentScheduleServiceInput) {
     const schedule = await this.repository.getById(id)
     if (!schedule) throw new HttpError(404, "Content schedule not found")
+
+    if (data.active === true && !schedule.active) {
+      const isUserScheduleLimit = await this.isUserReachedScheduleLimit(
+        schedule.createdBy,
+      )
+      if (isUserScheduleLimit)
+        throw new HttpError(403, "Schedules limit reached")
+    }
 
     if (data.templateId) {
       const template = await this.templateRepository.getById(data.templateId)
@@ -209,12 +216,10 @@ export class ContentScheduleService {
 
   async pushCurrentContent(deviceId: number) {
     try {
-      console.log("pushing")
       const device = await this.deviceRepository.getById(deviceId)
       if (!device) return
 
       const content = await this.getCurrentContent(deviceId)
-      console.dir(content, { depth: null })
       pushToDevice(device.code, {
         type: "content:update",
         data: content,
