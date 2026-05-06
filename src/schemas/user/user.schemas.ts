@@ -25,6 +25,7 @@ export const createUserSchama = z.strictObject({
   phone: phoneSchema,
   password: passwordSchema,
   role: UserRoleEnum,
+  schedulesAmount: z.number().positive().optional(),
 })
 
 export const createUserServiceSchema = createUserSchama.extend(
