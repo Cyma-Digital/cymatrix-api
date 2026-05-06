@@ -1,5 +1,5 @@
-import prisma from "@/lib/prisma"
 import { Prisma } from "@/generated/prisma/client"
+import prisma from "@/lib/prisma"
 
 export interface CreatescheduleData {
   deviceId: number
@@ -67,6 +67,8 @@ export class scheduleRepository {
     return await prisma.schedule.count({
       where: {
         createdBy: userId,
+        active: true,
+        ...this.softDeleteFilter,
       },
     })
   }
