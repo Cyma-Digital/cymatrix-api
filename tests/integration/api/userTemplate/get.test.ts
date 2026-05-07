@@ -35,6 +35,7 @@ describe("GET /api/user-template", () => {
           phone: "(15) 7614-8559",
           password: "Test@123",
           role: "ADMIN",
+          schedulesAmount: 3,
         })
 
       await request(app)
@@ -116,6 +117,7 @@ describe("GET /api/user-template", () => {
           phone: "(15) 7614-8559",
           password: "Test@123",
           role: "ADMIN",
+          schedulesAmount: 3,
         })
 
       await request(app)
@@ -166,6 +168,7 @@ describe("GET /api/user-template", () => {
           phone: "(15) 7614-8559",
           password: "Test@123",
           role: "ADMIN",
+          schedulesAmount: 3,
         })
 
       await request(app)

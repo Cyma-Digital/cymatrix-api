@@ -1,13 +1,19 @@
 import { HttpError } from "@/errors/httpError"
 import { Prisma } from "@/generated/prisma/client"
 import TemplateRepository from "@/repositories/template/template.repository"
+import UserRepository from "@/repositories/user/user.repository"
+import UserTemplateRepository from "@/repositories/userTemplate/userTemplate.repository"
 import {
   CreateTemplateServiceInput,
   UpdateTemplateServiceInput,
 } from "@/schemas/template/template.schemas"
 
 export class TemplateService {
-  constructor(private repository = TemplateRepository) {}
+  constructor(
+    private repository = TemplateRepository,
+    private userRepository = UserRepository,
+    private userTemplateRepository = UserTemplateRepository,
+  ) {}
 
   async create(data: CreateTemplateServiceInput) {
     const template = await this.repository.getByName(data.name)
@@ -18,8 +24,14 @@ export class TemplateService {
     return await this.repository.create(data)
   }
 
-  async listAll() {
-    return await this.repository.listAll()
+  async listAll(userId: number) {
+    const user = await this.userRepository.getById(userId)
+    if (!user) throw new HttpError(404, "User not found")
+
+    if (user.role === "ADMIN" || user.role === "STAFF")
+      return await this.repository.listAll()
+
+    return await this.userTemplateRepository.listTemplateByUserId(user.id)
   }
 
   async listActive() {

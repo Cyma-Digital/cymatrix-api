@@ -46,6 +46,23 @@ export class UserTemplateRepository {
     return result
   }
 
+  async listTemplateByUserId(userId: number) {
+    const result = prisma.userTemplate.findMany({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+      select: {
+        template: true,
+      },
+    })
+
+    const template = (await result).map((temp) => temp.template)
+
+    return template //result
+  }
+
   async delete(userTemplateId: number) {
     await prisma.userTemplate.delete({
       where: {

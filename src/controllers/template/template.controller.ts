@@ -31,7 +31,9 @@ export async function create(
 
 export async function list(req: Request, res: Response, next: NextFunction) {
   try {
-    const templates = await templateService.listAll()
+    const userId = req.user!.userId
+
+    const templates = await templateService.listAll(userId)
     return res.status(200).json({
       status: "success",
       data: templates,

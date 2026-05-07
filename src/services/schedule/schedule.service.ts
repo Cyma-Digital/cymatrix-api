@@ -31,8 +31,6 @@ export class ContentScheduleService {
 
     if (scheduleCount >= user!.schedulesAmount) return true
 
-    console.log("SC:", scheduleCount)
-    console.log("US:", user?.schedulesAmount)
     return false
   }
 
