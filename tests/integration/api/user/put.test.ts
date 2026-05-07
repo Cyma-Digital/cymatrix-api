@@ -38,6 +38,7 @@ describe("PUT /api/users/:id", () => {
             phone: "(11) 99999-9999",
             password: "Test@123",
             role: "STAFF",
+            schedulesAmount: 3,
           })
         const { id } = createResponse.body.data
 

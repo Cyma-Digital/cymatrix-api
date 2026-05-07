@@ -40,6 +40,7 @@ describe("POST /api/users", () => {
           phone: "(15) 7614-8559",
           password: "Test@123",
           role: "ADMIN",
+          schedulesAmount: 3,
         }
 
         const response = await request(app)
@@ -69,6 +70,7 @@ describe("POST /api/users", () => {
           phone: "(97) 83440-8270",
           password: "Test@123",
           role: "STAFF",
+          schedulesAmount: 3,
         }
 
         const response = await request(app)
@@ -97,6 +99,7 @@ describe("POST /api/users", () => {
           email: "fabio_nogueira63@hotmail.com",
           password: "Test@123",
           role: "CLIENT",
+          schedulesAmount: 3,
         }
 
         const response = await request(app)

@@ -22,6 +22,7 @@ async function createUser(adminToken: string, opts: { role?: string } = {}) {
       phone: "11999999999",
       password: "password123",
       role: opts.role ?? "CLIENT",
+      schedulesAmount: 10,
     })
   return { user: res.body.data, email, password: "password123" }
 }
