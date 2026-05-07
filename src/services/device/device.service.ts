@@ -56,6 +56,17 @@ export class DeviceService {
     return await this.repository.update(deviceId, data)
   }
 
+  async updateDeviceStatus(code: string, status: "Online" | "Offline") {
+    try {
+      const device = await this.repository.getByCode(code)
+      if (device) {
+        await this.repository.updateStatus(device.id, status)
+      }
+    } catch (error) {
+      console.log(`[ws] Failed to update device status: ${error}`)
+    }
+  }
+
   async delete(deviceId: number, deletedBy: number) {
     const device = await this.repository.getById(deviceId)
     if (!device) {

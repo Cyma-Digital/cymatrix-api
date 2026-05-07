@@ -1,0 +1,22 @@
+{
+  "config": {
+    "amountOfShelfs": 4,
+    "shelfPixels": 30,
+    "colorOrder": "RGB",
+    "brightness": 128
+  },
+  "palette": [
+    { "name": "Green", "rgb": [0, 255, 0] },
+    { "name": "Warm White", "rgb": [255, 120, 30] },
+    { "name": "Cyan", "rgb": [0, 255, 255] }
+  ],
+  "shelfs": [
+    { "shelfIndex": 0, "rgb": [0, 255, 0] },
+    { "shelfIndex": 1, "rgb": [255, 120, 30] },
+    { "shelfIndex": 2, "rgb": [255, 120, 30] },
+    { "shelfIndex": 3, "rgb": [0, 255, 255] },
+    { "shelfIndex": 5, "rgb": [0, 255, 0] }
+  ],
+
+  "updatePolicy": ["palette", "config"]
+}

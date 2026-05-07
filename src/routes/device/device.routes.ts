@@ -7,10 +7,17 @@ import {
   deviceIdSchema,
   assignOwnerSchema,
   updateDeviceOverridesSchema,
+  deviceCodeSchema,
 } from "@/schemas/device/device.schemas"
 import { authenticate } from "@/middlewares/auth.middleware"
 
 const router = Router()
+
+router.get(
+  "/:code/data",
+  validateParams(deviceCodeSchema),
+  deviceController.getDeviceData,
+)
 
 router.use(authenticate)
 
