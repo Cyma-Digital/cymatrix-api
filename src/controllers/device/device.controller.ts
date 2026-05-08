@@ -12,6 +12,7 @@ import { validateIdParam } from "@/utils/http"
 import { measureHttpResponse } from "@/utils/usage"
 import tempData from "../../../data.json"
 import scheduleService from "@/services/schedule/schedule.service"
+import { UpdateDeviceDataDto } from "@/schemas/device/device.schemas"
 
 export async function create(
   req: Request,
@@ -168,6 +169,27 @@ export async function getDeviceData(
       status: "success",
       type: "content:current",
       data: content,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function updateDeviceData(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = deviceIdSchema.parse(req.params)
+    const { dataJson } = req.body as UpdateDeviceDataDto
+
+    const userId = req.user!.userId
+    const device = await deviceService.updateDataJson(id, dataJson, userId)
+
+    return res.status(200).json({
+      status: "success",
+      data: device,
     })
   } catch (error) {
     next(error)

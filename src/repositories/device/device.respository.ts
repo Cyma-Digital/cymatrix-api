@@ -108,6 +108,17 @@ export class DeviceRepository {
       },
     })
   }
+
+  async updateDataJson(
+    deviceId: number,
+    dataJson: Prisma.InputJsonValue | typeof Prisma.JsonNull,
+    updatedBy: number,
+  ) {
+    return await prisma.device.update({
+      where: { id: deviceId },
+      data: { dataJson, updatedBy, updatedAt: new Date() },
+    })
+  }
 }
 
 export default new DeviceRepository()

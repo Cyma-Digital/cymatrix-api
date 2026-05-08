@@ -121,6 +121,17 @@ export class DeviceService {
 
     return updated
   }
+
+  async updateDataJson(deviceId: number, dataJson: unknown, updatedBy: number) {
+    const device = await this.repository.getById(deviceId)
+    if (!device) throw new HttpError(404, "Device not found")
+
+    return await this.repository.updateDataJson(
+      deviceId,
+      (dataJson ?? Prisma.JsonNull) as Prisma.InputJsonValue,
+      updatedBy,
+    )
+  }
 }
 
 export default new DeviceService()

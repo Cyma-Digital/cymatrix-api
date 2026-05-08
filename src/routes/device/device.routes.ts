@@ -10,6 +10,7 @@ import {
   deviceCodeSchema,
 } from "@/schemas/device/device.schemas"
 import { authenticate } from "@/middlewares/auth.middleware"
+import { updateDeviceDataSchema } from "@/schemas/device/device.schemas"
 
 const router = Router()
 
@@ -47,6 +48,13 @@ router.patch(
   validateParams(deviceIdSchema),
   validateBody(updateDeviceOverridesSchema),
   deviceController.updateOverrides,
+)
+
+router.patch(
+  "/:id/data",
+  validateParams(deviceIdSchema),
+  validateBody(updateDeviceDataSchema),
+  deviceController.updateDeviceData,
 )
 
 export default router

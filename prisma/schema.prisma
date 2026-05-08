@@ -77,6 +77,7 @@ model Device {
   status   DeviceStatus @default(Offline)
   type     String       @default("matrix")
   lastSeen DateTime?    @map("last_seen") @db.Timestamptz(6)
+  dataJson Json?        @map("data_json")
 
   address         String? @db.VarChar(255)
   city            String? @db.VarChar(100)

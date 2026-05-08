@@ -78,6 +78,10 @@ export const updateDeviceOverridesSchema = z.object({
   deviceOverrides: z.record(z.string(), DeviceOverrideSchema).nullable(),
 })
 
+export const updateDeviceDataSchema = z.object({
+  dataJson: z.unknown().nullable(),
+})
+
 export type DeviceId = z.infer<typeof deviceIdSchema>
 export type DeviceCode = z.infer<typeof deviceCodeSchema>
 export type CreateDeviceDto = z.infer<typeof createDeviceSchema>
@@ -89,3 +93,5 @@ export type AssignOwnerDto = z.infer<typeof assignOwnerSchema>
 export type UpdateDeviceOverridesDto = z.infer<
   typeof updateDeviceOverridesSchema
 >
+
+export type UpdateDeviceDataDto = z.infer<typeof updateDeviceDataSchema>
