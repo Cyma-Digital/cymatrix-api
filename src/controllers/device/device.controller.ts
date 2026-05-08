@@ -10,7 +10,7 @@ import {
 } from "@/schemas/device/device.schemas"
 import { validateIdParam } from "@/utils/http"
 import { measureHttpResponse } from "@/utils/usage"
-import tempData from "../../../data.json"
+// import tempData from "../../../data.json"
 import scheduleService from "@/services/schedule/schedule.service"
 import { UpdateDeviceDataDto } from "@/schemas/device/device.schemas"
 
@@ -158,7 +158,7 @@ export async function getDeviceData(
       return res.status(200).json({
         status: "success",
         type: "content:current",
-        data: tempData,
+        data: device.dataJson ?? {},
       })
     }
 
