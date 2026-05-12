@@ -206,6 +206,7 @@ export class ContentScheduleService {
         id: schedule.id,
         preset: basePreset,
         durationSec: schedule.durationSec ?? undefined,
+        effect: schedule.effect ?? undefined,
         template: {
           id: schedule.template.id,
           name: schedule.template.name,

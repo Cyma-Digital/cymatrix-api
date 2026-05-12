@@ -122,10 +122,11 @@ model Template {
 }
 
 model Schedule {
-  id           Int  @id @default(autoincrement())
-  deviceId     Int  @map("device_id")
-  templateId   Int  @map("template_id")
-  customFields Json @map("custom_fields") // valores do usuario
+  id           Int   @id @default(autoincrement())
+  deviceId     Int   @map("device_id")
+  templateId   Int   @map("template_id")
+  customFields Json  @map("custom_fields")
+  effect       Json?
 
   weekdays    Json
   startTime   String?   @map("start_time") @db.VarChar(5)
