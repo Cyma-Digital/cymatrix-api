@@ -1,5 +1,5 @@
 import { HttpError } from "@/errors/httpError"
-import { Prisma } from "@/generated/prisma/client"
+import { Prisma, UserRole } from "@/generated/prisma/client"
 import DeviceRepository from "@/repositories/device/device.respository"
 import ContentScheduleRepository from "@/repositories/schedule/schedule.respository"
 import TemplateRepository from "@/repositories/template/template.repository"
@@ -25,24 +25,33 @@ export class ContentScheduleService {
     private userRepository = UserRepository,
   ) {}
 
-  async isUserReachedScheduleLimit(userId: number) {
+  private async isPrivilegedUser(userId: number) {
     const user = await this.userRepository.getById(userId)
-    if (!user || user.schedulesAmount == null) return false
-    const scheduleCount = await this.repository.countByUserId(userId)
-    return scheduleCount >= user.schedulesAmount
+    return user?.role === UserRole.ADMIN || user?.role === UserRole.STAFF
+  }
+
+  async isDeviceOwnerReachedScheduleLimit(ownerId: number | null) {
+    if (!ownerId) return false
+    const owner = await this.userRepository.getById(ownerId)
+    if (!owner || owner.schedulesAmount == null) return false
+    if (owner.role === UserRole.ADMIN || owner.role === UserRole.STAFF)
+      return false
+    const scheduleCount =
+      await this.repository.countActiveByDeviceOwner(ownerId)
+    return scheduleCount >= owner.schedulesAmount
   }
 
   async create(data: CreateContentScheduleServiceInput) {
-    if (data.active !== false) {
-      const isUserScheduleLimit = await this.isUserReachedScheduleLimit(
-        data.createdBy,
-      )
-      if (isUserScheduleLimit)
-        throw new HttpError(403, "Schedules limit reached")
-    }
-
     const device = await this.deviceRepository.getById(data.deviceId)
     if (!device) throw new HttpError(404, "Device not found")
+
+    if (data.active !== false) {
+      const isOwnerScheduleLimit = await this.isDeviceOwnerReachedScheduleLimit(
+        device.ownerId,
+      )
+      if (isOwnerScheduleLimit)
+        throw new HttpError(403, "Schedules limit reached")
+    }
 
     const template = await this.templateRepository.getById(data.templateId)
     if (!template) throw new HttpError(404, "Template not found")
@@ -60,20 +69,36 @@ export class ContentScheduleService {
     return schedule
   }
 
-  async listAll() {
-    return await this.repository.listAll()
+  async listAll(userId: number) {
+    const user = await this.userRepository.getById(userId)
+    if (!user) throw new HttpError(404, "User not found")
+
+    if (user.role === UserRole.ADMIN || user.role === UserRole.STAFF)
+      return await this.repository.listAll()
+
+    return await this.repository.listByDeviceOwner(user.id)
   }
 
-  async listByDeviceId(deviceId: number) {
+  async listByDeviceId(deviceId: number, userId: number) {
     const device = await this.deviceRepository.getById(deviceId)
     if (!device) throw new HttpError(404, "Device not found")
+
+    if (device.ownerId !== userId && !(await this.isPrivilegedUser(userId)))
+      throw new HttpError(403, "Forbidden")
 
     return await this.repository.listByDeviceId(deviceId)
   }
 
-  async getById(id: number) {
+  async getById(id: number, userId: number) {
     const schedule = await this.repository.getById(id)
     if (!schedule) throw new HttpError(404, "Content schedule not found")
+
+    if (
+      schedule.device.ownerId !== userId &&
+      !(await this.isPrivilegedUser(userId))
+    )
+      throw new HttpError(403, "Forbidden")
+
     return schedule
   }
 
@@ -82,10 +107,10 @@ export class ContentScheduleService {
     if (!schedule) throw new HttpError(404, "Content schedule not found")
 
     if (data.active === true && !schedule.active) {
-      const isUserScheduleLimit = await this.isUserReachedScheduleLimit(
-        schedule.createdBy,
+      const isOwnerScheduleLimit = await this.isDeviceOwnerReachedScheduleLimit(
+        schedule.device.ownerId,
       )
-      if (isUserScheduleLimit)
+      if (isOwnerScheduleLimit)
         throw new HttpError(403, "Schedules limit reached")
     }
 

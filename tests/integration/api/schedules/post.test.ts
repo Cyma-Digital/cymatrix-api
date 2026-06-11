@@ -187,6 +187,25 @@ describe("POST /api/schedules", () => {
       })
 
       test("should return 403 when schedules reached limit", async () => {
+        const clientRes = await request(app)
+          .post("/api/users")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            firstName: "Client",
+            lastName: "User",
+            email: "client@test.com",
+            phone: "11988888888",
+            password: "client123",
+            role: "CLIENT",
+            schedulesAmount: 2,
+          })
+        const clientId = clientRes.body.data.id
+
+        await request(app)
+          .patch(`/api/devices/${deviceId}/owner`)
+          .set("Authorization", `Bearer ${token}`)
+          .send({ ownerId: clientId })
+
         await request(app)
           .post("/api/schedules")
           .set("Authorization", `Bearer ${token}`)
@@ -207,7 +226,7 @@ describe("POST /api/schedules", () => {
             weekdays: [2],
           })
 
-        await request(app)
+        const response = await request(app)
           .post("/api/schedules")
           .set("Authorization", `Bearer ${token}`)
           .send({
@@ -215,26 +234,6 @@ describe("POST /api/schedules", () => {
             templateId,
             customFields: { text: "Schedule C" },
             weekdays: [3],
-          })
-
-        await request(app)
-          .post("/api/schedules")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            deviceId,
-            templateId,
-            customFields: { text: "Schedule D" },
-            weekdays: [4],
-          })
-
-        const response = await request(app)
-          .post("/api/schedules")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            deviceId,
-            templateId,
-            customFields: { text: "Schedule E" },
-            weekdays: [6],
           })
 
         expect(response.status).toBe(403)

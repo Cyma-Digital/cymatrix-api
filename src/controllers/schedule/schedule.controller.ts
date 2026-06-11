@@ -31,7 +31,8 @@ export async function create(
 
 export async function list(req: Request, res: Response, next: NextFunction) {
   try {
-    const schedules = await contentScheduleService.listAll()
+    const userId = req.user!.userId
+    const schedules = await contentScheduleService.listAll(userId)
     return res.status(200).json({
       status: "success",
       data: schedules,
@@ -48,7 +49,8 @@ export async function listByDevice(
 ) {
   try {
     const { id } = contentScheduleIdSchema.parse(req.params)
-    const schedules = await contentScheduleService.listByDeviceId(id)
+    const userId = req.user!.userId
+    const schedules = await contentScheduleService.listByDeviceId(id, userId)
     return res.status(200).json({
       status: "success",
       data: schedules,
@@ -61,7 +63,8 @@ export async function listByDevice(
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = contentScheduleIdSchema.parse(req.params)
-    const schedule = await contentScheduleService.getById(id)
+    const userId = req.user!.userId
+    const schedule = await contentScheduleService.getById(id, userId)
     return res.status(200).json({
       status: "success",
       data: schedule,

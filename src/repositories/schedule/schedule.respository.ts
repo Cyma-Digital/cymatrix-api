@@ -63,10 +63,13 @@ export class scheduleRepository {
     })
   }
 
-  async countByUserId(userId: number) {
+  async countActiveByDeviceOwner(ownerId: number) {
     return await prisma.schedule.count({
       where: {
-        createdBy: userId,
+        device: {
+          ownerId,
+          deletedAt: null,
+        },
         active: true,
         ...this.softDeleteFilter,
       },
@@ -76,6 +79,22 @@ export class scheduleRepository {
   async listAll() {
     return await prisma.schedule.findMany({
       where: {
+        ...this.softDeleteFilter,
+      },
+      include: {
+        template: true,
+        device: true,
+      },
+    })
+  }
+
+  async listByDeviceOwner(ownerId: number) {
+    return await prisma.schedule.findMany({
+      where: {
+        device: {
+          ownerId,
+          deletedAt: null,
+        },
         ...this.softDeleteFilter,
       },
       include: {
