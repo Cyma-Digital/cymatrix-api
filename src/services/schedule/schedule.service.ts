@@ -106,6 +106,12 @@ export class ContentScheduleService {
     const schedule = await this.repository.getById(id)
     if (!schedule) throw new HttpError(404, "Content schedule not found")
 
+    if (
+      schedule.device.ownerId !== data.updatedBy &&
+      !(await this.isPrivilegedUser(data.updatedBy))
+    )
+      throw new HttpError(403, "Forbidden")
+
     if (data.active === true && !schedule.active) {
       const isOwnerScheduleLimit = await this.isDeviceOwnerReachedScheduleLimit(
         schedule.device.ownerId,
@@ -151,6 +157,12 @@ export class ContentScheduleService {
   async delete(id: number, deletedBy: number) {
     const schedule = await this.repository.getById(id)
     if (!schedule) throw new HttpError(404, "Content schedule not found")
+
+    if (
+      schedule.device.ownerId !== deletedBy &&
+      !(await this.isPrivilegedUser(deletedBy))
+    )
+      throw new HttpError(403, "Forbidden")
 
     try {
       await this.repository.softDelete(id, deletedBy)

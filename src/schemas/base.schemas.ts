@@ -1,3 +1,4 @@
+import { UserRole } from "@/generated/prisma/client"
 import { z } from "zod"
 
 export const IdSchema = z
@@ -7,7 +8,7 @@ export const IdSchema = z
   .pipe(z.number().positive())
 
 export const DocumentTypeEnum = z.enum(["CPF", "CNPJ"])
-export const UserRoleEnum = z.enum(["ADMIN", "STAFF", "CLIENT"])
+export const UserRoleEnum = z.nativeEnum(UserRole)
 
 export const emailSchema = z.email()
 
@@ -38,4 +39,3 @@ export const jsonValue: z.ZodType<any> = z.lazy(() =>
 )
 
 export type DocumentType = z.infer<typeof DocumentTypeEnum>
-export type UserRole = z.infer<typeof UserRoleEnum>

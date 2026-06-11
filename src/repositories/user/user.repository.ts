@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma"
-import { UserRole } from "@/schemas/base.schemas"
+import { UserRole } from "@/generated/prisma/client"
 
 export interface CreateUserData {
   firstName: string
