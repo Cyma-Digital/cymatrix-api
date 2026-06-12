@@ -11,6 +11,13 @@ export interface CreateDeviceData {
   ownerId?: number | null
 }
 
+export interface updateDeviceMetrics {
+  localization: {
+    lat: number
+    lng: number
+  }
+}
+
 export type UpdateDeviceData = Partial<Omit<CreateDeviceData, "createdBy">> & {
   updatedBy?: number
 }
@@ -117,6 +124,17 @@ export class DeviceRepository {
     return await prisma.device.update({
       where: { id: deviceId },
       data: { dataJson, updatedBy, updatedAt: new Date() },
+    })
+  }
+
+  async updateDeviceMetrics(deviceId: number, data: updateDeviceMetrics) {
+    await prisma.device.update({
+      where: {
+        id: deviceId,
+      },
+      data: {
+        metrics: data as unknown as Prisma.InputJsonValue,
+      },
     })
   }
 }

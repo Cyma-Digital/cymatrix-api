@@ -4,6 +4,7 @@ import {
   AssignOwnerDto,
   CreateDeviceDto,
   UpdateDeviceDto,
+  UpdateDeviceMetrics,
   UpdateDeviceOverridesDto,
   deviceCodeSchema,
   deviceIdSchema,
@@ -191,6 +192,23 @@ export async function updateDeviceData(
       status: "success",
       data: device,
     })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function updateDeviceMetrics(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { code } = deviceCodeSchema.parse(req.params)
+    const metrics = req.body as UpdateDeviceMetrics
+
+    await deviceService.updateDeviceMetrics(code, metrics)
+
+    return res.status(204).send()
   } catch (error) {
     next(error)
   }

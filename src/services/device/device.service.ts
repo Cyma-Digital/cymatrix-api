@@ -3,6 +3,7 @@ import DeviceRepository from "@/repositories/device/device.respository"
 import {
   CreateDeviceServiceInput,
   UpdateDeviceServiceInput,
+  UpdateDeviceMetrics,
 } from "@/schemas/device/device.schemas"
 import { Prisma } from "@/generated/prisma/client"
 import userRepository from "@/repositories/user/user.repository"
@@ -131,6 +132,17 @@ export class DeviceService {
       (dataJson ?? Prisma.JsonNull) as Prisma.InputJsonValue,
       updatedBy,
     )
+  }
+
+  async updateDeviceMetrics(
+    deviceCode: string,
+    data: UpdateDeviceMetrics,
+  ): Promise<void> {
+    const device = await this.findByCode(deviceCode)
+    if (!device) throw new HttpError(404, "Device not found")
+
+    await this.repository.updateDeviceMetrics(device.id, data)
+    return
   }
 }
 

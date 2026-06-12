@@ -82,6 +82,13 @@ export const updateDeviceDataSchema = z.object({
   dataJson: z.unknown().nullable(),
 })
 
+export const updateDeviceMetricsSchema = z.object({
+  localization: z.object({
+    lat: z.number(),
+    lng: z.number(),
+  }),
+})
+
 export type DeviceId = z.infer<typeof deviceIdSchema>
 export type DeviceCode = z.infer<typeof deviceCodeSchema>
 export type CreateDeviceDto = z.infer<typeof createDeviceSchema>
@@ -90,6 +97,7 @@ export type UpdateDeviceDto = z.infer<typeof updateDeviceSchema>
 export type UpdateDeviceServiceInput = z.infer<typeof updateDeviceServiceSchema>
 export type UpdateDevicePartialDto = z.infer<typeof updateDevicePartialSchema>
 export type AssignOwnerDto = z.infer<typeof assignOwnerSchema>
+export type UpdateDeviceMetrics = z.infer<typeof updateDeviceMetricsSchema>
 export type UpdateDeviceOverridesDto = z.infer<
   typeof updateDeviceOverridesSchema
 >

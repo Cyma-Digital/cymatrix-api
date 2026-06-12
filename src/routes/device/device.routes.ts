@@ -8,6 +8,7 @@ import {
   assignOwnerSchema,
   updateDeviceOverridesSchema,
   deviceCodeSchema,
+  updateDeviceMetricsSchema,
 } from "@/schemas/device/device.schemas"
 import { authenticate } from "@/middlewares/auth.middleware"
 import { updateDeviceDataSchema } from "@/schemas/device/device.schemas"
@@ -18,6 +19,13 @@ router.get(
   "/:code/data",
   validateParams(deviceCodeSchema),
   deviceController.getDeviceData,
+)
+
+router.patch(
+  "/:code/metrics",
+  validateParams(deviceCodeSchema),
+  validateBody(updateDeviceMetricsSchema),
+  deviceController.updateDeviceMetrics,
 )
 
 router.use(authenticate)
