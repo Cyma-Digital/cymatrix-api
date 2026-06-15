@@ -133,7 +133,10 @@ export class DeviceRepository {
         id: deviceId,
       },
       data: {
-        metrics: data as unknown as Prisma.InputJsonValue,
+        metrics: {
+          ...data,
+          updatedAt: new Date().toISOString(),
+        } as unknown as Prisma.InputJsonValue,
       },
     })
   }

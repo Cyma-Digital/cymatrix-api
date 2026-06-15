@@ -110,5 +110,32 @@ describe("PATCH /api/devices/:code/metrics", () => {
         },
       })
     })
+
+    test("should stamp updatedAt timestamp on metrics", async () => {
+      const token = await loginAndGetToken()
+      const createResponse = await request(app)
+        .post("/api/devices")
+        .set("Authorization", `Bearer ${token}`)
+        .send({ name: "Mercado Central", code: "MKT001" })
+
+      const device = createResponse.body.data
+
+      await request(app)
+        .patch("/api/devices/MKT001/metrics")
+        .send({
+          localization: {
+            lat: -23.3054,
+            lng: -45.9631,
+          },
+        })
+
+      const getResponse = await request(app)
+        .get(`/api/devices/${device.id}`)
+        .set("Authorization", `Bearer ${token}`)
+
+      const { updatedAt } = getResponse.body.data.metrics
+      expect(typeof updatedAt).toBe("string")
+      expect(Number.isNaN(Date.parse(updatedAt))).toBe(false)
+    })
   })
 })
