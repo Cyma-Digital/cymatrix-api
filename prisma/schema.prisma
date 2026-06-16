@@ -93,9 +93,10 @@ model Device {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
-  creator          User       @relation("DeviceCreator", fields: [createdBy], references: [id])
-  owner            User?      @relation("DeviceOwner", fields: [ownerId], references: [id])
-  contentSchedules Schedule[]
+  creator                User                   @relation("DeviceCreator", fields: [createdBy], references: [id])
+  owner                  User?                  @relation("DeviceOwner", fields: [ownerId], references: [id])
+  contentSchedules       Schedule[]
+  deviceMetrcisHistories DeviceMetricsHistory[]
 
   @@map("device")
 }
@@ -161,4 +162,17 @@ model UserTemplate {
 
   @@unique([userId, templateId])
   @@map("user_template")
+}
+
+model DeviceMetricsHistory {
+  id        Int      @id @default(autoincrement())
+  deviceId  Int
+  data      Json
+  createdAt DateTime @db.Timestamptz(6)
+
+  device Device @relation(fields: [deviceId], references: [id])
+
+  @@index([deviceId])
+  @@index([createdAt])
+  @@map("device_metrics_history")
 }

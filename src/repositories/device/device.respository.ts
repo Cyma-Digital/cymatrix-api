@@ -128,16 +128,26 @@ export class DeviceRepository {
   }
 
   async updateDeviceMetrics(deviceId: number, data: updateDeviceMetrics) {
-    await prisma.device.update({
-      where: {
-        id: deviceId,
-      },
-      data: {
-        metrics: {
-          ...data,
-          updatedAt: new Date().toISOString(),
-        } as unknown as Prisma.InputJsonValue,
-      },
+    await prisma.$transaction(async (tx) => {
+      const updatedAt = new Date().toISOString()
+
+      await tx.device.update({
+        where: { id: deviceId },
+        data: {
+          metrics: {
+            ...data,
+            updatedAt,
+          } as unknown as Prisma.InputJsonValue,
+        },
+      })
+
+      await tx.deviceMetricsHistory.create({
+        data: {
+          deviceId,
+          data: data as unknown as Prisma.InputJsonValue,
+          createdAt: updatedAt,
+        },
+      })
     })
   }
 }
