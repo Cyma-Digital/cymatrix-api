@@ -163,6 +163,19 @@ export async function getDeviceData(
       })
     }
 
+    if (device.type === "hybrid") {
+      const content = await scheduleService.getCurrentContentByCode(code)
+      await deviceService.updateDeviceStatus(device.code, "Online")
+      return res.status(200).json({
+        status: "success",
+        type: "content:current",
+        data: {
+          matrix: content,
+          shelf: device.dataJson ?? {},
+        },
+      })
+    }
+
     const content = await scheduleService.getCurrentContentByCode(code)
     await deviceService.updateDeviceStatus(device.code, "Online")
 
