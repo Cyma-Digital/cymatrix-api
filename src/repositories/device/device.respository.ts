@@ -11,8 +11,19 @@ export interface CreateDeviceData {
   ownerId?: number | null
 }
 
-export interface updateDeviceMetrics {
+// Canonical shape of the metrics JSON blob persisted on `device.metrics`.
+// Single-sourced here and reused on the read side (DeviceService) so a field
+// rename can't let the reader and writer drift apart silently.
+export interface DeviceMetricsBlob {
   localization: {
+    lat: number
+    lng: number
+    address?: string | null
+  }
+  // Coordinates that produced the current address. Only moves when a geocode
+  // actually runs, so the distance gate measures displacement since the last
+  // resolved position rather than since the last (jittering) report.
+  anchor: {
     lat: number
     lng: number
   }
@@ -127,7 +138,7 @@ export class DeviceRepository {
     })
   }
 
-  async updateDeviceMetrics(deviceId: number, data: updateDeviceMetrics) {
+  async updateDeviceMetrics(deviceId: number, data: DeviceMetricsBlob) {
     await prisma.$transaction(async (tx) => {
       const updatedAt = new Date().toISOString()
 
@@ -144,7 +155,10 @@ export class DeviceRepository {
       await tx.deviceMetricsHistory.create({
         data: {
           deviceId,
-          data: data as unknown as Prisma.InputJsonValue,
+          // History records the raw reading only — the anchor is derived state.
+          data: {
+            localization: data.localization,
+          } as unknown as Prisma.InputJsonValue,
           createdAt: updatedAt,
         },
       })

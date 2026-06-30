@@ -96,7 +96,7 @@ model Device {
   creator                User                   @relation("DeviceCreator", fields: [createdBy], references: [id])
   owner                  User?                  @relation("DeviceOwner", fields: [ownerId], references: [id])
   contentSchedules       Schedule[]
-  deviceMetrcisHistories DeviceMetricsHistory[]
+  deviceMetricsHistories DeviceMetricsHistory[]
 
   @@map("device")
 }

@@ -16,4 +16,7 @@ export const env = {
   REFRESH_TOKEN_SECRET: required("REFRESH_TOKEN_SECRET"),
   ACCESS_TOKEN_EXPIRATION: required("ACCESS_TOKEN_EXPIRATION"),
   REFRESH_TOKEN_EXPIRATION: required("REFRESH_TOKEN_EXPIRATION"),
+  // Optional: geocoding degrades gracefully when absent, so a missing key must
+  // not crash the server at boot — read loosely, not via required().
+  GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
 }
