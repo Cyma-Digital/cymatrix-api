@@ -52,6 +52,8 @@ model User {
   contentSchedules Schedule[]
   ownedDevices     Device[]       @relation("DeviceOwner")
   userTemplates    UserTemplate[]
+  effects          Effect[]
+  userEffects      UserEffect[]
 
   @@map("user")
 }
@@ -162,6 +164,39 @@ model UserTemplate {
 
   @@unique([userId, templateId])
   @@map("user_template")
+}
+
+model Effect {
+  id             Int     @id @default(autoincrement())
+  name           String  @db.VarChar(100)
+  description    String? @db.VarChar(255)
+  preset         Json
+  editableFields Json    @map("editable_fields")
+  active         Boolean @default(true)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdBy Int       @map("created_by")
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  updatedBy Int?      @map("updated_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  deletedBy Int?      @map("deleted_by")
+
+  creator    User         @relation(fields: [createdBy], references: [id])
+  userEffect UserEffect[]
+
+  @@map("effect")
+}
+
+model UserEffect {
+  id       Int @id @default(autoincrement())
+  userId   Int @map("user_id")
+  effectId Int @map("effect_id")
+
+  user   User   @relation(fields: [userId], references: [id])
+  effect Effect @relation(fields: [effectId], references: [id])
+
+  @@unique([userId, effectId])
+  @@map("user_effect")
 }
 
 model DeviceMetricsHistory {
