@@ -239,11 +239,15 @@ export class ContentScheduleService {
         }
       }
 
+      const linkedEffect = schedule.scheduleEffect[0]?.effect.preset as
+        | Record<string, unknown>
+        | undefined
+
       return {
         id: schedule.id,
         preset: basePreset,
         durationSec: schedule.durationSec ?? undefined,
-        effect: schedule.effect ?? undefined,
+        effect: linkedEffect,
         template: {
           id: schedule.template.id,
           name: schedule.template.name,

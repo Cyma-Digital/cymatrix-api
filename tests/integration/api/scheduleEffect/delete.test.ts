@@ -11,19 +11,36 @@ afterAll(async () => {
   await orchestrator.tearDown()
 })
 
-describe("DELETE /api/template-effect/:id", () => {
+async function createSchedule(token: string) {
+  const deviceResponse = await request(app)
+    .post("/api/devices")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ name: "Device A", code: `DEV-${Date.now()}-${Math.random()}` })
+
+  const templateResponse = await request(app)
+    .post("/api/templates")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ name: "Template A", preset: { on: true }, editableFields: [] })
+
+  const scheduleResponse = await request(app)
+    .post("/api/schedules")
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      deviceId: deviceResponse.body.data.id,
+      templateId: templateResponse.body.data.id,
+      customFields: {},
+      weekdays: [1, 2, 3, 4, 5],
+    })
+
+  return scheduleResponse.body.data.id as number
+}
+
+describe("DELETE /api/schedule-effect/:id", () => {
   describe("Anonymous user", () => {
     test("should return 401 without authentication", async () => {
       const token = await loginAndGetToken()
 
-      await request(app)
-        .post("/api/templates")
-        .set("Authorization", `Bearer ${token}`)
-        .send({
-          name: "Template A",
-          preset: { on: true },
-          editableFields: [],
-        })
+      const scheduleId = await createSchedule(token)
 
       await request(app)
         .post("/api/effects")
@@ -35,14 +52,14 @@ describe("DELETE /api/template-effect/:id", () => {
         })
 
       const createResponse = await request(app)
-        .post("/api/template-effect")
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 1, effectId: 1 })
+        .send({ scheduleId, effectId: 1 })
 
       const { id } = createResponse.body.data
 
       const deleteResponse = await request(app).delete(
-        `/api/template-effect/${id}`,
+        `/api/schedule-effect/${id}`,
       )
 
       expect(deleteResponse.status).toBe(401)
@@ -51,17 +68,10 @@ describe("DELETE /api/template-effect/:id", () => {
   })
   describe("Authenticated user", () => {
     describe("Success cases", () => {
-      test("should delete a templateEffect", async () => {
+      test("should delete a scheduleEffect", async () => {
         const token = await loginAndGetToken()
 
-        await request(app)
-          .post("/api/templates")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            name: "Template A",
-            preset: { on: true },
-            editableFields: [],
-          })
+        const scheduleId = await createSchedule(token)
 
         await request(app)
           .post("/api/effects")
@@ -73,36 +83,29 @@ describe("DELETE /api/template-effect/:id", () => {
           })
 
         const createResponse = await request(app)
-          .post("/api/template-effect")
+          .post("/api/schedule-effect")
           .set("Authorization", `Bearer ${token}`)
-          .send({ templateId: 1, effectId: 1 })
+          .send({ scheduleId, effectId: 1 })
 
         const { id } = createResponse.body.data
 
         const deleteResponse = await request(app)
-          .delete(`/api/template-effect/${id}`)
+          .delete(`/api/schedule-effect/${id}`)
           .set("Authorization", `Bearer ${token}`)
 
         expect(deleteResponse.status).toBe(204)
 
         const getResponse = await request(app)
-          .get(`/api/template-effect/${id}`)
+          .get(`/api/schedule-effect/${id}`)
           .set("Authorization", `Bearer ${token}`)
 
         expect(getResponse.status).toBe(404)
       })
 
-      test("should not list deleted templateEffects", async () => {
+      test("should not list deleted scheduleEffects", async () => {
         const token = await loginAndGetToken()
 
-        await request(app)
-          .post("/api/templates")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            name: "Template A",
-            preset: { on: true },
-            editableFields: [],
-          })
+        const scheduleId = await createSchedule(token)
 
         await request(app)
           .post("/api/effects")
@@ -123,23 +126,23 @@ describe("DELETE /api/template-effect/:id", () => {
           })
 
         await request(app)
-          .post("/api/template-effect")
+          .post("/api/schedule-effect")
           .set("Authorization", `Bearer ${token}`)
-          .send({ templateId: 1, effectId: 1 })
+          .send({ scheduleId, effectId: 1 })
 
         const createResponse = await request(app)
-          .post("/api/template-effect")
+          .post("/api/schedule-effect")
           .set("Authorization", `Bearer ${token}`)
-          .send({ templateId: 1, effectId: 2 })
+          .send({ scheduleId, effectId: 2 })
 
         const { id } = createResponse.body.data
 
         await request(app)
-          .delete(`/api/template-effect/${id}`)
+          .delete(`/api/schedule-effect/${id}`)
           .set("Authorization", `Bearer ${token}`)
 
         const listResponse = await request(app)
-          .get("/api/template-effect")
+          .get("/api/schedule-effect")
           .set("Authorization", `Bearer ${token}`)
 
         expect(listResponse.body.data).toHaveLength(1)
@@ -148,15 +151,15 @@ describe("DELETE /api/template-effect/:id", () => {
     })
 
     describe("Error cases", () => {
-      test("should return 404 when templateEffect does not exist", async () => {
+      test("should return 404 when scheduleEffect does not exist", async () => {
         const token = await loginAndGetToken()
 
         const response = await request(app)
-          .delete("/api/template-effect/99999")
+          .delete("/api/schedule-effect/99999")
           .set("Authorization", `Bearer ${token}`)
 
         expect(response.status).toBe(404)
-        expect(response.body.message).toBe("Template effect not found")
+        expect(response.body.message).toBe("Schedule effect not found")
       })
     })
   })

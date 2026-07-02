@@ -118,10 +118,9 @@ model Template {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
-  creator          User             @relation(fields: [createdBy], references: [id])
+  creator          User           @relation(fields: [createdBy], references: [id])
   contentSchedules Schedule[]
   userTemplate     UserTemplate[]
-  templateEffect   TemplateEffect[]
 
   @@map("template")
 }
@@ -148,9 +147,10 @@ model Schedule {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
   deletedBy Int?      @map("deleted_by")
 
-  device   Device   @relation(fields: [deviceId], references: [id])
-  template Template @relation(fields: [templateId], references: [id])
-  creator  User     @relation(fields: [createdBy], references: [id])
+  device         Device           @relation(fields: [deviceId], references: [id])
+  template       Template         @relation(fields: [templateId], references: [id])
+  creator        User             @relation(fields: [createdBy], references: [id])
+  scheduleEffect ScheduleEffect[]
 
   @@map("schedule")
 }
@@ -184,7 +184,7 @@ model Effect {
 
   creator        User             @relation(fields: [createdBy], references: [id])
   userEffect     UserEffect[]
-  templateEffect TemplateEffect[]
+  scheduleEffect ScheduleEffect[]
 
   @@map("effect")
 }
@@ -201,16 +201,16 @@ model UserEffect {
   @@map("user_effect")
 }
 
-model TemplateEffect {
+model ScheduleEffect {
   id         Int @id @default(autoincrement())
   effectId   Int @map("effect_id")
-  templateId Int @map("template_id")
+  scheduleId Int @map("schedule_id")
 
   effect   Effect   @relation(fields: [effectId], references: [id])
-  template Template @relation(fields: [templateId], references: [id])
+  schedule Schedule @relation(fields: [scheduleId], references: [id])
 
-  @@unique([effectId, templateId])
-  @@map("template_effect")
+  @@unique([effectId, scheduleId])
+  @@map("schedule_effect")
 }
 
 model DeviceMetricsHistory {

@@ -1,8 +1,8 @@
 import {
-  CreateTemplateEffectSchema,
-  templateEffectIdSchema,
-} from "@/schemas/templateEffect/templateEffect.schemas"
-import templateEffectService from "@/services/templateEffect/templateEffect.service"
+  CreateScheduleEffectSchema,
+  scheduleEffectIdSchema,
+} from "@/schemas/scheduleEffect/scheduleEffect.schemas"
+import scheduleEffectService from "@/services/scheduleEffect/scheduleEffect.service"
 import { Request, Response, NextFunction } from "express"
 
 export async function create(
@@ -11,13 +11,13 @@ export async function create(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const data = req.body as CreateTemplateEffectSchema
+    const data = req.body as CreateScheduleEffectSchema
 
-    const templateEffect = await templateEffectService.create(data)
+    const scheduleEffect = await scheduleEffectService.create(data)
 
     return res.status(201).json({
       status: "success",
-      data: templateEffect,
+      data: scheduleEffect,
     })
   } catch (error) {
     next(error)
@@ -26,11 +26,11 @@ export async function create(
 
 export async function list(req: Request, res: Response, next: NextFunction) {
   try {
-    const templateEffects = await templateEffectService.listAll()
+    const scheduleEffects = await scheduleEffectService.listAll()
 
     return res.status(200).json({
       status: "success",
-      data: templateEffects,
+      data: scheduleEffects,
     })
   } catch (error) {
     next(error)
@@ -39,32 +39,32 @@ export async function list(req: Request, res: Response, next: NextFunction) {
 
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
-    const { id } = templateEffectIdSchema.parse(req.params)
+    const { id } = scheduleEffectIdSchema.parse(req.params)
 
-    const templateEffect = await templateEffectService.getById(id)
+    const scheduleEffect = await scheduleEffectService.getById(id)
 
     return res.status(200).json({
       status: "success",
-      data: templateEffect,
+      data: scheduleEffect,
     })
   } catch (error) {
     next(error)
   }
 }
 
-export async function getByTemplateId(
+export async function getByScheduleId(
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const { id } = templateEffectIdSchema.parse(req.params)
+    const { id } = scheduleEffectIdSchema.parse(req.params)
 
-    const templateEffect = await templateEffectService.getByTemplateId(id)
+    const scheduleEffect = await scheduleEffectService.getByScheduleId(id)
 
     return res.status(200).json({
       status: "success",
-      data: templateEffect,
+      data: scheduleEffect,
     })
   } catch (error) {
     next(error)
@@ -77,28 +77,28 @@ export async function getByEffectId(
   next: NextFunction,
 ): Promise<Response | undefined> {
   try {
-    const { id } = templateEffectIdSchema.parse(req.params)
+    const { id } = scheduleEffectIdSchema.parse(req.params)
 
-    const templateEffect = await templateEffectService.getByEffectId(id)
+    const scheduleEffect = await scheduleEffectService.getByEffectId(id)
 
     return res.status(200).json({
       status: "success",
-      data: templateEffect,
+      data: scheduleEffect,
     })
   } catch (error) {
     next(error)
   }
 }
 
-export async function deleteTemplateEffect(
+export async function deleteScheduleEffect(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
   try {
-    const { id } = templateEffectIdSchema.parse(req.params)
+    const { id } = scheduleEffectIdSchema.parse(req.params)
 
-    await templateEffectService.delete(id)
+    await scheduleEffectService.delete(id)
 
     return res.status(204).send()
   } catch (error) {

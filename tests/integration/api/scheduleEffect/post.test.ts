@@ -11,16 +11,40 @@ afterAll(async () => {
   await orchestrator.tearDown()
 })
 
-describe("POST /api/template-effect/", () => {
+async function createSchedule(token: string) {
+  const deviceResponse = await request(app)
+    .post("/api/devices")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ name: "Device A", code: `DEV-${Date.now()}-${Math.random()}` })
+
+  const templateResponse = await request(app)
+    .post("/api/templates")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ name: "Template A", preset: { on: true }, editableFields: [] })
+
+  const scheduleResponse = await request(app)
+    .post("/api/schedules")
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      deviceId: deviceResponse.body.data.id,
+      templateId: templateResponse.body.data.id,
+      customFields: {},
+      weekdays: [1, 2, 3, 4, 5],
+    })
+
+  return scheduleResponse.body.data.id as number
+}
+
+describe("POST /api/schedule-effect/", () => {
   describe("Anonymous user", () => {
     test("should return 401 without authentication", async () => {
       const payload = {
-        templateId: 1,
+        scheduleId: 1,
         effectId: 1,
       }
 
       const response = await request(app)
-        .post("/api/template-effect")
+        .post("/api/schedule-effect")
         .send(payload)
 
       expect(response.status).toBe(401)
@@ -30,17 +54,10 @@ describe("POST /api/template-effect/", () => {
 
   describe("Authenticated user", () => {
     describe("Success cases", () => {
-      test("should create templateEffect", async () => {
+      test("should create scheduleEffect", async () => {
         const token = await loginAndGetToken()
 
-        await request(app)
-          .post("/api/templates")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            name: "Template A",
-            preset: { on: true },
-            editableFields: [],
-          })
+        const scheduleId = await createSchedule(token)
 
         await request(app)
           .post("/api/effects")
@@ -52,12 +69,12 @@ describe("POST /api/template-effect/", () => {
           })
 
         const payload = {
-          templateId: 1,
+          scheduleId,
           effectId: 1,
         }
 
         const response = await request(app)
-          .post("/api/template-effect")
+          .post("/api/schedule-effect")
           .set("Authorization", `Bearer ${token}`)
           .send(payload)
 
@@ -65,14 +82,14 @@ describe("POST /api/template-effect/", () => {
         expect(response.body.status).toBe("success")
         expect(response.body.data).toMatchObject({
           id: expect.any(Number),
-          templateId: payload.templateId,
+          scheduleId: payload.scheduleId,
           effectId: payload.effectId,
         })
       })
     })
 
     describe("Error cases", () => {
-      test("should return 404 when template not found", async () => {
+      test("should return 404 when schedule not found", async () => {
         const token = await loginAndGetToken()
 
         await request(app)
@@ -85,39 +102,32 @@ describe("POST /api/template-effect/", () => {
           })
 
         const payload = {
-          templateId: 1,
+          scheduleId: 99999,
           effectId: 1,
         }
 
         const response = await request(app)
-          .post("/api/template-effect")
+          .post("/api/schedule-effect")
           .set("Authorization", `Bearer ${token}`)
           .send(payload)
 
         expect(response.status).toBe(404)
         expect(response.body.status).toBe("error")
-        expect(response.body.message).toBe("Template not found")
+        expect(response.body.message).toBe("Schedule not found")
       })
 
       test("should return 404 when effect not found", async () => {
         const token = await loginAndGetToken()
 
-        await request(app)
-          .post("/api/templates")
-          .set("Authorization", `Bearer ${token}`)
-          .send({
-            name: "Template A",
-            preset: { on: true },
-            editableFields: [],
-          })
+        const scheduleId = await createSchedule(token)
 
         const payload = {
-          templateId: 1,
-          effectId: 1,
+          scheduleId,
+          effectId: 99999,
         }
 
         const response = await request(app)
-          .post("/api/template-effect")
+          .post("/api/schedule-effect")
           .set("Authorization", `Bearer ${token}`)
           .send(payload)
 

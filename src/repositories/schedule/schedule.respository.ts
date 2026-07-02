@@ -113,6 +113,7 @@ export class scheduleRepository {
       },
       include: {
         template: true,
+        scheduleEffect: { include: { effect: true } },
       },
     })
   }

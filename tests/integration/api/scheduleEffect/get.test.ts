@@ -11,10 +11,34 @@ afterAll(async () => {
   await orchestrator.tearDown()
 })
 
-describe("GET /api/template-effect", () => {
+async function createSchedule(token: string, name: string) {
+  const deviceResponse = await request(app)
+    .post("/api/devices")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ name, code: `DEV-${Date.now()}-${Math.random()}` })
+
+  const templateResponse = await request(app)
+    .post("/api/templates")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ name, preset: { on: true }, editableFields: [] })
+
+  const scheduleResponse = await request(app)
+    .post("/api/schedules")
+    .set("Authorization", `Bearer ${token}`)
+    .send({
+      deviceId: deviceResponse.body.data.id,
+      templateId: templateResponse.body.data.id,
+      customFields: {},
+      weekdays: [1, 2, 3, 4, 5],
+    })
+
+  return scheduleResponse.body.data.id as number
+}
+
+describe("GET /api/schedule-effect", () => {
   describe("Anonymous user", () => {
     test("should return 401 without authentication", async () => {
-      const response = await request(app).get("/api/template-effect")
+      const response = await request(app).get("/api/schedule-effect")
 
       expect(response.status).toBe(401)
       expect(response.body.status).toBe("error")
@@ -22,18 +46,11 @@ describe("GET /api/template-effect", () => {
   })
 
   describe("Authenticated user", () => {
-    test("should list all templateEffects", async () => {
+    test("should list all scheduleEffects", async () => {
       const token = await loginAndGetToken()
 
-      await request(app)
-        .post("/api/templates")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ name: "Template A", preset: { on: true }, editableFields: [] })
-
-      await request(app)
-        .post("/api/templates")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ name: "Template B", preset: { on: true }, editableFields: [] })
+      const scheduleAId = await createSchedule(token, "Schedule A")
+      const scheduleBId = await createSchedule(token, "Schedule B")
 
       await request(app)
         .post("/api/effects")
@@ -46,22 +63,22 @@ describe("GET /api/template-effect", () => {
         .send({ name: "Effect B", preset: { on: true }, editableFields: [] })
 
       await request(app)
-        .post("/api/template-effect")
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 1, effectId: 1 })
+        .send({ scheduleId: scheduleAId, effectId: 1 })
 
       await request(app)
-        .post("/api/template-effect")
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 1, effectId: 2 })
+        .send({ scheduleId: scheduleAId, effectId: 2 })
 
       await request(app)
-        .post("/api/template-effect")
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 2, effectId: 1 })
+        .send({ scheduleId: scheduleBId, effectId: 1 })
 
       const response = await request(app)
-        .get("/api/template-effect")
+        .get("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
 
       expect(response.status).toBe(200)
@@ -73,51 +90,41 @@ describe("GET /api/template-effect", () => {
       expect(response.body.data).toHaveLength(3)
     })
 
-    test("should get templateEffect by id", async () => {
+    test("should get scheduleEffect by id", async () => {
       const token = await loginAndGetToken()
 
-      await request(app)
-        .post("/api/templates")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ name: "Template A", preset: { on: true }, editableFields: [] })
+      const scheduleId = await createSchedule(token, "Schedule A")
 
       await request(app)
         .post("/api/effects")
         .set("Authorization", `Bearer ${token}`)
         .send({ name: "Effect A", preset: { on: true }, editableFields: [] })
 
-      const templateEffectCreatedResponse = await request(app)
-        .post("/api/template-effect")
+      const scheduleEffectCreatedResponse = await request(app)
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 1, effectId: 1 })
+        .send({ scheduleId, effectId: 1 })
 
-      const templateEffect = templateEffectCreatedResponse.body.data
+      const scheduleEffect = scheduleEffectCreatedResponse.body.data
 
       const response = await request(app)
-        .get(`/api/template-effect/${templateEffect.id}`)
+        .get(`/api/schedule-effect/${scheduleEffect.id}`)
         .set("Authorization", `Bearer ${token}`)
 
       expect(response.status).toBe(200)
       expect(response.body.data).toBeDefined()
       expect(response.body.data).toMatchObject({
         id: expect.any(Number),
-        templateId: 1,
+        scheduleId,
         effectId: 1,
       })
     })
 
-    test("should get templateEffect by template id", async () => {
+    test("should get scheduleEffect by schedule id", async () => {
       const token = await loginAndGetToken()
 
-      await request(app)
-        .post("/api/templates")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ name: "Template A", preset: { on: true }, editableFields: [] })
-
-      await request(app)
-        .post("/api/templates")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ name: "Template B", preset: { on: true }, editableFields: [] })
+      const scheduleAId = await createSchedule(token, "Schedule A")
+      const scheduleBId = await createSchedule(token, "Schedule B")
 
       await request(app)
         .post("/api/effects")
@@ -130,23 +137,23 @@ describe("GET /api/template-effect", () => {
         .send({ name: "Effect B", preset: { on: true }, editableFields: [] })
 
       await request(app)
-        .post("/api/template-effect")
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 2, effectId: 1 })
+        .send({ scheduleId: scheduleBId, effectId: 1 })
 
       await request(app)
-        .post("/api/template-effect")
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 1, effectId: 1 })
+        .send({ scheduleId: scheduleAId, effectId: 1 })
 
-      const templateEffectCreatedResponse = await request(app)
-        .post("/api/template-effect")
+      const scheduleEffectCreatedResponse = await request(app)
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 1, effectId: 2 })
-      const templateEffect = templateEffectCreatedResponse.body.data
+        .send({ scheduleId: scheduleAId, effectId: 2 })
+      const scheduleEffect = scheduleEffectCreatedResponse.body.data
 
       const response = await request(app)
-        .get(`/api/template-effect/template/${templateEffect.templateId}`)
+        .get(`/api/schedule-effect/schedule/${scheduleEffect.scheduleId}`)
         .set("Authorization", `Bearer ${token}`)
 
       expect(response.status).toBe(200)
@@ -154,18 +161,11 @@ describe("GET /api/template-effect", () => {
       expect(response.body.data).toHaveLength(2)
     })
 
-    test("should get templateEffect by effect id", async () => {
+    test("should get scheduleEffect by effect id", async () => {
       const token = await loginAndGetToken()
 
-      await request(app)
-        .post("/api/templates")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ name: "Template A", preset: { on: true }, editableFields: [] })
-
-      await request(app)
-        .post("/api/templates")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ name: "Template B", preset: { on: true }, editableFields: [] })
+      const scheduleAId = await createSchedule(token, "Schedule A")
+      const scheduleBId = await createSchedule(token, "Schedule B")
 
       await request(app)
         .post("/api/effects")
@@ -178,24 +178,24 @@ describe("GET /api/template-effect", () => {
         .send({ name: "Effect B", preset: { on: true }, editableFields: [] })
 
       await request(app)
-        .post("/api/template-effect")
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 1, effectId: 2 })
+        .send({ scheduleId: scheduleAId, effectId: 2 })
 
       await request(app)
-        .post("/api/template-effect")
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 2, effectId: 1 })
+        .send({ scheduleId: scheduleBId, effectId: 1 })
 
-      const templateEffectCreatedResponse = await request(app)
-        .post("/api/template-effect")
+      const scheduleEffectCreatedResponse = await request(app)
+        .post("/api/schedule-effect")
         .set("Authorization", `Bearer ${token}`)
-        .send({ templateId: 1, effectId: 1 })
+        .send({ scheduleId: scheduleAId, effectId: 1 })
 
-      const templateEffect = templateEffectCreatedResponse.body.data
+      const scheduleEffect = scheduleEffectCreatedResponse.body.data
 
       const response = await request(app)
-        .get(`/api/template-effect/effect/${templateEffect.effectId}`)
+        .get(`/api/schedule-effect/effect/${scheduleEffect.effectId}`)
         .set("Authorization", `Bearer ${token}`)
 
       expect(response.status).toBe(200)
