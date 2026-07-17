@@ -1,6 +1,10 @@
 import { Router } from "express"
 import * as deviceController from "@/controllers/device/device.controller"
-import { validateBody, validateParams } from "@/middlewares/validate.middleware"
+import {
+  validateBody,
+  validateParams,
+  validateQuery,
+} from "@/middlewares/validate.middleware"
 import {
   createDeviceSchema,
   updateDeviceSchema,
@@ -9,11 +13,21 @@ import {
   updateDeviceOverridesSchema,
   deviceCodeSchema,
   updateDeviceMetricsSchema,
+  deviceMetricsHistoryQuerySchema,
 } from "@/schemas/device/device.schemas"
 import { authenticate } from "@/middlewares/auth.middleware"
+import { rateLimit } from "@/middlewares/rateLimit.middleware"
 import { updateDeviceDataSchema } from "@/schemas/device/device.schemas"
 
 const router = Router()
+
+// Per-user limit for the history endpoint — it can scan up to MAX limit rows
+// per request. Exported so tests can reset the in-memory buckets.
+export const metricsHistoryRateLimit = rateLimit({
+  windowMs: 60_000,
+  max: 60,
+  keyFn: (req) => String(req.user!.userId),
+})
 
 router.get(
   "/:code/data",
@@ -63,6 +77,14 @@ router.patch(
   validateParams(deviceIdSchema),
   validateBody(updateDeviceDataSchema),
   deviceController.updateDeviceData,
+)
+
+router.get(
+  "/:id/metrics/history",
+  metricsHistoryRateLimit,
+  validateParams(deviceIdSchema),
+  validateQuery(deviceMetricsHistoryQuerySchema),
+  deviceController.getMetricsHistory,
 )
 
 export default router

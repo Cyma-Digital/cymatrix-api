@@ -310,6 +310,19 @@ GET {{baseUrl}}/brands/-1
 GET {{baseUrl}}/status
 
 # ============================================
+# 11. DEVICE LOCATION HISTORY
+# ============================================
+@token = your-access-token-here
+
+### Get location history (defaults: no range filter, limit 500)
+GET {{baseUrl}}/devices/1/metrics/history
+Authorization: Bearer {{token}}
+
+### Get location history filtered by date range, capped to 50 entries
+GET {{baseUrl}}/devices/1/metrics/history?from=2026-01-01T00:00:00.000Z&to=2026-01-31T23:59:59.000Z&limit=50
+Authorization: Bearer {{token}}
+
+# ============================================
 # SEQUÊNCIA COMPLETA DE TESTE
 # ============================================
 # Execute nesta ordem para testar fluxo completo:

@@ -138,6 +138,23 @@ export class DeviceRepository {
     })
   }
 
+  async getMetricsHistory(
+    deviceId: number,
+    filters: { from?: string; to?: string; limit: number },
+  ) {
+    return await prisma.deviceMetricsHistory.findMany({
+      where: {
+        deviceId,
+        createdAt: {
+          ...(filters.from && { gte: new Date(filters.from) }),
+          ...(filters.to && { lte: new Date(filters.to) }),
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: filters.limit,
+    })
+  }
+
   async updateDeviceMetrics(deviceId: number, data: DeviceMetricsBlob) {
     await prisma.$transaction(async (tx) => {
       const updatedAt = new Date().toISOString()

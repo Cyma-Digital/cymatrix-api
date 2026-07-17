@@ -8,6 +8,7 @@ import {
   UpdateDeviceOverridesDto,
   deviceCodeSchema,
   deviceIdSchema,
+  deviceMetricsHistoryQuerySchema,
 } from "@/schemas/device/device.schemas"
 import { validateIdParam } from "@/utils/http"
 import { measureHttpResponse } from "@/utils/usage"
@@ -204,6 +205,26 @@ export async function updateDeviceData(
     return res.status(200).json({
       status: "success",
       data: device,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export async function getMetricsHistory(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = deviceIdSchema.parse(req.params)
+    const query = deviceMetricsHistoryQuerySchema.parse(req.query)
+
+    const history = await deviceService.getMetricsHistory(id, query)
+
+    return res.status(200).json({
+      status: "success",
+      data: history,
     })
   } catch (error) {
     next(error)

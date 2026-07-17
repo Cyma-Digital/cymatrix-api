@@ -89,6 +89,33 @@ export const updateDeviceMetricsSchema = z.object({
   }),
 })
 
+// Server-enforced bounds for GET /:id/metrics/history — protects the DB from
+// unbounded scans; callers that omit `limit` get DEFAULT, callers asking for
+// more than MAX are rejected (400) rather than silently truncated.
+export const DEFAULT_METRICS_HISTORY_LIMIT = 500
+export const MAX_METRICS_HISTORY_LIMIT = 1000
+
+export const deviceMetricsHistoryQuerySchema = z.object({
+  from: z.iso.datetime({ offset: true }).optional(),
+  to: z.iso.datetime({ offset: true }).optional(),
+  limit: z
+    .string()
+    .regex(/^\d+$/, "Limit must be a positive integer")
+    .transform((value) => parseInt(value, 10))
+    .pipe(
+      z
+        .number()
+        .int()
+        .positive()
+        .max(
+          MAX_METRICS_HISTORY_LIMIT,
+          `Limit cannot exceed ${MAX_METRICS_HISTORY_LIMIT}`,
+        ),
+    )
+    .optional()
+    .default(DEFAULT_METRICS_HISTORY_LIMIT),
+})
+
 export type DeviceId = z.infer<typeof deviceIdSchema>
 export type DeviceCode = z.infer<typeof deviceCodeSchema>
 export type CreateDeviceDto = z.infer<typeof createDeviceSchema>
@@ -103,3 +130,7 @@ export type UpdateDeviceOverridesDto = z.infer<
 >
 
 export type UpdateDeviceDataDto = z.infer<typeof updateDeviceDataSchema>
+
+export type DeviceMetricsHistoryQuery = z.infer<
+  typeof deviceMetricsHistoryQuerySchema
+>

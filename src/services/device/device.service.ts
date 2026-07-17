@@ -6,6 +6,7 @@ import {
   CreateDeviceServiceInput,
   UpdateDeviceServiceInput,
   UpdateDeviceMetrics,
+  DeviceMetricsHistoryQuery,
 } from "@/schemas/device/device.schemas"
 import { Prisma } from "@/generated/prisma/client"
 import userRepository from "@/repositories/user/user.repository"
@@ -25,6 +26,24 @@ const GEOCODE_DISTANCE_THRESHOLD_M = 50
 interface StoredMetrics {
   localization?: DeviceMetricsBlob["localization"] | null
   anchor?: DeviceMetricsBlob["anchor"] | null
+}
+
+// Response shape for GET /:id/metrics/history — projected from the history
+// row's `data.localization` plus its `createdAt`. `anchor` is derived state
+// and is never part of this projection.
+export interface DeviceMetricsHistoryEntry {
+  lat: number
+  lng: number
+  address: string | null
+  recordedAt: string
+}
+
+// `truncated` is reported by the server (probe of limit + 1 rows) so clients
+// never have to infer it from the page size, which breaks when entries are
+// filtered out after the DB limit is applied.
+export interface DeviceMetricsHistoryResult {
+  entries: DeviceMetricsHistoryEntry[]
+  truncated: boolean
 }
 
 export class DeviceService {
@@ -213,6 +232,41 @@ export class DeviceService {
       localization: { lat, lng, address },
       anchor: nextAnchor,
     })
+  }
+
+  async getMetricsHistory(
+    deviceId: number,
+    query: DeviceMetricsHistoryQuery,
+  ): Promise<DeviceMetricsHistoryResult> {
+    const device = await this.repository.getById(deviceId)
+    if (!device) throw new HttpError(404, "Device not found")
+
+    // Fetch one row past the limit: an extra row means older readings exist
+    // beyond this page, so truncation can be reported explicitly.
+    const rows = await this.repository.getMetricsHistory(deviceId, {
+      ...query,
+      limit: query.limit + 1,
+    })
+    const truncated = rows.length > query.limit
+
+    const entries: DeviceMetricsHistoryEntry[] = []
+    for (const row of rows.slice(0, query.limit)) {
+      const data = row.data as { localization?: StoredMetrics["localization"] }
+      const lat = data?.localization?.lat
+      const lng = data?.localization?.lng
+
+      if (typeof lat !== "number" || typeof lng !== "number") continue
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue
+
+      entries.push({
+        lat,
+        lng,
+        address: data.localization?.address ?? null,
+        recordedAt: row.createdAt.toISOString(),
+      })
+    }
+
+    return { entries, truncated }
   }
 }
 
