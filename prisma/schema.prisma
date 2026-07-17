@@ -220,7 +220,7 @@ model DeviceMetricsHistory {
 
   device Device @relation(fields: [deviceId], references: [id])
 
-  @@index([deviceId])
+  @@index([deviceId, createdAt])
   @@index([createdAt])
   @@map("device_metrics_history")
 }
