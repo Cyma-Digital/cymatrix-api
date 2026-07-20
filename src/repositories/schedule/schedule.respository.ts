@@ -2,7 +2,8 @@ import { Prisma } from "@/generated/prisma/client"
 import prisma from "@/lib/prisma"
 
 export interface CreatescheduleData {
-  deviceId: number
+  deviceId?: number
+  groupId?: number
   templateId: number
   customFields: Prisma.InputJsonValue
   weekdays: Prisma.InputJsonValue
@@ -16,7 +17,7 @@ export interface CreatescheduleData {
 }
 
 export type UpdateScheduleData = Partial<
-  Omit<CreatescheduleData, "deviceId" | "createdBy">
+  Omit<CreatescheduleData, "deviceId" | "groupId" | "createdBy">
 > & {
   updatedBy?: number
 }
@@ -25,6 +26,27 @@ export class scheduleRepository {
   private softDeleteFilter = {
     deletedAt: null,
     deletedBy: null,
+  }
+
+  // Schedules a user owns through either target: their devices' schedules or
+  // their groups' schedules.
+  private ownedByFilter(ownerId: number) {
+    return {
+      OR: [
+        {
+          device: {
+            ownerId,
+            deletedAt: null,
+          },
+        },
+        {
+          group: {
+            userId: ownerId,
+            deletedAt: null,
+          },
+        },
+      ],
+    }
   }
 
   async create(data: CreatescheduleData) {
@@ -47,6 +69,7 @@ export class scheduleRepository {
       include: {
         template: true,
         device: true,
+        group: true,
       },
     })
   }
@@ -63,15 +86,24 @@ export class scheduleRepository {
     })
   }
 
-  async countActiveByDeviceOwner(ownerId: number) {
+  async countActiveByOwner(ownerId: number) {
     return await prisma.schedule.count({
       where: {
-        device: {
-          ownerId,
-          deletedAt: null,
-        },
+        ...this.ownedByFilter(ownerId),
         active: true,
         ...this.softDeleteFilter,
+      },
+    })
+  }
+
+  async listByGroupId(groupId: number) {
+    return await prisma.schedule.findMany({
+      where: {
+        groupId,
+        ...this.softDeleteFilter,
+      },
+      include: {
+        template: true,
       },
     })
   }
@@ -84,22 +116,21 @@ export class scheduleRepository {
       include: {
         template: true,
         device: true,
+        group: true,
       },
     })
   }
 
-  async listByDeviceOwner(ownerId: number) {
+  async listByOwner(ownerId: number) {
     return await prisma.schedule.findMany({
       where: {
-        device: {
-          ownerId,
-          deletedAt: null,
-        },
+        ...this.ownedByFilter(ownerId),
         ...this.softDeleteFilter,
       },
       include: {
         template: true,
         device: true,
+        group: true,
       },
     })
   }
@@ -107,7 +138,15 @@ export class scheduleRepository {
   async getActiveByDevice(deviceId: number) {
     return await prisma.schedule.findMany({
       where: {
-        deviceId,
+        OR: [
+          { deviceId },
+          {
+            group: {
+              deletedAt: null,
+              groupDevices: { some: { deviceId } },
+            },
+          },
+        ],
         active: true,
         ...this.softDeleteFilter,
       },

@@ -86,6 +86,54 @@ describe("POST /api/schedule-effect/", () => {
           effectId: payload.effectId,
         })
       })
+
+      test("should create scheduleEffect for a group-targeted schedule", async () => {
+        const token = await loginAndGetToken()
+
+        const groupResponse = await request(app)
+          .post("/api/groups")
+          .set("Authorization", `Bearer ${token}`)
+          .send({ name: "Grupo A" })
+
+        const templateResponse = await request(app)
+          .post("/api/templates")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            name: "Template A",
+            preset: { on: true },
+            editableFields: [],
+          })
+
+        const scheduleResponse = await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            groupId: groupResponse.body.data.id,
+            templateId: templateResponse.body.data.id,
+            customFields: {},
+            weekdays: [1, 2, 3, 4, 5],
+          })
+
+        const effectResponse = await request(app)
+          .post("/api/effects")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            name: "Effect A",
+            preset: { on: true },
+            editableFields: [],
+          })
+
+        const response = await request(app)
+          .post("/api/schedule-effect")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            scheduleId: scheduleResponse.body.data.id,
+            effectId: effectResponse.body.data.id,
+          })
+
+        expect(response.status).toBe(201)
+        expect(response.body.status).toBe("success")
+      })
     })
 
     describe("Error cases", () => {

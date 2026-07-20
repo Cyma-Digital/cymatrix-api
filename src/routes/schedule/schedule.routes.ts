@@ -20,6 +20,11 @@ router.get(
   validateParams(contentScheduleIdSchema),
   controller.listByDevice,
 )
+router.get(
+  "/group/:id",
+  validateParams(contentScheduleIdSchema),
+  controller.listByGroup,
+)
 router.put(
   "/:id",
   validateParams(contentScheduleIdSchema),

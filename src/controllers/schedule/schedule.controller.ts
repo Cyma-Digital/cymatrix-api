@@ -60,6 +60,24 @@ export async function listByDevice(
   }
 }
 
+export async function listByGroup(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = contentScheduleIdSchema.parse(req.params)
+    const userId = req.user!.userId
+    const schedules = await contentScheduleService.listByGroupId(id, userId)
+    return res.status(200).json({
+      status: "success",
+      data: schedules,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export async function getById(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = contentScheduleIdSchema.parse(req.params)

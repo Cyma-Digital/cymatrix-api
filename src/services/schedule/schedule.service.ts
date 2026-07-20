@@ -1,6 +1,7 @@
 import { HttpError } from "@/errors/httpError"
 import { Prisma, UserRole } from "@/generated/prisma/client"
 import DeviceRepository from "@/repositories/device/device.respository"
+import GroupRepository from "@/repositories/group/group.repository"
 import ContentScheduleRepository from "@/repositories/schedule/schedule.respository"
 import TemplateRepository from "@/repositories/template/template.repository"
 import UserRepository from "@/repositories/user/user.repository"
@@ -23,6 +24,7 @@ export class ContentScheduleService {
     private deviceRepository = DeviceRepository,
     private templateRepository = TemplateRepository,
     private userRepository = UserRepository,
+    private groupRepository = GroupRepository,
   ) {}
 
   private async isPrivilegedUser(userId: number) {
@@ -30,25 +32,54 @@ export class ContentScheduleService {
     return user?.role === UserRole.ADMIN || user?.role === UserRole.STAFF
   }
 
-  async isDeviceOwnerReachedScheduleLimit(ownerId: number | null) {
+  private effectiveOwnerId(schedule: {
+    device: { ownerId: number | null } | null
+    group: { userId: number } | null
+  }) {
+    return schedule.device
+      ? schedule.device.ownerId
+      : (schedule.group?.userId ?? null)
+  }
+
+  async isOwnerReachedScheduleLimit(ownerId: number | null) {
     if (!ownerId) return false
     const owner = await this.userRepository.getById(ownerId)
     if (!owner || owner.schedulesAmount == null) return false
     if (owner.role === UserRole.ADMIN || owner.role === UserRole.STAFF)
       return false
-    const scheduleCount =
-      await this.repository.countActiveByDeviceOwner(ownerId)
+    const scheduleCount = await this.repository.countActiveByOwner(ownerId)
     return scheduleCount >= owner.schedulesAmount
   }
 
   async create(data: CreateContentScheduleServiceInput) {
-    const device = await this.deviceRepository.getById(data.deviceId)
-    if (!device) throw new HttpError(404, "Device not found")
+    if ((data.deviceId === undefined) === (data.groupId === undefined))
+      throw new HttpError(
+        400,
+        "Exactly one of deviceId or groupId must be provided",
+      )
+
+    let ownerId: number | null = null
+
+    if (data.deviceId !== undefined) {
+      const device = await this.deviceRepository.getById(data.deviceId)
+      if (!device) throw new HttpError(404, "Device not found")
+      ownerId = device.ownerId
+    } else {
+      const group = await this.groupRepository.getById(data.groupId!)
+      if (!group) throw new HttpError(404, "Group not found")
+
+      if (
+        group.userId !== data.createdBy &&
+        !(await this.isPrivilegedUser(data.createdBy))
+      )
+        throw new HttpError(403, "Forbidden")
+
+      ownerId = group.userId
+    }
 
     if (data.active !== false) {
-      const isOwnerScheduleLimit = await this.isDeviceOwnerReachedScheduleLimit(
-        device.ownerId,
-      )
+      const isOwnerScheduleLimit =
+        await this.isOwnerReachedScheduleLimit(ownerId)
       if (isOwnerScheduleLimit)
         throw new HttpError(403, "Schedules limit reached")
     }
@@ -64,7 +95,9 @@ export class ContentScheduleService {
       endDate: data.endDate ? new Date(data.endDate) : undefined,
     })
 
-    this.pushCurrentContent(data.deviceId)
+    if (data.deviceId !== undefined) this.pushCurrentContent(data.deviceId)
+    if (data.groupId !== undefined)
+      this.pushCurrentContentForGroup(data.groupId)
 
     return schedule
   }
@@ -76,7 +109,17 @@ export class ContentScheduleService {
     if (user.role === UserRole.ADMIN || user.role === UserRole.STAFF)
       return await this.repository.listAll()
 
-    return await this.repository.listByDeviceOwner(user.id)
+    return await this.repository.listByOwner(user.id)
+  }
+
+  async listByGroupId(groupId: number, userId: number) {
+    const group = await this.groupRepository.getById(groupId)
+    if (!group) throw new HttpError(404, "Group not found")
+
+    if (group.userId !== userId && !(await this.isPrivilegedUser(userId)))
+      throw new HttpError(403, "Forbidden")
+
+    return await this.repository.listByGroupId(groupId)
   }
 
   async listByDeviceId(deviceId: number, userId: number) {
@@ -94,7 +137,7 @@ export class ContentScheduleService {
     if (!schedule) throw new HttpError(404, "Content schedule not found")
 
     if (
-      schedule.device.ownerId !== userId &&
+      this.effectiveOwnerId(schedule) !== userId &&
       !(await this.isPrivilegedUser(userId))
     )
       throw new HttpError(403, "Forbidden")
@@ -107,14 +150,14 @@ export class ContentScheduleService {
     if (!schedule) throw new HttpError(404, "Content schedule not found")
 
     if (
-      schedule.device.ownerId !== data.updatedBy &&
+      this.effectiveOwnerId(schedule) !== data.updatedBy &&
       !(await this.isPrivilegedUser(data.updatedBy))
     )
       throw new HttpError(403, "Forbidden")
 
     if (data.active === true && !schedule.active) {
-      const isOwnerScheduleLimit = await this.isDeviceOwnerReachedScheduleLimit(
-        schedule.device.ownerId,
+      const isOwnerScheduleLimit = await this.isOwnerReachedScheduleLimit(
+        this.effectiveOwnerId(schedule),
       )
       if (isOwnerScheduleLimit)
         throw new HttpError(403, "Schedules limit reached")
@@ -149,7 +192,9 @@ export class ContentScheduleService {
           : undefined,
     })
 
-    this.pushCurrentContent(schedule.deviceId)
+    if (schedule.deviceId !== null) this.pushCurrentContent(schedule.deviceId)
+    if (schedule.groupId !== null)
+      this.pushCurrentContentForGroup(schedule.groupId)
 
     return updated
   }
@@ -159,14 +204,16 @@ export class ContentScheduleService {
     if (!schedule) throw new HttpError(404, "Content schedule not found")
 
     if (
-      schedule.device.ownerId !== deletedBy &&
+      this.effectiveOwnerId(schedule) !== deletedBy &&
       !(await this.isPrivilegedUser(deletedBy))
     )
       throw new HttpError(403, "Forbidden")
 
     try {
       await this.repository.softDelete(id, deletedBy)
-      this.pushCurrentContent(schedule.deviceId)
+      if (schedule.deviceId !== null) this.pushCurrentContent(schedule.deviceId)
+      if (schedule.groupId !== null)
+        this.pushCurrentContentForGroup(schedule.groupId)
     } catch (error) {
       console.log(error)
       throw new HttpError(500, "Failed to delete content schedule")
@@ -269,6 +316,19 @@ export class ContentScheduleService {
       setLastSent(device.code, content)
     } catch (error) {
       console.log("[ws] Failed to push content:", error)
+    }
+  }
+
+  async pushCurrentContentForGroup(groupId: number) {
+    try {
+      const group = await this.groupRepository.getById(groupId)
+      if (!group) return
+
+      for (const groupDevice of group.groupDevices) {
+        await this.pushCurrentContent(groupDevice.deviceId)
+      }
+    } catch (error) {
+      console.log("[ws] Failed to push group content:", error)
     }
   }
 

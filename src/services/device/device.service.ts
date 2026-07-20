@@ -138,7 +138,16 @@ export class DeviceService {
       if (!owner) throw new HttpError(404, "User not found")
     }
 
-    return this.repository.update(deviceId, { ownerId, updatedBy })
+    // Atomic: device update + stale-membership cleanup share one transaction.
+    const updated = await this.repository.reassignOwner(
+      deviceId,
+      ownerId,
+      updatedBy,
+    )
+
+    scheduleService.pushCurrentContent(deviceId)
+
+    return updated
   }
 
   async updateOverrides(

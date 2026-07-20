@@ -56,6 +56,15 @@ export class DeviceRepository {
     })
   }
 
+  async getByIds(ids: number[]) {
+    return await prisma.device.findMany({
+      where: {
+        id: { in: ids },
+        ...this.softDeleteFilter,
+      },
+    })
+  }
+
   async getByCode(code: string) {
     return await prisma.device.findFirst({
       where: {
@@ -89,6 +98,40 @@ export class DeviceRepository {
         ...data,
         updatedAt: new Date(),
       },
+    })
+  }
+
+  // Owner reassignment and the cleanup of stale group memberships are one
+  // atomic operation: a device that changed hands must never remain in the
+  // previous owner's groups. Both run in the same transaction so a failure
+  // between them can't leave the invariant violated. Mirrors the
+  // updateDeviceMetrics tx pattern.
+  async reassignOwner(
+    deviceId: number,
+    ownerId: number | null,
+    updatedBy: number,
+  ) {
+    return await prisma.$transaction(async (tx) => {
+      const updated = await tx.device.update({
+        where: { id: deviceId },
+        data: {
+          ownerId,
+          updatedBy,
+          updatedAt: new Date(),
+        },
+      })
+
+      // Leave every group the device is no longer eligible for: when a new
+      // owner is set, the previous owner's groups; when ownership is removed,
+      // all groups.
+      await tx.groupDevice.deleteMany({
+        where: {
+          deviceId,
+          ...(ownerId !== null ? { group: { userId: { not: ownerId } } } : {}),
+        },
+      })
+
+      return updated
     })
   }
 

@@ -186,6 +186,39 @@ describe("POST /api/schedules", () => {
         expect(response.status).toBe(400)
       })
 
+      test("should return 400 when both deviceId and groupId are provided", async () => {
+        const groupRes = await request(app)
+          .post("/api/groups")
+          .set("Authorization", `Bearer ${token}`)
+          .send({ name: "Grupo A" })
+
+        const response = await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            deviceId,
+            groupId: groupRes.body.data.id,
+            templateId,
+            customFields: { text: "Hello" },
+            weekdays: [0],
+          })
+
+        expect(response.status).toBe(400)
+      })
+
+      test("should return 400 when neither deviceId nor groupId is provided", async () => {
+        const response = await request(app)
+          .post("/api/schedules")
+          .set("Authorization", `Bearer ${token}`)
+          .send({
+            templateId,
+            customFields: { text: "Hello" },
+            weekdays: [0],
+          })
+
+        expect(response.status).toBe(400)
+      })
+
       test("should return 403 when schedules reached limit", async () => {
         const clientRes = await request(app)
           .post("/api/users")
@@ -241,5 +274,151 @@ describe("POST /api/schedules", () => {
         expect(response.body.message).toBe("Schedules limit reached")
       })
     })
+  })
+})
+
+describe("POST /api/schedules with group target", () => {
+  async function createClientAndLogin(email: string) {
+    const userRes = await request(app)
+      .post("/api/users")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        firstName: "Client",
+        lastName: "User",
+        email,
+        phone: "11988888888",
+        password: "client123",
+        role: "CLIENT",
+        schedulesAmount: 2,
+      })
+
+    const login = await request(app).post("/api/auth/login").send({
+      email,
+      password: "client123",
+    })
+
+    return {
+      userId: userRes.body.data.id as number,
+      token: login.body.data.access as string,
+    }
+  }
+
+  async function createGroup(authToken: string, name: string) {
+    const response = await request(app)
+      .post("/api/groups")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({ name })
+    return response.body.data.id as number
+  }
+
+  test("should create a schedule targeting a group", async () => {
+    const client = await createClientAndLogin("client@test.com")
+    const groupId = await createGroup(client.token, "Loja Centro")
+
+    const response = await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${client.token}`)
+      .send({
+        groupId,
+        templateId,
+        customFields: { text: "Conteúdo do grupo" },
+        weekdays: [1, 2, 3, 4, 5],
+      })
+
+    expect(response.status).toBe(201)
+    expect(response.body.data).toMatchObject({
+      id: expect.any(Number),
+      groupId,
+      templateId,
+    })
+    expect(response.body.data.deviceId).toBeNull()
+  })
+
+  test("should return 404 when group does not exist", async () => {
+    const response = await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        groupId: 99999,
+        templateId,
+        customFields: { text: "Hello" },
+        weekdays: [0],
+      })
+
+    expect(response.status).toBe(404)
+    expect(response.body.message).toBe("Group not found")
+  })
+
+  test("should return 403 when a CLIENT schedules on another user's group; ADMIN succeeds", async () => {
+    const client = await createClientAndLogin("client@test.com")
+    const other = await createClientAndLogin("other@test.com")
+    const groupId = await createGroup(client.token, "Loja Centro")
+
+    const otherAttempt = await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${other.token}`)
+      .send({
+        groupId,
+        templateId,
+        customFields: { text: "Invasão" },
+        weekdays: [1],
+      })
+    expect(otherAttempt.status).toBe(403)
+
+    const adminAttempt = await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        groupId,
+        templateId,
+        customFields: { text: "Suporte" },
+        weekdays: [1],
+      })
+    expect(adminAttempt.status).toBe(201)
+  })
+
+  test("should count a group schedule as 1 toward the owner's limit", async () => {
+    const client = await createClientAndLogin("client@test.com")
+
+    await request(app)
+      .patch(`/api/devices/${deviceId}/owner`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({ ownerId: client.userId })
+
+    const groupId = await createGroup(client.token, "Loja Centro")
+
+    const deviceSchedule = await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${client.token}`)
+      .send({
+        deviceId,
+        templateId,
+        customFields: { text: "Direto" },
+        weekdays: [1],
+      })
+    expect(deviceSchedule.status).toBe(201)
+
+    const groupSchedule = await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${client.token}`)
+      .send({
+        groupId,
+        templateId,
+        customFields: { text: "Grupo" },
+        weekdays: [2],
+      })
+    expect(groupSchedule.status).toBe(201)
+
+    const overLimit = await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${client.token}`)
+      .send({
+        groupId,
+        templateId,
+        customFields: { text: "Excedente" },
+        weekdays: [3],
+      })
+    expect(overLimit.status).toBe(403)
+    expect(overLimit.body.message).toBe("Schedules limit reached")
   })
 })

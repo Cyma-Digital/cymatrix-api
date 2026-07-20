@@ -9,6 +9,7 @@ import userTemplate from "@/routes/userTemplate/userTemplate.routes"
 import effect from "@/routes/effect/effect.routes"
 import userEffect from "@/routes/userEffect/userEffect.routes"
 import scheduleEffect from "@/routes/scheduleEffect/scheduleEffect.routes"
+import group from "@/routes/group/group.routes"
 
 const router = Router()
 
@@ -21,6 +22,7 @@ router.use("/user-template", userTemplate)
 router.use("/effects", effect)
 router.use("/user-effect", userEffect)
 router.use("/schedule-effect", scheduleEffect)
+router.use("/groups", group)
 router.use("/auth", auth)
 
 export default router

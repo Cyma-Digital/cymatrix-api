@@ -9,8 +9,9 @@ export const contentScheduleIdSchema = z.object({
     .pipe(z.number().positive()),
 })
 
-export const createContentScheduleSchema = z.strictObject({
-  deviceId: z.number().positive("Device ID is required"),
+const createContentScheduleBaseSchema = z.strictObject({
+  deviceId: z.number().positive().optional(),
+  groupId: z.number().positive().optional(),
   templateId: z.number().positive("Template ID is required"),
   customFields: z.object({}).passthrough(),
   weekdays: z.array(z.number().min(0).max(6)),
@@ -28,8 +29,22 @@ export const createContentScheduleSchema = z.strictObject({
   durationSec: z.number().int().positive().nullable().optional(),
 })
 
+const exactlyOneTarget = (data: { deviceId?: number; groupId?: number }) =>
+  (data.deviceId === undefined) !== (data.groupId === undefined)
+
+export const createContentScheduleSchema =
+  createContentScheduleBaseSchema.refine(
+    exactlyOneTarget,
+    "Exactly one of deviceId or groupId must be provided",
+  )
+
 export const createContentScheduleServiceSchema =
-  createContentScheduleSchema.extend(auditCreatedFields.shape)
+  createContentScheduleBaseSchema
+    .extend(auditCreatedFields.shape)
+    .refine(
+      exactlyOneTarget,
+      "Exactly one of deviceId or groupId must be provided",
+    )
 
 export const updateContentScheduleSchema = z.strictObject({
   templateId: z.number().positive().optional(),

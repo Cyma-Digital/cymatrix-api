@@ -107,6 +107,182 @@ describe("GET /api/schedules/:id", () => {
   })
 })
 
+describe("GET /api/schedules with group target", () => {
+  async function createClientAndLogin(email: string) {
+    const userRes = await request(app)
+      .post("/api/users")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        firstName: "Client",
+        lastName: "User",
+        email,
+        phone: "11988888888",
+        password: "client123",
+        role: "CLIENT",
+      })
+
+    const login = await request(app).post("/api/auth/login").send({
+      email,
+      password: "client123",
+    })
+
+    return {
+      userId: userRes.body.data.id as number,
+      token: login.body.data.access as string,
+    }
+  }
+
+  test("should expose the target of each schedule in listings", async () => {
+    const groupRes = await request(app)
+      .post("/api/groups")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ name: "Grupo A" })
+    const groupId = groupRes.body.data.id
+
+    await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        deviceId,
+        templateId,
+        customFields: { text: "Direto" },
+        weekdays: [1],
+      })
+
+    await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        groupId,
+        templateId,
+        customFields: { text: "Grupo" },
+        weekdays: [2],
+      })
+
+    const response = await request(app)
+      .get("/api/schedules")
+      .set("Authorization", `Bearer ${token}`)
+
+    expect(response.status).toBe(200)
+    expect(response.body.data).toHaveLength(2)
+
+    const deviceSchedule = response.body.data.find(
+      (schedule: { deviceId: number | null }) => schedule.deviceId !== null,
+    )
+    const groupSchedule = response.body.data.find(
+      (schedule: { groupId: number | null }) => schedule.groupId !== null,
+    )
+    expect(deviceSchedule.groupId).toBeNull()
+    expect(groupSchedule.groupId).toBe(groupId)
+    expect(groupSchedule.deviceId).toBeNull()
+  })
+
+  test("should include the requester's group schedules in the CLIENT listing", async () => {
+    const client = await createClientAndLogin("client@test.com")
+
+    const groupRes = await request(app)
+      .post("/api/groups")
+      .set("Authorization", `Bearer ${client.token}`)
+      .send({ name: "Grupo do cliente" })
+
+    await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${client.token}`)
+      .send({
+        groupId: groupRes.body.data.id,
+        templateId,
+        customFields: { text: "Grupo" },
+        weekdays: [1],
+      })
+
+    const response = await request(app)
+      .get("/api/schedules")
+      .set("Authorization", `Bearer ${client.token}`)
+
+    expect(response.status).toBe(200)
+    expect(response.body.data).toHaveLength(1)
+    expect(response.body.data[0].groupId).toBe(groupRes.body.data.id)
+  })
+})
+
+describe("GET /api/schedules/group/:id", () => {
+  async function createClientAndLogin(email: string) {
+    const userRes = await request(app)
+      .post("/api/users")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        firstName: "Client",
+        lastName: "User",
+        email,
+        phone: "11988888888",
+        password: "client123",
+        role: "CLIENT",
+      })
+
+    const login = await request(app).post("/api/auth/login").send({
+      email,
+      password: "client123",
+    })
+
+    return {
+      userId: userRes.body.data.id as number,
+      token: login.body.data.access as string,
+    }
+  }
+
+  test("should list schedules of a group", async () => {
+    const client = await createClientAndLogin("client@test.com")
+
+    const groupRes = await request(app)
+      .post("/api/groups")
+      .set("Authorization", `Bearer ${client.token}`)
+      .send({ name: "Grupo do cliente" })
+    const groupId = groupRes.body.data.id
+
+    await request(app)
+      .post("/api/schedules")
+      .set("Authorization", `Bearer ${client.token}`)
+      .send({
+        groupId,
+        templateId,
+        customFields: { text: "Grupo" },
+        weekdays: [1],
+      })
+
+    const response = await request(app)
+      .get(`/api/schedules/group/${groupId}`)
+      .set("Authorization", `Bearer ${client.token}`)
+
+    expect(response.status).toBe(200)
+    expect(response.body.data).toHaveLength(1)
+    expect(response.body.data[0].groupId).toBe(groupId)
+  })
+
+  test("should return 403 for a CLIENT that does not own the group", async () => {
+    const client = await createClientAndLogin("client@test.com")
+    const other = await createClientAndLogin("other@test.com")
+
+    const groupRes = await request(app)
+      .post("/api/groups")
+      .set("Authorization", `Bearer ${client.token}`)
+      .send({ name: "Grupo do cliente" })
+
+    const response = await request(app)
+      .get(`/api/schedules/group/${groupRes.body.data.id}`)
+      .set("Authorization", `Bearer ${other.token}`)
+
+    expect(response.status).toBe(403)
+  })
+
+  test("should return 404 when group does not exist", async () => {
+    const response = await request(app)
+      .get("/api/schedules/group/99999")
+      .set("Authorization", `Bearer ${token}`)
+
+    expect(response.status).toBe(404)
+  })
+})
+
 describe("GET /api/schedules/device/:id", () => {
   describe("Authenticated user", () => {
     test("should list schedules by device", async () => {
